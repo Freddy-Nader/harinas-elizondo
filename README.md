@@ -1,4 +1,4 @@
-# Harinas Elizondo — Avance propio 0.1
+# Harinas Elizondo
 Este prototipo fue creado desde cero a partir de los requerimientos de `PA_IS.pdf`. El GitHub de referencia no se ha copiado.
 
 ## Ejecutar (Mac / Windows)
