@@ -55,6 +55,9 @@ pnpm build
 - Each fork owner can link their fork to their own Vercel project. Pushes to a branch create a preview, pushes to `main` deploy production.
 - Manual deploy from the CLI is `vercel` (preview) or `vercel --prod`.
 - Env vars live in Vercel project settings. `vercel env pull` brings them down.
+- Gotcha. `vercel link` and `vercel env pull` append `.env*` to `.gitignore`, which would hide `.env.example`. Revert that line (`git checkout .gitignore`) before committing.
+- Preview deployments are behind Vercel Authentication, so plain `curl` gets a 401. Use `vercel curl <path> --deployment <url>` (it creates a protection bypass token) or open the preview in a browser signed in to Vercel. The production alias is public.
+- Neon was added from the Vercel Marketplace (free plan, Washington, D.C., Neon Auth off because the app uses Better Auth). It provides `DATABASE_URL` and `DATABASE_URL_UNPOOLED` to every environment.
 
 ## Legacy prototype
 
