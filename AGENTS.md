@@ -17,7 +17,7 @@ Control de Laboratorio is a university team project that builds a web app to iss
 - **Keep docs current.** Update `docs/llm/status.md` (and `decisions.md` when relevant) in the same change.
 - **Checks before a PR.** `pnpm typecheck && pnpm lint && pnpm test && pnpm build` must pass.
 - **UI work.** Load the `emil-design-eng` and `apple-design` skills, and `pick-ui-library` before adding a UI dependency.
-- **Git.** For now all work happens in Freddy's fork. Branch from `main`, open the PR against the fork's own `main`, and let Freddy merge it. Nothing goes to the upstream repo until Freddy decides to (see `docs/llm/runbook.md`). Never force-push shared branches.
+- **Git.** Work happens in Freddy's fork. While the first upstream PR (`feat/nextjs-scaffold`) is open, new branches stack on it and their PRs stay inside the fork. Open upstream PRs only when Freddy asks (see `docs/llm/runbook.md`). Never force-push shared branches.
 
 ## Commands
 
