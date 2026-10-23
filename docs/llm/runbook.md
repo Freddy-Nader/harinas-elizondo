@@ -45,7 +45,7 @@ pnpm build
 ## Git flow
 
 - `origin` is Freddy's fork, https://github.com/Freddy-Nader/harinas-elizondo. **All current work happens here.** Branch from `main`, push the branch, open the PR against the fork's `main`, and Freddy reviews and merges it.
-- `upstream` is the team repo, https://github.com/ValleryR/harinas-elizondo, where Freddy has read access only. Do not open PRs or push there. When Freddy is ready he opens one PR upstream himself and asks to be added as a collaborator.
+- `upstream` is the team repo, https://github.com/ValleryR/harinas-elizondo, where Freddy has read access only. The first upstream PR is https://github.com/ValleryR/harinas-elizondo/pull/1 (from `feat/nextjs-scaffold`). While it is open, start new work on a branch stacked on `feat/nextjs-scaffold` so the open PR doesn't change under review. Open upstream PRs only when Freddy asks.
 - Pull teammates' changes with `git fetch upstream` and merge `upstream/main` into a branch when needed.
 - Never commit `docs/private/PA_IS.pdf`, `.env*` (except `.env.example`), or personal data. The repo is public.
 
