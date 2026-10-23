@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Control de Laboratorio",
-    template: "%s · Control de Laboratorio",
+    default: "Harinas Elizondo",
+    template: "%s · Harinas Elizondo",
   },
-  description: "Certificados de calidad de harina de trigo para Harinas Elizondo.",
+  description: "Certificados de calidad de harina de trigo. Proyecto escolar no oficial.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

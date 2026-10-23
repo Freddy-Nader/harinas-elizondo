@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Control de Laboratorio is a university team project that builds a web app to issue wheat-flour quality certificates (lots, inspections, reference values, PDF certificates, email delivery, reports, audit log). Final delivery is due **2026-11-13 23:59**.
+Harinas Elizondo is a university team project (the course calls it "Control de Laboratorio") that builds a web app to issue wheat-flour quality certificates (lots, inspections, reference values, PDF certificates, email delivery, reports, audit log). Final delivery is due **2026-11-13 23:59**.
 
 ## Read first
 

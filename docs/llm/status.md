@@ -12,7 +12,7 @@ Last updated 2026-10-22. Deadline **2026-11-13 23:59** (delivery 3). Update this
 - [x] App shell with Spanish navigation and a placeholder per module
 - [x] Domain rules with tests for sequence, reference fallback, deviation and completeness
 - [x] Agent docs (`AGENTS.md`, `docs/llm/`)
-- [x] Vercel deploy of the fork at https://control-laboratorio-woad.vercel.app, with Neon Postgres (Washington, D.C.) attached
+- [x] Vercel deploy of the fork at https://harinas-elizondo.vercel.app, with Neon Postgres (Washington, D.C.) attached
 
 ## Next, in suggested order
 

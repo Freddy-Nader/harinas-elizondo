@@ -41,7 +41,7 @@ Las características de calidad de las que la entrega final debe mostrar evidenc
 
 - El documento de arquitectura del equipo, un borrador del diseño técnico con su modelo SQL y un primer prototipo (una pantalla sencilla de clientes que guarda en un archivo JSON), que ahora vive en [legacy/](../legacy/prototipo-v0.1/).
 - Una aplicación en Next.js con las tablas de la base de datos, la configuración del inicio de sesión, un menú en español con una página provisional por módulo, las reglas de negocio principales programadas y probadas, y documentación para personas y para agentes de IA.
-- Una vista previa en línea en https://control-laboratorio-woad.vercel.app. Todavía no se puede guardar nada porque no hay base de datos conectada.
+- Una demo en línea en https://harinas-elizondo.vercel.app con base de datos Postgres, dos usuarios de prueba e inicio de sesión funcionando.
 - Un diseño anterior de este mismo caso hecho en otra materia (Ingeniería de Software, verano 2025). Responde preguntas que el documento del equipo deja abiertas, como límites por producto, marcar inspecciones ajustadas, una cola de correos fallidos y retener un lote, así que puede alimentar los detalles de calidad propios del equipo.
 
 ## Qué sigue

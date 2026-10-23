@@ -8,8 +8,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-full flex-1">
       <aside className="hidden w-56 shrink-0 flex-col gap-6 border-r bg-sidebar px-3 py-5 md:flex">
         <Link href="/panel" className="px-2.5">
-          <span className="block text-sm font-semibold tracking-tight">Control de Laboratorio</span>
-          <span className="block text-xs text-muted-foreground">Harinas Elizondo</span>
+          <span className="block text-sm font-semibold tracking-tight">Harinas Elizondo</span>
+          <span className="block text-xs text-muted-foreground">Control de laboratorio</span>
         </Link>
         <AppNav />
       </aside>

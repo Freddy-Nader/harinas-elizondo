@@ -41,7 +41,7 @@ The quality characteristics the final delivery has to show evidence for are secu
 
 - The team's architecture document, a draft of the technical design with its SQL model, and a first prototype (a simple clients screen saved to a JSON file), now kept in [legacy/](../legacy/prototipo-v0.1/).
 - A Next.js app with the database tables, the login setup, a Spanish menu with a placeholder page for each module, the core business rules coded and tested, and documentation for people and for AI agents.
-- A live preview at https://control-laboratorio-woad.vercel.app. Nothing can be saved yet because no database is connected.
+- A live demo at https://harinas-elizondo.vercel.app with a Postgres database, two demo users and working sign-in.
 - An earlier design of this same case from a previous course (Ingeniería de Software, summer 2025). It answers questions the team document leaves open, like limits per product, marking adjusted inspections, a queue for failed emails and putting a lot on hold, so it can feed the team's own quality details.
 
 ## What comes next

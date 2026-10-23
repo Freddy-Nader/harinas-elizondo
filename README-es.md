@@ -4,7 +4,7 @@
     <img src="img/logo-dark.png" width="240" alt="Logo de Harinas Elizondo">
   </picture>
 
-  # Control de Laboratorio
+  # Harinas Elizondo
   *Certificados de calidad de harina de trigo, desde el lote de producción hasta el correo del cliente. Hecho con [Next.js](https://nextjs.org/).*
 
 

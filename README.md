@@ -4,7 +4,7 @@
     <img src="img/logo-dark.png" width="240" alt="Harinas Elizondo logo">
   </picture>
 
-  # Lab Control
+  # Harinas Elizondo
   *Quality certificates for wheat flour, from the production lot to the client's inbox. Built with [Next.js](https://nextjs.org/).*
 
   > [!NOTE]
