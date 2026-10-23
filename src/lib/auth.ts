@@ -12,7 +12,8 @@ import * as schema from "@/lib/db/schema";
 function createAuth() {
   return betterAuth({
     database: drizzleAdapter(getDb(), { provider: "pg", schema }),
-    emailAndPassword: { enabled: true },
+    // Public sign-up is off (D-14). Accounts come from scripts/seed.ts and the Usuarios screen
+    emailAndPassword: { enabled: true, disableSignUp: true },
     user: {
       additionalFields: {
         role: { type: "string", required: false, defaultValue: "query", input: false },

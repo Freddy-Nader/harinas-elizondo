@@ -19,11 +19,16 @@ Open http://localhost:3000. Without `DATABASE_URL` every screen renders, but log
 1. In the Vercel project, open Storage, add **Neon** from the Marketplace and connect it to the project (all environments).
 2. Pull the variables locally with `vercel env pull .env.local` (needs `vercel link` once).
 3. Add `BETTER_AUTH_SECRET` (`openssl rand -base64 32`) to Vercel and `.env.local`. Set `BETTER_AUTH_URL` to the site URL.
-4. Create and apply migrations.
+4. Apply the migrations in `drizzle/` (after a schema change, run `pnpm db:generate` first and commit the new file).
 
 ```bash
-pnpm db:generate
 pnpm db:migrate
+```
+
+5. Put `SEED_PASSWORD` in `.env` (not `.env.local`, which `vercel env pull` overwrites) and seed. The seed is idempotent. It creates the ten parameters, demo international limits (not official, see Q-11) and two demo users, `laboratorio@demo.test` (transaction) and `consulta@demo.test` (query), both with `SEED_PASSWORD`.
+
+```bash
+pnpm db:seed
 ```
 
 `pnpm db:studio` opens Drizzle Studio to browse the data.
