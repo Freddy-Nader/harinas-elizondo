@@ -12,6 +12,7 @@ Last updated 2026-10-22. Deadline **2026-11-13 23:59** (delivery 3). Update this
 - [x] App shell with Spanish navigation and a placeholder per module
 - [x] Domain rules with tests for sequence, reference fallback, deviation and completeness
 - [x] Agent docs (`AGENTS.md`, `docs/llm/`)
+- [x] Vercel deploy of the fork at https://control-laboratorio-woad.vercel.app (no database yet)
 
 ## Next, in suggested order
 
@@ -25,6 +26,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 6. [ ] Certificados (UC-05, UC-06, UC-07) with PDF (Q-07), email (Q-06), delivery evidence and inspection lock
 7. [ ] Reportes (UC-08) with filters, charts, Excel export (Q-09)
 8. [ ] Bitácora screen
+8b. [ ] Mobile navigation (the sidebar is hidden below `md`)
 9. [ ] Tests by type and their written guides ([testing.md](testing.md)), CI workflow
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned

@@ -46,6 +46,7 @@ pnpm build
 
 ## Deploy (Vercel)
 
+- Freddy's fork deploys to https://control-laboratorio-woad.vercel.app (Vercel project `control-laboratorio`, Hobby). `vercel.json` pins the Next.js preset, so a new Vercel project needs no manual framework setting.
 - Each fork owner can link their fork to their own Vercel project. Pushes to a branch create a preview, pushes to `main` deploy production.
 - Manual deploy from the CLI is `vercel` (preview) or `vercel --prod`.
 - Env vars live in Vercel project settings. `vercel env pull` brings them down.
