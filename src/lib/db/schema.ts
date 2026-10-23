@@ -8,6 +8,7 @@
 import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   char,
   date,
   index,
@@ -79,13 +80,29 @@ export const parameters = pgTable("parameters", {
   unit: varchar({ length: 15 }).notNull().default(""),
 });
 
-// RF-03 + logical view. clientId NULL = international values (the team doc used
-// a reserved client "999"; see decisions.md D-07).
-export const referenceValues = pgTable(
-  "reference_values",
+// RF-02 / RF-03. International reference limits, one row per parameter (D-07).
+// A client without its own limit for a parameter falls back to this row (BR-REF-01).
+export const internationalLimits = pgTable(
+  "international_limits",
   {
-    id: serial().primaryKey(),
-    clientId: uuid().references(() => clients.id),
+    parameterCode: varchar({ length: 10 })
+      .primaryKey()
+      .references(() => parameters.code),
+    lowerLimit: measure().notNull(),
+    upperLimit: measure().notNull(),
+    updatedAt: createdAt(),
+    updatedBy: createdBy(),
+  },
+  (t) => [check("international_limits_range_ck", sql`${t.lowerLimit} <= ${t.upperLimit}`)],
+);
+
+// RF-03. A client's own limits, zero to ten rows per client.
+export const clientLimits = pgTable(
+  "client_limits",
+  {
+    clientId: uuid()
+      .notNull()
+      .references(() => clients.id),
     parameterCode: varchar({ length: 10 })
       .notNull()
       .references(() => parameters.code),
@@ -95,12 +112,8 @@ export const referenceValues = pgTable(
     updatedBy: createdBy(),
   },
   (t) => [
-    uniqueIndex("reference_values_client_parameter_uq")
-      .on(t.clientId, t.parameterCode)
-      .where(sql`${t.clientId} is not null`),
-    uniqueIndex("reference_values_international_uq")
-      .on(t.parameterCode)
-      .where(sql`${t.clientId} is null`),
+    primaryKey({ columns: [t.clientId, t.parameterCode] }),
+    check("client_limits_range_ck", sql`${t.lowerLimit} <= ${t.upperLimit}`),
   ],
 );
 

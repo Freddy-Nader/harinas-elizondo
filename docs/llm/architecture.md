@@ -10,7 +10,7 @@ The team document describes a layered system (presentation, business logic, data
 | Business logic (rules, validations, latest inspection, deviation, sending, audit) | `src/lib/domain/` (pure, unit tested) and server actions per module |
 | Data access (repositories per entity) | `src/lib/db/` (Drizzle schema and client), one data access file per module when it is built |
 | Services and integration (email, Excel export, Power BI) | `src/lib/services/` (to create) |
-| Physical view (app server, DB, mail service, analysis tools) | Vercel (app), Neon Postgres (DB), email provider (Q-06), Excel/CSV export |
+| Physical view (app server, DB, mail service, analysis tools) | Vercel (app), Neon Postgres (DB), Resend (email), Excel/CSV export |
 
 ## Folder layout
 
@@ -86,5 +86,6 @@ House style so far is quiet and dense, like an internal tool. Neutral palette, G
 ## Data and auth
 
 - Postgres on Neon (via Vercel Marketplace), Drizzle ORM with `casing: "snake_case"`, migrations in `drizzle/`.
-- Better Auth with email and password. Extra user fields `role` and `employeeId`. Users are created by a seed script (to write), not by public sign-up (Q-10).
+- Better Auth with email and password. Extra user fields `role` and `employeeId`. Users come from a seed script and a Usuarios screen, public sign-up is off (D-14).
+- Certificates are rendered with `@react-pdf/renderer` and emailed with Resend (D-13).
 - Authorization rule of thumb. Pages decide what to show, server actions and data functions decide what is allowed. Always check the role server-side.

@@ -12,9 +12,9 @@ Spanish is the word users and the course documents use. English is the name in c
 | Alveógrafo (Chopin) | `alveograph` | Measures dough tenacity and extensibility by inflating a bubble |
 | Farinógrafo (Brabender) | `farinograph` | Measures water absorption and mixing behavior |
 | Parámetro / factor | `parameter` | One measured value, for example W or stability |
-| Valores de referencia | `referenceValues` | Lower and upper limit per parameter |
-| Valores internacionales | international reference values | Default limits, used when a client has none |
-| Valores particulares | client reference values | A client's own limits, override the international ones |
+| Valores de referencia | limits (`internationalLimits`, `clientLimits`) | Lower and upper limit per parameter |
+| Valores internacionales | `international_limits` | Default limits from international standards, used for any parameter a client did not define |
+| Valores particulares | `client_limits` | A client's own limits, override the international ones per parameter |
 | Lote de producción | `lot` | Batch of finished flour, identified by a lot code |
 | Inspección / análisis | `inspection` | One analysis of a lot, holding results from both machines |
 | Secuencia de inspección | `sequence` | A, B, … Z, AA… per lot, assigned by the system |
@@ -54,8 +54,9 @@ Defined in `src/lib/db/schema.ts` (Drizzle, Postgres, snake_case columns). It po
 ```mermaid
 erDiagram
   user ||--o{ audit_log : acts
-  clients ||--o{ reference_values : "own limits"
-  parameters ||--o{ reference_values : limits
+  clients ||--o{ client_limits : "own limits"
+  parameters ||--o{ client_limits : limits
+  parameters ||--|| international_limits : "default limit"
   lots ||--o{ inspections : has
   inspections ||--o{ inspection_results : contains
   parameters ||--o{ inspection_results : measures
@@ -73,7 +74,8 @@ erDiagram
 | `clients` | `sap_key` unique, `status` active or inactive with `status_reason` |
 | `equipment` | `id` is the generated 8-char key, `type` alveograph or farinograph, `status` active, inactive or retired |
 | `parameters` | The ten codes above, seeded from code |
-| `reference_values` | `client_id` NULL means international. Partial unique indexes keep one row per (client, parameter) and one international row per parameter |
+| `international_limits` | One row per parameter (primary key `parameter_code`). The default range every client falls back to |
+| `client_limits` | A client's own ranges, primary key (`client_id`, `parameter_code`), zero to ten rows per client |
 | `lots` | Lot code as primary key, product, production and expiry dates |
 | `inspections` | Unique (`lot_id`, `sequence`). `locked_at` is set when a certificate uses it. `reinspection_reason` for authorized re-inspections |
 | `inspection_results` | One row per parameter, with the machine used |

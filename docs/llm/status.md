@@ -18,14 +18,15 @@ Last updated 2026-10-22. Deadline **2026-11-13 23:59** (delivery 3). Update this
 
 Each step is one PR. Modules after step 3 can run in parallel.
 
-1. [ ] Connect Neon, run the first migration, seed parameters, international reference values and one user per role (Q-10)
+1. [ ] Connect Neon, run the first migration, seed parameters, international limits and one user per role (D-14)
 2. [ ] Session in the app shell (inside `<Suspense>`), `proxy.ts` redirect to `/login`, role guard helper for server actions, audit log helper (BR-AUD-01)
 3. [ ] Clientes (UC-02), porting the prototype's validations plus client reference values
 4. [ ] Equipos (UC-01) with generated key, parameters, limits, history and the BR-EQP-03 block
 5. [ ] Lotes and Inspecciones (UC-03, UC-04) with automatic sequence, completeness and deviation preview
-6. [ ] Certificados (UC-05, UC-06, UC-07) with PDF (Q-07), email (Q-06), delivery evidence and inspection lock
+6. [ ] Certificados (UC-05, UC-06, UC-07) with react-pdf, Resend, delivery evidence and inspection lock (D-13)
 7. [ ] Reportes (UC-08) with filters, charts, Excel export (Q-09)
 8. [ ] Bitácora screen
+8a. [ ] Usuarios screen to add accounts and set roles (D-14)
 8b. [ ] Mobile navigation (the sidebar is hidden below `md`)
 9. [ ] Tests by type and their written guides ([testing.md](testing.md)), CI workflow
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
@@ -33,4 +34,4 @@ Each step is one PR. Modules after step 3 can run in parallel.
 
 ## Waiting on the team
 
-See open questions in [decisions.md](decisions.md). The biggest blockers are Q-12 (who builds what) and Q-06/Q-07 (email and PDF tooling).
+See open questions in [decisions.md](decisions.md). The biggest blocker is Q-12 (who builds what).
