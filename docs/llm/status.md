@@ -34,4 +34,4 @@ Each step is one PR. Modules after step 3 can run in parallel.
 
 ## Waiting on the team
 
-See open questions in [decisions.md](decisions.md). The biggest blocker is Q-12 (who builds what).
+See open questions in [decisions.md](decisions.md). Only Q-11 (parameter units) and Q-12 (who builds what) are left, and both are for the team.

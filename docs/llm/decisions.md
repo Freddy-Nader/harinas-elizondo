@@ -19,18 +19,18 @@ Add a row when something is decided. Move a question to the decisions table once
 | D-12 | 2026-10-22 | Client limits are per client, not per client and product | Team doc. Per-product limits are a version 2 idea |
 | D-13 | 2026-10-22 | Email with Resend, certificate PDF with `@react-pdf/renderer` on the server. In development emails are logged, not sent | Free tier works from Vercel with one API key, PDF built from React components |
 | D-14 | 2026-10-22 | Accounts come from a seed script (one demo user per role) plus a Usuarios screen where a transaction user adds accounts and picks the role. Public sign-up is off | Keeps the Security characteristic strong and still lets the demo create users |
+| D-15 | 2026-10-22 | A re-inspection after a complete one is allowed for any transaction user who types the equipment-failure reason. It is stored in `inspections.reinspection_reason` and in the audit log | Meets "with authorization" without a third role or an approval queue |
+| D-16 | 2026-10-22 | Equipment `inactive` is temporary and can be reactivated. `retired` (baja) is final and kept only for history. Both need a reason | Gives the two states different meanings, as the requirements list both |
+| D-17 | 2026-10-22 | Certificate id `CER-YYYY-NNNNNN`, a 6-digit counter that restarts every year (for example `CER-2026-000123`) | Readable on paper and over the phone, sorts by date, fits `varchar(16)` |
+| D-18 | 2026-10-22 | "Digital signature" is a per-certificate checkbox. When on, the PDF prints a signed-by block with the issuer's name, employee id and timestamp. No cryptography | Matches "as the user decides" and fits the deadline |
+| D-19 | 2026-10-22 | History export as `.xlsx` (exceljs) plus CSV | Power BI reads both, and xlsx keeps accents, dates and column types right |
+| D-20 | 2026-10-22 | Both roles can read the audit log | Managers audit, and it supports the Traceability characteristic |
+| D-21 | 2026-10-22 | A lot's product is free text, with suggestions from earlier lots | No catalog needed while limits are per client (D-12) |
 | D-11 | 2026-10-22 | Work happens in Freddy's fork with PRs against the fork's own `main`. One PR upstream later, when Freddy is ready, together with a request to be added as collaborator | Freddy has read-only access upstream, and the scaffold should mature before the team reviews it. Vercel previews run from the fork |
 
 ## Open questions
 
 | Id | Question | Proposed answer | Owner |
 | --- | --- | --- | --- |
-| Q-03 | Who authorizes a re-inspection after an equipment failure, and how is it recorded? | Transaction user types a reason, it goes to the audit log | Team |
-| Q-04 | Equipment "baja" vs "inactivación". Can a retired machine come back? | Inactive can return, retired cannot | Team |
-| Q-05 | Certificate id format | `CER-YYYY-NNNNNN` | Team |
-| Q-08 | What does "digital signature" mean for us? | A flag plus the signer's name and timestamp printed on the PDF, no cryptographic signature | Team |
-| Q-09 | Excel export format | `.xlsx` via `exceljs`, plus CSV | Team |
-| Q-11 | Units for each parameter (current ones are guesses from the equipment annexes) | Confirm with the annexes | Team |
+| Q-11 | Units for each parameter (current ones are guesses from the equipment annexes) | Team decides, possibly with the professor | Team |
 | Q-12 | Who builds which module before 2026-11-13? | Split by module, one PR each | Team |
-| Q-13 | Should query users see the audit log, or only managers? | Both roles can read it | Team |
-| Q-14 | Is a lot tied to a product catalog or free text? | Free text in v1 | Team |
