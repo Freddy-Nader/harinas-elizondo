@@ -16,7 +16,7 @@ The work sheet (version 1.4) defines three partial deliveries, each presented in
 
 | # | Due | Content | Where it lives |
 | --- | --- | --- | --- |
-| 1 | 2026-03-01 | Architecture. Logical, process, development and physical views, UML use cases, quality characteristics and their technical sheet ("ficha técnica") | Team document `docs/PA_IS.pdf` (local only) |
+| 1 | 2026-03-01 | Architecture. Logical, process, development and physical views, UML use cases, quality characteristics and their technical sheet ("ficha técnica") | Team document `docs/private/PA_IS.pdf` (local only) |
 | 2 | 2026-09-17 | Technical design. Detailed use cases, database, interfaces, technical design document | Partial, see `docs/01_AVANCE_B1_B4.md` and `docs/02_modelo_bd.sql` |
 | 3 | **2026-11-13 23:59** | Construction. Working program, test guides (scripts), unit tests, other tests (component, integration, system, regression), user acceptance tests, technical specification | This repo |
 
@@ -34,7 +34,7 @@ Every test type needs its written guide ("guía" or script), not just code. See 
 
 | Source | Public? | Notes |
 | --- | --- | --- |
-| `docs/PA_IS.pdf` | No, gitignored | Team architecture document (delivery 1). Source of truth for requirements |
+| `docs/private/PA_IS.pdf` | No, gitignored | Team architecture document (delivery 1). Source of truth for requirements |
 | `docs/01_AVANCE_B1_B4.md`, `docs/02_modelo_bd.sql` | Yes | A teammate's delivery 2 draft and the target SQL model |
 | `legacy/prototipo-v0.1/` | Yes | First prototype (Node http server + vanilla HTML, Clientes CRUD saved to JSON). Kept as reference and likely deleted later |
 | Professor material on Teams | No | Work sheet, functional requirements v0.1, case study template ("CasoEstudioCtrLab"), process document "Proceso Certificados de laboratorio", business and process models, equipment annexes (Chopin alveograph, Brabender farinograph) |

@@ -15,7 +15,7 @@ Start here. These files tell an agent what the project is, what to build next an
 
 ## Rules of thumb
 
-1. The team's architecture document (`docs/PA_IS.pdf`, gitignored, local only) is the source of truth for requirements. `requirements.md` is a faithful summary of it plus the professor's material. When they disagree, ask and log it in `decisions.md`.
+1. The team's architecture document (`docs/private/PA_IS.pdf`, gitignored, local only) is the source of truth for requirements. `requirements.md` is a faithful summary of it plus the professor's material. When they disagree, ask and log it in `decisions.md`.
 2. Code is English, everything the end user sees is Spanish. Details in `architecture.md`.
 3. Every module traces back to an RF/UC id. Keep those ids in code comments and test names so the technical spec can be generated from the code.
 4. Never commit teammates' documents, personal data, or secrets. This repo is public.
