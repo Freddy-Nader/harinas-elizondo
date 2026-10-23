@@ -7,9 +7,9 @@
   # Control de Laboratorio
   *Certificados de calidad de harina de trigo, desde el lote de producción hasta el correo del cliente. Hecho con [Next.js](https://nextjs.org/).*
 
-  <sub><b>Proyecto escolar no oficial.</b> Se hizo para una materia universitaria y no está afiliado, avalado ni en uso por Harinas Elizondo. El logo aparece solo para identificar el caso de estudio.</sub>
 
-  <br /><br />
+  > [!NOTE]
+  > <b>Proyecto escolar no oficial.</b> Se hizo para una materia universitaria y no está afiliado, avalado ni en uso por Harinas Elizondo. El logo aparece solo para identificar el caso de estudio.
 
   [English version](README.md) • [Qué es](#qué-es) • [Funciones](#funciones) • [Cómo empezar](#cómo-empezar) • [Para LLMs](docs/llm/README.md)
 </div>

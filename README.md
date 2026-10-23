@@ -4,19 +4,18 @@
     <img src="img/logo-dark.png" width="240" alt="Harinas Elizondo logo">
   </picture>
 
-  # Control de Laboratorio
+  # Lab Control
   *Quality certificates for wheat flour, from the production lot to the client's inbox. Built with [Next.js](https://nextjs.org/).*
 
-  <sub><b>Unofficial school project.</b> Made for a university course and not affiliated with, endorsed by or used by Harinas Elizondo. The logo is shown only to identify the case study.</sub>
-
-  <br /><br />
+  > [!NOTE]
+  > <b>Unofficial school project.</b> Made for a university course and not affiliated with, endorsed by or used by Harinas Elizondo. The logo is shown only to identify the case study.
 
   [Versión en español](README-es.md) • [What it is](#what-it-is) • [Features](#features) • [Getting Started](#getting-started) • [For LLMs](docs/llm/README.md)
 </div>
 
 ## What it is
 
-Flour mills have to prove that every delivery meets the client's quality specs. In this case the lab tests each production lot with two machines, an alveograph and a farinograph, and today it builds the quality certificate by hand with spreadsheets and a PDF editor. That is slow, and it makes it too easy to "adjust" old results so they fit a client.
+Harinas Elizondo have to prove that every delivery meets the client's quality specs. In this case the lab tests each production lot with two machines, an alveograph and a farinograph, and today it builds the quality certificate by hand with spreadsheets and a PDF editor. That is slow, and it makes it too easy to "adjust" old results so they fit a client.
 
 This app replaces that process. The lab registers lots and their inspections, the app compares the results with each client's reference limits (or the international ones), and it issues a PDF certificate that shows any deviation. The certificate is emailed to the client and to the warehouse, and every action is logged.
 
