@@ -12,13 +12,13 @@ Last updated 2026-10-22. Deadline **2026-11-13 23:59** (delivery 3). Update this
 - [x] App shell with Spanish navigation and a placeholder per module
 - [x] Domain rules with tests for sequence, reference fallback, deviation and completeness
 - [x] Agent docs (`AGENTS.md`, `docs/llm/`)
-- [x] Vercel deploy of the fork at https://control-laboratorio-woad.vercel.app (no database yet)
+- [x] Vercel deploy of the fork at https://control-laboratorio-woad.vercel.app, with Neon Postgres (Washington, D.C.) attached
 
 ## Next, in suggested order
 
 Each step is one PR. Modules after step 3 can run in parallel.
 
-1. [ ] Connect Neon, run the first migration, seed parameters, international limits and one user per role (D-14)
+1. [x] Connect Neon, run the first migration, seed parameters, international limits and one user per role (D-14). Done 2026-10-22, sign-in verified for both roles
 2. [ ] Session in the app shell (inside `<Suspense>`), `proxy.ts` redirect to `/login`, role guard helper for server actions, audit log helper (BR-AUD-01)
 3. [ ] Clientes (UC-02), porting the prototype's validations plus client reference values
 4. [ ] Equipos (UC-01) with generated key, parameters, limits, history and the BR-EQP-03 block
