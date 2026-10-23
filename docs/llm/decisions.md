@@ -16,7 +16,7 @@ Add a row when something is decided. Move a question to the decisions table once
 | D-08 | 2026-10-22 | Inspection sequence after Z continues AA, AB … ZZ, AAA (bijective base 26, max 3 letters) | Team doc says "continue with an additional sequence". `varchar(3)` matches the SQL draft |
 | D-09 | 2026-10-22 | One inspection holds the results of both machines | Logical view puts alveograph and farinograph results in the same inspection, and the certificate needs both |
 | D-10 | 2026-10-22 | Certificate lines are a snapshot of value, limits and deviation | History must not change when reference values change later (RF-07, RF-08) |
-| D-11 | 2026-10-22 | Teammates work from forks and open PRs to the upstream repo | Upstream owner keeps control, Vercel previews run from the fork |
+| D-11 | 2026-10-22 | Work happens in Freddy's fork with PRs against the fork's own `main`. One PR upstream later, when Freddy is ready, together with a request to be added as collaborator | Freddy has read-only access upstream, and the scaffold should mature before the team reviews it. Vercel previews run from the fork |
 
 ## Open questions
 

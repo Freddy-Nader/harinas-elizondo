@@ -10,14 +10,14 @@ Control de Laboratorio is a university team project that builds a web app to iss
 
 ## Hard rules
 
-- **Language.** Code, identifiers, DB names, comments and commits are English. Everything the end user sees (UI text, routes, errors, emails, PDFs) is Spanish. Agent docs are English. Human docs are English (`README.md`) plus Spanish (`README.es.md`).
+- **Language.** Code, identifiers, DB names, comments and commits are English. Everything the end user sees (UI text, routes, errors, emails, PDFs) is Spanish. Agent docs are English. Human docs are English (`README.md`) plus Spanish (`README-es.md`).
 - **Public repo.** Never commit `docs/PA_IS.pdf`, anything under `docs/private/`, `.env*` other than `.env.example`, student names or other personal data.
 - **Traceability.** Reference RF/UC/BR ids in comments and test names.
 - **Decisions.** Do not silently resolve an item listed in `docs/llm/decisions.md`. Ask, then record the answer there.
 - **Keep docs current.** Update `docs/llm/status.md` (and `decisions.md` when relevant) in the same change.
 - **Checks before a PR.** `pnpm typecheck && pnpm lint && pnpm test && pnpm build` must pass.
 - **UI work.** Load the `emil-design-eng` and `apple-design` skills, and `pick-ui-library` before adding a UI dependency.
-- **Git.** Work on a branch in your fork and open a PR to upstream. Never push to upstream `main`, never force-push shared branches.
+- **Git.** For now all work happens in Freddy's fork. Branch from `main`, open the PR against the fork's own `main`, and let Freddy merge it. Nothing goes to the upstream repo until Freddy decides to (see `docs/llm/runbook.md`). Never force-push shared branches.
 
 ## Commands
 

@@ -61,7 +61,7 @@ This is Next.js 16.4 with **Cache Components enabled** (`cacheComponents: true`)
 
 - Code is English. That covers identifiers, file names, DB tables and columns, commit messages and code comments.
 - Everything the end user sees is Spanish. That covers UI text, routes (`/clientes`), validation and error messages, toasts, emails and the PDF.
-- Agent docs (this folder, `AGENTS.md`) are English. Human docs exist in English (`README.md`) and Spanish (`README.es.md`).
+- Agent docs (this folder, `AGENTS.md`) are English. Human docs exist in English (`README.md`) and Spanish (`README-es.md`).
 
 ## UI stack and design
 

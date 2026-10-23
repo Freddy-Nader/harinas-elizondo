@@ -39,9 +39,9 @@ pnpm build
 
 ## Git flow
 
-- `upstream` is the team repo, https://github.com/ValleryR/harinas-elizondo. Only its owner merges.
-- `origin` is your fork. Work on a branch, push to your fork, open a PR to `upstream/main`.
-- Keep your fork current with `git fetch upstream && git rebase upstream/main`.
+- `origin` is Freddy's fork, https://github.com/Freddy-Nader/harinas-elizondo. **All current work happens here.** Branch from `main`, push the branch, open the PR against the fork's `main`, and Freddy reviews and merges it.
+- `upstream` is the team repo, https://github.com/ValleryR/harinas-elizondo, where Freddy has read access only. Do not open PRs or push there. When Freddy is ready he opens one PR upstream himself and asks to be added as a collaborator.
+- Pull teammates' changes with `git fetch upstream` and merge `upstream/main` into a branch when needed.
 - Never commit `docs/PA_IS.pdf`, `.env*` (except `.env.example`), or personal data. The repo is public.
 
 ## Deploy (Vercel)

@@ -1,6 +1,6 @@
 # docs/llm · map for AI agents
 
-Start here. These files tell an agent what the project is, what to build next and where everything lives. They are written in English for agents. Human-facing docs are `README.md` (English) and `README.es.md` (Spanish) at the repo root.
+Start here. These files tell an agent what the project is, what to build next and where everything lives. They are written in English for agents. Human-facing docs are `README.md` (English) and `README-es.md` (Spanish) at the repo root.
 
 | File | Read it when |
 | --- | --- |

@@ -27,7 +27,7 @@ Every test type needs its written guide ("guía" or script), not just code. See 
 ## Team and workflow
 
 - Four to five students. Names are not stored in this public repo.
-- The upstream repo belongs to a teammate (ValleryR/harinas-elizondo). Other members work from forks and open pull requests upstream. See [runbook.md](runbook.md).
+- The upstream repo belongs to a teammate (ValleryR/harinas-elizondo). Development currently happens in Freddy's fork, with PRs inside the fork, and reaches upstream later in one PR. See [runbook.md](runbook.md).
 - Deliveries are uploaded by the team to Microsoft Teams (course channel, "Compartido > Proy. Aplicativo/Integrador").
 
 ## Sources

@@ -1,37 +1,61 @@
-# Control de Laboratorio · Harinas Elizondo
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="img/logo-white.png">
+    <img src="img/logo-dark.png" width="240" alt="Harinas Elizondo logo">
+  </picture>
 
-*[Leer en español](README.es.md)*
+  # Control de Laboratorio
+  *Quality certificates for wheat flour, from the production lot to the client's inbox. Built with [Next.js](https://nextjs.org/).*
 
-A web app that issues quality certificates for wheat flour. The lab registers production lots and their inspections (alveograph and farinograph results), the app compares them with each client's reference values, and it produces a PDF certificate that is emailed to the client and the warehouse. It also keeps the history, reports and an audit log.
+  <sub><b>Unofficial school project.</b> Made for a university course and not affiliated with, endorsed by or used by Harinas Elizondo. The logo is shown only to identify the case study.</sub>
 
-University team project for *Desarrollo de Software* (Universidad Anáhuac, fall 2026). Final delivery is on 2026-11-13.
+  <br /><br />
 
-## Stack
+  [Versión en español](README-es.md) • [What it is](#what-it-is) • [Features](#features) • [Getting Started](#getting-started) • [For LLMs](docs/llm/README.md)
+</div>
 
-Next.js 16, TypeScript, Tailwind v4 with shadcn (base-ui), Postgres on Neon with Drizzle, Better Auth, Vitest, deployed on Vercel.
+## What it is
 
-## Getting started
+Flour mills have to prove that every delivery meets the client's quality specs. In this case the lab tests each production lot with two machines, an alveograph and a farinograph, and today it builds the quality certificate by hand with spreadsheets and a PDF editor. That is slow, and it makes it too easy to "adjust" old results so they fit a client.
+
+This app replaces that process. The lab registers lots and their inspections, the app compares the results with each client's reference limits (or the international ones), and it issues a PDF certificate that shows any deviation. The certificate is emailed to the client and to the warehouse, and every action is logged.
+
+It is the team project for *Desarrollo de Software* at Universidad Anáhuac (fall 2026), based on a case study written by the course professor. Final delivery is on November 13, 2026.
+
+## Features
+
+The app is in its first stage. The shell and the business rules are in place, and the modules are being built one by one.
+
+- **Clients.** Registered with their SAP key, contact and their own reference limits. Clients are deactivated, never deleted.
+- **Lab equipment.** Alveographs and farinographs with a generated key, the five parameters each one measures and their limits. Equipment without limits can't be used.
+- **Lots and inspections.** Results captured per lot, with the inspection sequence (A, B, … Z, AA) assigned by the app.
+- **Certificates.** Issued from the lot's latest complete inspection, with results from both machines, deviations, order and invoice data, then sent by email with proof of delivery.
+- **Reports.** Certificate history with filters, charts by period and an Excel export for Power BI.
+- **Roles and audit log.** Lab staff can do everything, managers can only consult, and every change records who made it.
+- **In Spanish.** Everything the user sees is in Spanish.
+
+## Getting Started
+
+### Prerequisites
+
+You need [Node.js](https://nodejs.org/) 22 or newer and [pnpm](https://pnpm.io/), which Node can set up for you with `corepack enable`.
+
+### Setup
 
 ```bash
-corepack enable
+# Clone the repository
+git clone https://github.com/Freddy-Nader/harinas-elizondo.git
+cd harinas-elizondo
+
+# Install dependencies and create your local settings file
 pnpm install
 cp .env.example .env.local
+
+# Start the app
 pnpm dev
 ```
 
-Open http://localhost:3000. Database setup, migrations and deploys are in [docs/llm/runbook.md](docs/llm/runbook.md).
+Then open http://localhost:3000.
 
-## Project docs
-
-| | |
-| --- | --- |
-| [docs/llm/](docs/llm/README.md) | Requirements, domain, architecture, decisions, status and testing (written for AI agents, useful for humans too) |
-| [docs/01_AVANCE_B1_B4.md](docs/01_AVANCE_B1_B4.md) | Technical design draft (Spanish) |
-| [docs/02_modelo_bd.sql](docs/02_modelo_bd.sql) | Original relational model (Spanish names) |
-| [legacy/prototipo-v0.1/](legacy/prototipo-v0.1/README.md) | First prototype of the Clientes module, kept as reference |
-
-## Contributing
-
-Fork the repo, work on a branch, run `pnpm typecheck && pnpm lint && pnpm test && pnpm build`, and open a pull request to `ValleryR/harinas-elizondo`. Code is written in English and everything users see is in Spanish.
-
-This is an academic prototype and not meant for production use.
+> [!NOTE]
+> The screens work right away, but signing in and saving data need a Postgres database. The steps to connect one are in the [runbook](docs/llm/runbook.md).
