@@ -1,7 +1,50 @@
-node_modules/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+/test-results
+/playwright-report
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+*.log
+npm-debug.log*
+.pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
 .env
 .env.*
 !.env.example
-.DS_Store
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# agents (local settings only; shared config is committed)
+.agents/settings.local.json
+
+# legacy prototype runtime data
 data/
-*.log
+legacy/prototipo-v0.1/clientes.json
+
+# private docs
+docs/private/
