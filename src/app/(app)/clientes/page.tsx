@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { getAuth } from "@/lib/auth";
@@ -28,7 +29,8 @@ export default function ClientsPage({ searchParams }: Props) {
 }
 
 async function ClientsContent({ searchParams }: Props) {
-  // RF-01: session and data reads are inside Suspense, never in the static shell.
+  // RF-01: wait for an actual request before constructing DB-backed auth.
+  await connection();
   const session = await getAuth().api.getSession({ headers: await headers() });
   if (!session?.user) {
     return <p>Debes <Link className="underline" href="/login">iniciar sesión</Link> para consultar clientes.</p>;
