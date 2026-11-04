@@ -33,6 +33,9 @@ src/
     ├── permissions.ts    ← pure role rules (canAccess, canMutate, safeNextPath), unit tested
     ├── audit.ts          ← recordAudit / auditInsert (BR-AUD-01)
     ├── action-state.ts   ← ActionState returned by form actions, fail/succeed, pgError for 23505
+    ├── reference-data.ts ← international limits and equipment by type, shared by modules
+    ├── inspection-data.ts← inspection summaries (complete, deviations) for Lotes and Inspecciones
+    ├── format.ts         ← es-MX dates and numbers
     ├── auth-client.ts    ← browser auth client
     ├── modules.ts        ← nav + module metadata (single source)
     └── utils.ts          ← cn()

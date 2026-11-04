@@ -1,10 +1,10 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, or } from "drizzle-orm";
 import { getDb } from "@/lib/db";
-import { auditLog, equipment, internationalLimits } from "@/lib/db/schema";
+import { auditLog, equipment } from "@/lib/db/schema";
 import { equipmentReadiness, type EquipmentStatus } from "@/lib/domain/equipment";
 import { parametersFor, type EquipmentType } from "@/lib/domain/parameters";
-import type { LimitsByParameter } from "@/lib/domain/quality";
+import { getInternationalLimits } from "@/lib/reference-data";
 import { requireRole } from "@/lib/session";
 
 /**
@@ -12,12 +12,7 @@ import { requireRole } from "@/lib/session";
  * so a page that forgets the gate still cannot leak data (RF-01).
  */
 
-export async function getInternationalLimits(): Promise<LimitsByParameter> {
-  const rows = await getDb().select().from(internationalLimits);
-  return Object.fromEntries(
-    rows.map((r) => [r.parameterCode, { lower: r.lowerLimit, upper: r.upperLimit }]),
-  );
-}
+export { getInternationalLimits };
 
 /** RF-02. Active, inactive and retired equipment, each with its BR-EQP-03 readiness. */
 export async function listEquipment(status?: EquipmentStatus) {
