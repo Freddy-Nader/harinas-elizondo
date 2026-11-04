@@ -29,11 +29,15 @@ src/
     ├── domain/           ← pure business rules + *.test.ts next to them
     ├── db/               ← schema.ts, auth-schema.ts, index.ts (lazy getDb)
     ├── auth.ts           ← lazy getAuth(), roles
+    ├── session.ts        ← data access layer for the session: getCurrentUser, requireUser, requireRole
+    ├── permissions.ts    ← pure role rules (canAccess, canMutate, safeNextPath), unit tested
+    ├── audit.ts          ← recordAudit / auditInsert (BR-AUD-01)
     ├── auth-client.ts    ← browser auth client
     ├── modules.ts        ← nav + module metadata (single source)
     └── utils.ts          ← cn()
 legacy/prototipo-v0.1/    ← old prototype, reference only, excluded from lint
 drizzle/                  ← generated migrations (after the first db:generate)
+src/proxy.ts              ← optimistic redirect to /login when there is no session cookie
 ```
 
 Suggested shape for a module when it is built, for example clients:
@@ -89,3 +93,5 @@ House style so far is quiet and dense, like an internal tool. Neutral palette, G
 - Better Auth with email and password. Extra user fields `role` and `employeeId`. Users come from a seed script and a Usuarios screen, public sign-up is off (D-14).
 - Certificates are rendered with `@react-pdf/renderer` and emailed with Resend (D-13).
 - Authorization rule of thumb. Pages decide what to show, server actions and data functions decide what is allowed. Always check the role server-side.
+- Module pages wrap their body in `<Suspense fallback={<PageSkeleton />}><ModuleGate href="/ruta">…</ModuleGate></Suspense>`. The gate shows "Acceso restringido" to roles not listed in `modules.ts`.
+- Every server action starts with `const user = await requireRole()` (transaction only) or `requireRole("transaction", "query")` for reads, then writes its audit row. When the change and the audit row must land together, use `getDb().batch([change, auditInsert({ user, action, entity, entityId })])`, since the Neon HTTP driver has no interactive transactions.

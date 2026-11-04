@@ -2,17 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import type { Role } from "@/lib/auth";
 import { MODULES } from "@/lib/modules";
+import { cn } from "@/lib/utils";
 
-const ITEMS = [{ href: "/panel", title: "Panel" }, ...MODULES];
-
-export function AppNav() {
+/** RF-01. Shows only the modules the role can open. */
+export function AppNav({ role }: { role: Role }) {
   const pathname = usePathname();
+  const items = [
+    { href: "/panel", title: "Panel" },
+    ...MODULES.filter((mod) => mod.roles.includes(role)),
+  ];
 
   return (
     <nav aria-label="Módulos" className="flex flex-col gap-0.5">
-      {ITEMS.map((item) => {
+      {items.map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link
@@ -30,5 +34,18 @@ export function AppNav() {
         );
       })}
     </nav>
+  );
+}
+
+/** Placeholder while the session streams in, so the shell stays static. */
+export function AppNavSkeleton() {
+  return (
+    <div aria-hidden className="flex flex-col gap-0.5">
+      {Array.from({ length: 8 }, (_, i) => (
+        <div key={i} className="px-2.5 py-1.5">
+          <div className="h-4 w-24 animate-pulse rounded bg-muted motion-reduce:animate-none" />
+        </div>
+      ))}
+    </div>
   );
 }

@@ -90,7 +90,7 @@ Ids referenced from code in `src/lib/domain/`.
 | BR-CER-02 | Certificate is blocked unless both machines' results are present | `quality.ts` `missingParameters` |
 | BR-CER-04 | Out-of-range values never block, they produce a signed deviation | `quality.ts` `evaluate` |
 | BR-CER-05 | Invoice and shipping data are required before closing the certificate | todo |
-| BR-AUD-01 | Every create/update/issue writes an audit row with employee id and name | todo |
+| BR-AUD-01 | Every create/update/issue writes an audit row with employee id and name | `audit.ts` `recordAudit`, `auditInsert` (each module calls it) |
 | BR-AUD-03 | Inspection results are read-only once a certificate uses them (`inspections.locked_at`) | todo |
 
 ## Quality characteristics (non-functional)
