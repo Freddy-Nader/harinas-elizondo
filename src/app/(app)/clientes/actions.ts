@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getAuth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { auditLog, clients, clientLimits, parameters } from "@/lib/db/schema";
@@ -124,9 +124,7 @@ export async function removeClientLimit(form: FormData) {
   const db = getDb();
   await db.delete(clientLimits).where(
     // Composite key ensures no other client's range is removed.
-    (await import("drizzle-orm")).and(
-      eq(clientLimits.clientId, clientId), eq(clientLimits.parameterCode, parameterCode),
-    ),
+    and(eq(clientLimits.clientId, clientId), eq(clientLimits.parameterCode, parameterCode)),
   );
   await logChange(user, "remove_limit", clientId, { parameterCode });
   revalidatePath("/clientes");
