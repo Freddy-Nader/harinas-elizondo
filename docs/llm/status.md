@@ -19,9 +19,9 @@ Last updated 2026-11-04. Deadline **2026-11-13 23:59** (delivery 3). Update this
 Each step is one PR. Modules after step 3 can run in parallel.
 
 1. [x] Connect Neon, run the first migration, seed parameters, international limits and one user per role (D-14). Done 2026-10-22, sign-in verified for both roles
-2. [ ] Session in the app shell (inside `<Suspense>`), `proxy.ts` redirect to `/login`, role guard helper for server actions, audit log helper (BR-AUD-01)
-3. [ ] Clientes (UC-02), implementation proposed in `feat/clientes-uc02-vallery` (directory, create/edit/inactivate, parameter overrides, domain tests). CI passed 2026-11-04 (typecheck, lint, 26 tests including eight server-action access tests, and build). Live Neon CRUD and role end-to-end checks, teammate session integration and review remain before marking complete.
-4. [ ] Equipos (UC-01) with generated key, parameters, limits, history and the BR-EQP-03 block
+2. [x] Session in the app shell (inside `<Suspense>`), `proxy.ts` redirect to `/login`, role guard helper for server actions, audit log helper (BR-AUD-01). Done 2026-11-04: `src/lib/session.ts` (`getCurrentUser`, `requireUser`, `requireRole`), `src/lib/permissions.ts`, `src/lib/audit.ts`, `src/proxy.ts`, nav and panel filtered by role, user menu with sign-out
+3. [x] Clientes (UC-02), merged from PR #2 and preserved alongside session/roles and Equipos from PR #3. Directory, create/edit/deactivate/reactivate and client reference limits are implemented with server-side role checks and audit rows. Live Neon CRUD verification remains pending.
+4. [x] Equipos (UC-01) with generated key, parameters, limits, history and the BR-EQP-03 block. Done 2026-11-04 in `feat/equipos-uc01` (stacked on `feat/session-roles-audit`): list with status filter, create, edit, inactivate/reactivate/retire with reason (D-16), international limits per parameter, change history from the audit log. Rules in `src/lib/domain/equipment.ts`. Checked end to end in a browser against a local database; still to check against Neon
 5. [ ] Lotes and Inspecciones (UC-03, UC-04) with automatic sequence, completeness and deviation preview
 6. [ ] Certificados (UC-05, UC-06, UC-07) with react-pdf, Resend, delivery evidence and inspection lock (D-13)
 7. [ ] Reportes (UC-08) with filters, charts, Excel export (Q-09)
