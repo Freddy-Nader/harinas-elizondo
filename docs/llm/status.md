@@ -20,7 +20,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 
 1. [x] Connect Neon, run the first migration, seed parameters, international limits and one user per role (D-14). Done 2026-10-22, sign-in verified for both roles
 2. [ ] Session in the app shell (inside `<Suspense>`), `proxy.ts` redirect to `/login`, role guard helper for server actions, audit log helper (BR-AUD-01)
-3. [ ] Clientes (UC-02), implementation proposed in `feat/clientes-uc02-vallery` (directory, create/edit/inactivate, parameter overrides, domain tests). Awaiting local typecheck, lint, tests, build and review before marking complete.
+3. [ ] Clientes (UC-02), implementation proposed in `feat/clientes-uc02-vallery` (directory, create/edit/inactivate, parameter overrides, domain tests). CI passed 2026-11-04 (typecheck, lint, 26 tests including eight server-action access tests, and build). Live Neon CRUD and role end-to-end checks, teammate session integration and review remain before marking complete.
 4. [ ] Equipos (UC-01) with generated key, parameters, limits, history and the BR-EQP-03 block
 5. [ ] Lotes and Inspecciones (UC-03, UC-04) with automatic sequence, completeness and deviation preview
 6. [ ] Certificados (UC-05, UC-06, UC-07) with react-pdf, Resend, delivery evidence and inspection lock (D-13)
