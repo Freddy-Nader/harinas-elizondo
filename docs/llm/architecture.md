@@ -32,6 +32,7 @@ src/
     ├── session.ts        ← data access layer for the session: getCurrentUser, requireUser, requireRole
     ├── permissions.ts    ← pure role rules (canAccess, canMutate, safeNextPath), unit tested
     ├── audit.ts          ← recordAudit / auditInsert (BR-AUD-01)
+    ├── action-state.ts   ← ActionState returned by form actions, fail/succeed, pgError for 23505
     ├── auth-client.ts    ← browser auth client
     ├── modules.ts        ← nav + module metadata (single source)
     └── utils.ts          ← cn()
@@ -94,4 +95,5 @@ House style so far is quiet and dense, like an internal tool. Neutral palette, G
 - Certificates are rendered with `@react-pdf/renderer` and emailed with Resend (D-13).
 - Authorization rule of thumb. Pages decide what to show, server actions and data functions decide what is allowed. Always check the role server-side.
 - Module pages wrap their body in `<Suspense fallback={<PageSkeleton />}><ModuleGate href="/ruta">…</ModuleGate></Suspense>`. The gate shows "Acceso restringido" to roles not listed in `modules.ts`.
+- Forms use `useFormAction(action)` from `src/hooks/use-form-action.ts` and `onSubmit`, not `<form action>`, so a validation error does not wipe what the user typed. Actions return `ActionState`; the hook shows the toast. Reference module: `src/app/(app)/equipos/` (`data.ts` reads, `actions.ts` writes, `_components/` client forms).
 - Every server action starts with `const user = await requireRole()` (transaction only) or `requireRole("transaction", "query")` for reads, then writes its audit row. When the change and the audit row must land together, use `getDb().batch([change, auditInsert({ user, action, entity, entityId })])`, since the Neon HTTP driver has no interactive transactions.

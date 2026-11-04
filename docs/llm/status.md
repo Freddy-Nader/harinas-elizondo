@@ -21,7 +21,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 1. [x] Connect Neon, run the first migration, seed parameters, international limits and one user per role (D-14). Done 2026-10-22, sign-in verified for both roles
 2. [x] Session in the app shell (inside `<Suspense>`), `proxy.ts` redirect to `/login`, role guard helper for server actions, audit log helper (BR-AUD-01). Done 2026-11-04: `src/lib/session.ts` (`getCurrentUser`, `requireUser`, `requireRole`), `src/lib/permissions.ts`, `src/lib/audit.ts`, `src/proxy.ts`, nav and panel filtered by role, user menu with sign-out
 3. [ ] Clientes (UC-02), porting the prototype's validations plus client reference values
-4. [ ] Equipos (UC-01) with generated key, parameters, limits, history and the BR-EQP-03 block
+4. [x] Equipos (UC-01) with generated key, parameters, limits, history and the BR-EQP-03 block. Done 2026-11-04 in `feat/equipos-uc01` (stacked on `feat/session-roles-audit`): list with status filter, create, edit, inactivate/reactivate/retire with reason (D-16), international limits per parameter, change history from the audit log. Rules in `src/lib/domain/equipment.ts`. Checked end to end in a browser against a local database; still to check against Neon
 5. [ ] Lotes and Inspecciones (UC-03, UC-04) with automatic sequence, completeness and deviation preview
 6. [ ] Certificados (UC-05, UC-06, UC-07) with react-pdf, Resend, delivery evidence and inspection lock (D-13)
 7. [ ] Reportes (UC-08) with filters, charts, Excel export (Q-09)
