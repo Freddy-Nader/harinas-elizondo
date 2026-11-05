@@ -60,6 +60,7 @@ async function EquipmentDetail({ params }: Pick<PageProps<"/equipos/[id]">, "par
       <ReadinessNotice readiness={readiness} />
 
       <Section title="Parámetros y valores internacionales" description={`Los cinco factores que mide el ${EQUIPMENT_TYPE_LABEL[item.type].toLowerCase()}. Estos límites aplican a todos los equipos del mismo tipo y los usa cualquier cliente sin valores propios.`}>
+        <p role="note" className="text-sm text-muted-foreground">Los rangos iniciales son datos de demostración. Confirma la norma y su aplicación al producto antes de utilizarlos como referencia oficial.</p>
         <div className="rounded-xl border px-4">
           {parameters.map((p) => (
             <LimitRow

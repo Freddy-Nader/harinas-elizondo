@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq, isNotNull } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auditInsert, recordAudit } from "@/lib/audit";
@@ -8,7 +8,7 @@ import { fail, fieldErrorsFrom, pgError, succeed, type ActionState } from "@/lib
 import { getDb } from "@/lib/db";
 import { inspections, lots } from "@/lib/db/schema";
 import { changedFields } from "@/lib/domain/equipment";
-import { nextSequence, sequenceToNumber } from "@/lib/domain/inspection-sequence";
+import { nextSequence } from "@/lib/domain/inspection-sequence";
 import { lotCodeSchema, lotDataSchema, startInspection } from "@/lib/domain/lot";
 import { latestInspection } from "@/lib/inspection-data";
 import { ForbiddenError, requireRole } from "@/lib/session";
@@ -108,22 +108,17 @@ export async function startLotInspection(lotId: string, _: ActionState, form: Fo
   if (!rule.ok) return fail(rule.error, { reason: rule.error });
 
   let created: { id: number; sequence: string } | undefined;
-  // Two people starting at once both compute the same letter. The unique index rejects one, so retry
-  for (let attempt = 0; attempt < 3 && !created; attempt++) {
-    const sequences = await db
-      .select({ sequence: inspections.sequence })
-      .from(inspections)
-      .where(eq(inspections.lotId, lotId))
-      .orderBy(desc(inspections.id));
-    const last = sequences.map((s) => s.sequence).sort((a, b) => sequenceToNumber(a) - sequenceToNumber(b)).at(-1) ?? null;
-    try {
-      [created] = await db
-        .insert(inspections)
-        .values({ lotId, sequence: nextSequence(last), reinspectionReason: rule.reason, createdBy: user.id })
-        .returning({ id: inspections.id, sequence: inspections.sequence });
-    } catch (error) {
-      if (pgError(error).code !== "23505") throw error;
-    }
+  // BR-INS-02/04: derive the sequence from the same inspection that was authorized.
+  // A concurrent creation must be reviewed again, never retried with another letter.
+  try {
+    [created] = await db
+      .insert(inspections)
+      .values({ lotId, sequence: nextSequence(latest?.sequence ?? null), reinspectionReason: rule.reason, createdBy: user.id })
+      .returning({ id: inspections.id, sequence: inspections.sequence });
+  } catch (error) {
+    if (pgError(error).code !== "23505") throw error;
+    revalidatePath("/lotes", "layout");
+    return fail("Otra persona ya inició una inspección. Actualiza el lote y revisa la inspección más reciente.");
   }
   if (!created) return fail("No pudimos asignar la secuencia. Intenta de nuevo.");
 

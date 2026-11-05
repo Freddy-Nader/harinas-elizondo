@@ -32,6 +32,29 @@ Each step is one PR. Modules after step 3 can run in parallel.
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned
 
+## Inspection follow-up (2026-11-04)
+
+- BR-INS-02/04: concurrent starts now fail on a sequence collision instead of retrying with an unauthorized next sequence. The sequence comes from the same latest inspection used for authorization.
+- Added server-action regression coverage for concurrent starts, incomplete inspections, query-role denial, unauthenticated redirects and certified-inspection write denial. Unit suite: 82 tests.
+- Manual verification guide: `docs/testing-inspections-es.md`. These tests mock database boundaries; live Neon and concurrent certification checks remain pending.
+
+## Professor/PDF alignment (2026-11-04)
+
+- Client forms now require fiscal address, RFC, contact name/email, and at least one delivery destination. Multiple destinations use a normalized child table; mutation and audit run together.
+- Migration 0001 applied to the configured database, preserving previous delivery destinations. Legacy fiscal addresses remain null pending real input. After the user corrected duplicate RFCs, a database preflight found no duplicates and migration 0002 (unique RFC) was applied. The database now enforces uniqueness, including concurrent writes.
+- Particular limits cannot widen international bounds. `assessQuality` keeps both international and applied-reference evaluations, ready for certificate integration; no PDF issuance is implemented by this follow-up.
+- Validation: 93 unit tests, typecheck, lint and production compilation (webpack) passed. Browser reached login; authenticated form/CRUD verification remains pending.
+- Detailed requirement audit: `docs/revision-requisitos-es.md`. Humidity and numerical standards remain unresolved. No private PDF or personal details copied into the public repo.
+
+## Delivery address form refinement (2026-11-04)
+
+- UC-02: each destination has its own labeled input. Users add another destination with a button below the fields and may remove extra fields, while retaining at least one. Server actions read repeated form entries and validate every address.
+- Existing destinations populate individual fields. UI verification behind the user's authenticated session remains pending.
+
+## Client duplicate alerts (2026-11-04)
+
+- RF-03: separate user-facing messages for duplicate RFC and SAP keys, both during preflight and concurrent database unique-constraint failures. Existing edits exclude the current client from duplicate lookup. Unit tests verify rejection without writes and concurrent-conflict messages.
+
 ## Waiting on the team
 
 See open questions in [decisions.md](decisions.md). Only Q-11 (parameter units) and Q-12 (who builds what) are left, and both are for the team.

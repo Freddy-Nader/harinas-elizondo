@@ -28,9 +28,19 @@ Add a row when something is decided. Move a question to the decisions table once
 | D-21 | 2026-10-22 | A lot's product is free text, with suggestions from earlier lots | No catalog needed while limits are per client (D-12) |
 | D-11 | 2026-10-22 | Work happens in Freddy's fork with PRs against the fork's own `main`. One PR upstream later, when Freddy is ready, together with a request to be added as collaborator | Freddy has read-only access upstream, and the scaffold should mature before the team reviews it. Vercel previews run from the fork |
 
+## Professor review (2026-11-04)
+
+The user's direct review notes supplement the local architecture document. D-22: clients require one fiscal address and one or more delivery destinations. Destinations are normalized in `client_delivery_addresses`; the old delivery column is temporarily mirrored for compatibility. Existing fiscal addresses remain unknown until entered, never copied from delivery addresses. D-23: particular limits may narrow but not widen the international range. International limits stay shared per parameter, not duplicated per physical equipment.
+
+The local PDF data dictionary also marks client RFC (unique), contact name and contact email mandatory. Forms now enforce those fields. The user corrected existing duplicate RFCs. Preflight confirmed no duplicates, then migration 0002 applied the unique constraint; no records were automatically merged or deleted.
+
 ## Open questions
 
 | Id | Question | Proposed answer | Owner |
 | --- | --- | --- | --- |
 | Q-11 | Units for each parameter (current ones are guesses from the equipment annexes) | Team decides, possibly with the professor | Team |
 | Q-12 | Who builds which module before 2026-11-13? | Split by module, one PR each | Team |
+
+| Q-13 | Humidity mentioned in professor review is not one of the ten factors in RF-02; which method/equipment captures it and is it an additional factor? | Await direct clarification; do not substitute water absorption for moisture | Team |
+| Q-14 | Which authoritative specification supplies numerical reference ranges and confirmed units for the ten rheological factors? | Current seed values are demo-only | Team |
+| Q-15 | PDF certificate dictionary asks for a signature hash, carrier and cancellation status, while D-18 uses a printed signature block and the schema lacks the latter fields | Reconcile before implementing certificates; do not silently override D-18 | Team |

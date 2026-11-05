@@ -21,7 +21,8 @@ Summary of the team document (delivery 1) and the professor's functional require
 ### RF-03 Clients
 - Create, read, update and deactivate clients that need a quality certificate. **Clients are never deleted**, only deactivated, and the reason is recorded.
 - Clients are identified by the **same key used in SAP ByD**. In version 1 they are captured manually; version 2 would sync from SAP.
-- Store general data (name, RFC, delivery address, the contact the certificate is addressed to) and, when they exist, the client's own reference values.
+- Store name, mandatory unique RFC, mandatory contact name/email (local PDF data dictionary, page 22), one required fiscal address and one or more delivery destinations (professor review, 2026-11-04). Preserve legacy records pending completion.
+- Particular reference ranges may narrow but not widen international limits (professor review).
 - International reference values live apart from client values. A client without its own values automatically uses the international ones.
 - Input validation to avoid capture errors.
 
@@ -86,7 +87,7 @@ Ids referenced from code in `src/lib/domain/`.
 | BR-INS-02 | Sequence A..Z then AA..ZZ then AAA, assigned by the system | `inspection-sequence.ts` |
 | BR-INS-03 | Complete inspection means all ten parameters (both machines) have a value | `quality.ts` `missingParameters` |
 | BR-INS-04 | A new inspection after a complete one needs an equipment-failure reason and authorization | `lot.ts` `startInspection` (D-15) |
-| BR-CER-01 | Certificate uses the latest complete inspection of the lot | todo |
+| BR-CER-01 | Certificate uses the latest inspection of the lot only if complete; do not fall back to an older complete one | todo |
 | BR-CER-02 | Certificate is blocked unless both machines' results are present | `quality.ts` `missingParameters` |
 | BR-CER-04 | Out-of-range values never block, they produce a signed deviation | `quality.ts` `evaluate` |
 | BR-CER-05 | Invoice and shipping data are required before closing the certificate | todo |

@@ -4,13 +4,15 @@ import { z } from "zod";
 export const clientInputSchema = z.object({
   sapKey: z.string().trim().min(1, "La clave SAP es obligatoria.").max(10, "La clave SAP admite máximo 10 caracteres."),
   businessName: z.string().trim().min(1, "La razón social es obligatoria.").max(150),
-  rfc: z.string().trim().toUpperCase().refine(
-    (value) => !value || /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/.test(value),
+  rfc: z.string().trim().min(1, "El RFC es obligatorio.").toUpperCase().refine(
+    (value) => /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/.test(value),
     "El RFC no tiene un formato válido.",
   ),
-  deliveryAddress: z.string().trim().max(250),
-  contactName: z.string().trim().max(100),
-  contactEmail: z.union([z.literal(""), z.email("El correo no tiene un formato válido.")]),
+  fiscalAddress: z.string().trim().min(1, "La dirección fiscal es obligatoria.").max(250),
+  deliveryAddresses: z.array(z.string().trim().min(1).max(250, "Cada dirección admite máximo 250 caracteres."))
+    .min(1, "Captura al menos una dirección de entrega."),
+  contactName: z.string().trim().min(1, "El nombre del contacto es obligatorio.").max(100),
+  contactEmail: z.email("El correo no tiene un formato válido.").max(100),
   requiresCertificate: z.boolean(),
 });
 
@@ -24,4 +26,13 @@ export const limitInputSchema = z.object({
 
 export function optionalText(value: string): string | null {
   return value.trim() || null;
+}
+
+/** BR-REF-01: particular limits may narrow the international range, never widen it. */
+export function isWithinInternational(
+  particular: { lowerLimit: number; upperLimit: number },
+  international: { lowerLimit: number; upperLimit: number },
+) {
+  return particular.lowerLimit >= international.lowerLimit
+    && particular.upperLimit <= international.upperLimit;
 }
