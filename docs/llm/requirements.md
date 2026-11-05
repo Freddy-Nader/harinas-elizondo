@@ -85,7 +85,7 @@ Ids referenced from code in `src/lib/domain/`.
 | BR-REF-01 | Client reference values override international ones per parameter, the rest fall back | `quality.ts` `resolveReferenceValues` |
 | BR-INS-02 | Sequence A..Z then AA..ZZ then AAA, assigned by the system | `inspection-sequence.ts` |
 | BR-INS-03 | Complete inspection means all ten parameters (both machines) have a value | `quality.ts` `missingParameters` |
-| BR-INS-04 | A new inspection after a complete one needs an equipment-failure reason and authorization | todo |
+| BR-INS-04 | A new inspection after a complete one needs an equipment-failure reason and authorization | `lot.ts` `startInspection` (D-15) |
 | BR-CER-01 | Certificate uses the latest complete inspection of the lot | todo |
 | BR-CER-02 | Certificate is blocked unless both machines' results are present | `quality.ts` `missingParameters` |
 | BR-CER-04 | Out-of-range values never block, they produce a signed deviation | `quality.ts` `evaluate` |
