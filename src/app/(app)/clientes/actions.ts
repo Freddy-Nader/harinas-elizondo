@@ -1,13 +1,15 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
+import { pgError } from "@/lib/action-state";
 import { getAuth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { auditLog, clients, clientLimits, parameters } from "@/lib/db/schema";
-import { clientInputSchema, limitInputSchema, optionalText } from "@/lib/domain/client-validation";
+import { auditLog, clients, clientDeliveryAddresses, clientLimits, internationalLimits, parameters } from "@/lib/db/schema";
+import { clientInputSchema, limitInputSchema, isWithinInternational, optionalText } from "@/lib/domain/client-validation";
 
 /** RF-01 · RF-08 · BR-AUD-01: authorization cannot rely on hidden buttons. */
 async function requireTransactionUser() {
@@ -22,7 +24,8 @@ function readClient(form: FormData) {
     sapKey: String(form.get("sapKey") ?? "").trim(),
     businessName: String(form.get("businessName") ?? "").trim(),
     rfc: String(form.get("rfc") ?? "").trim(),
-    deliveryAddress: String(form.get("deliveryAddress") ?? "").trim(),
+    fiscalAddress: String(form.get("fiscalAddress") ?? "").trim(),
+    deliveryAddresses: form.getAll("deliveryAddresses").map((value) => String(value).trim()),
     contactName: String(form.get("contactName") ?? "").trim(),
     contactEmail: String(form.get("contactEmail") ?? "").trim(),
     requiresCertificate: form.get("requiresCertificate") === "on",
@@ -53,19 +56,49 @@ export async function saveClient(form: FormData) {
   const db = getDb();
   const values = {
     sapKey: input.sapKey, businessName: input.businessName,
-    rfc: optionalText(input.rfc), deliveryAddress: optionalText(input.deliveryAddress),
+    rfc: optionalText(input.rfc), fiscalAddress: input.fiscalAddress,
+    deliveryAddress: input.deliveryAddresses[0],
     contactName: optionalText(input.contactName), contactEmail: optionalText(input.contactEmail),
     requiresCertificate: input.requiresCertificate,
   };
+  const clientId = id || randomUUID();
   if (id) {
-    const [updated] = await db.update(clients).set(values).where(eq(clients.id, id)).returning({ id: clients.id });
-    if (!updated) validationError("No se encontró el cliente.");
-    await logChange(user, "update", id, { sapKey: input.sapKey });
-  } else {
-    const [created] = await db.insert(clients).values({ ...values, createdBy: user.id })
-      .onConflictDoNothing({ target: clients.sapKey }).returning({ id: clients.id });
-    if (!created) validationError("Ya existe un cliente con esa clave SAP.");
-    await logChange(user, "create", created.id, { sapKey: input.sapKey });
+    const [existing] = await db.select({ id: clients.id }).from(clients).where(eq(clients.id, id));
+    if (!existing) validationError("No se encontró el cliente.");
+  }
+  // RF-03: friendly preflight messages; database constraints also protect concurrent saves.
+  const [sameRfc] = await db.select({ id: clients.id }).from(clients)
+    .where(id ? and(eq(clients.rfc, input.rfc), ne(clients.id, id)) : eq(clients.rfc, input.rfc)).limit(1);
+  if (sameRfc) validationError("El RFC ya pertenece a otro cliente. Revisa los datos existentes.");
+  const [sameSapKey] = await db.select({ id: clients.id }).from(clients)
+    .where(id ? and(eq(clients.sapKey, input.sapKey), ne(clients.id, id)) : eq(clients.sapKey, input.sapKey)).limit(1);
+  if (sameSapKey) validationError("La clave SAP ya pertenece a otro cliente. Usa una clave diferente.");
+  // RF-03 / BR-AUD-01: client, destinations and audit commit together.
+  const destinations = input.deliveryAddresses.map((address, position) => ({ clientId, address, position }));
+  try {
+    await db.batch([
+      id ? db.update(clients).set(values).where(eq(clients.id, id))
+        : db.insert(clients).values({ id: clientId, ...values, createdBy: user.id }),
+      db.delete(clientDeliveryAddresses).where(eq(clientDeliveryAddresses.clientId, clientId)),
+      db.insert(clientDeliveryAddresses).values(destinations),
+      db.insert(auditLog).values({
+        userId: user.id, userName: user.name, employeeId: user.employeeId ?? null,
+        action: id ? "update" : "create", entity: "clients", entityId: clientId,
+        detail: { sapKey: input.sapKey, deliveryAddressCount: destinations.length },
+      }),
+    ]);
+  } catch (error) {
+    const conflict = pgError(error);
+    if (conflict.code === "23505") {
+      if (conflict.constraint === "clients_rfc_unique") {
+        validationError("El RFC ya pertenece a otro cliente. Revisa los datos existentes.");
+      }
+      if (conflict.constraint === "clients_sap_key_unique") {
+        validationError("La clave SAP ya pertenece a otro cliente. Usa una clave diferente.");
+      }
+      validationError("Ya existe un cliente con esa clave SAP o RFC.");
+    }
+    throw error;
   }
   revalidatePath("/clientes");
   redirect("/clientes");
@@ -105,6 +138,12 @@ export async function saveClientLimit(form: FormData) {
   const [parameter] = await db.select({ code: parameters.code }).from(parameters)
     .where(eq(parameters.code, parsed.data.parameterCode));
   if (!client || !parameter) validationError("Cliente o parámetro inexistente.");
+  const [reference] = await db.select().from(internationalLimits)
+    .where(eq(internationalLimits.parameterCode, parsed.data.parameterCode));
+  if (!reference) validationError("Primero configura la referencia internacional de este parámetro.");
+  if (!isWithinInternational(parsed.data, reference)) {
+    validationError("Los límites particulares deben estar dentro del rango internacional; no pueden ser menos exigentes.");
+  }
   const { parameterCode, lowerLimit, upperLimit } = parsed.data;
   await db.insert(clientLimits).values({
     clientId, parameterCode, lowerLimit, upperLimit, updatedBy: user.id,

@@ -58,7 +58,7 @@ async function InspectionDetail({ params }: Pick<PageProps<"/inspecciones/[id]">
       {locked ? (
         <Notice>Esta inspección ya se usó en un certificado. Sus resultados quedan como historial y no se pueden modificar.</Notice>
       ) : !inspection.isLatest ? (
-        <Notice>Hay una inspección más reciente de este lote. El certificado usará la última completa.</Notice>
+        <Notice>Hay una inspección más reciente de este lote. El certificado deberá usar la inspección más reciente y esperar a que esté completa.</Notice>
       ) : null}
 
       <ResultsForm

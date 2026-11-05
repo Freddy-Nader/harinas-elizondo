@@ -41,7 +41,9 @@ export const clients = pgTable("clients", {
   id: uuid().primaryKey().defaultRandom(),
   sapKey: varchar({ length: 10 }).notNull().unique(),
   businessName: varchar({ length: 150 }).notNull(),
-  rfc: varchar({ length: 13 }),
+  rfc: varchar({ length: 13 }).unique(),
+  // Legacy clients require fiscal-address completion; never infer it from delivery data.
+  fiscalAddress: varchar({ length: 250 }),
   deliveryAddress: varchar({ length: 250 }),
   contactName: varchar({ length: 100 }),
   contactEmail: varchar({ length: 100 }),
@@ -51,6 +53,14 @@ export const clients = pgTable("clients", {
   createdAt: createdAt(),
   createdBy: createdBy(),
 });
+
+// RF-03 · UC-02: one client has many delivery destinations (professor review).
+export const clientDeliveryAddresses = pgTable("client_delivery_addresses", {
+  id: uuid().primaryKey().defaultRandom(),
+  clientId: uuid().notNull().references(() => clients.id),
+  address: varchar({ length: 250 }).notNull(),
+  position: integer().notNull(),
+}, (t) => [uniqueIndex("client_delivery_addresses_position_uq").on(t.clientId, t.position)]);
 
 // RF-02 · UC-01. id is the random, unique key the app generates (BR-EQP-01).
 export const equipment = pgTable("equipment", {

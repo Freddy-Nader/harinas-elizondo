@@ -1,9 +1,10 @@
+import { DeliveryAddresses } from "./_components/delivery-addresses";
 import { Suspense } from "react";
 import { connection } from "next/server";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { getAuth } from "@/lib/auth";
-import { listClients, listClientLimits, listInternationalLimits, listParameters } from "./data";
+import { listClients, listDeliveryAddresses, listClientLimits, listInternationalLimits, listParameters } from "./data";
 import { changeClientStatus, removeClientLimit, saveClient, saveClientLimit } from "./actions";
 
 type Props = { searchParams: Promise<{ editar?: string; error?: string }> };
@@ -43,6 +44,7 @@ async function ClientsContent({ searchParams }: Props) {
     listClients(), listParameters(), listInternationalLimits(),
   ]);
   const selected = allClients.find((client) => client.id === query.editar);
+  const addresses = selected ? await listDeliveryAddresses(selected.id) : [];
   const limits = selected ? await listClientLimits(selected.id) : [];
   const internationalByCode = new Map(international.map((entry) => [entry.parameterCode, entry]));
   const limitsByCode = new Map(limits.map((entry) => [entry.parameterCode, entry]));
@@ -88,18 +90,21 @@ async function ClientsContent({ searchParams }: Props) {
           <label className={labelClass}>Razón social *
             <input className={fieldClass} name="businessName" maxLength={150} required defaultValue={selected?.businessName ?? ""} />
           </label>
-          <label className={labelClass}>RFC
-            <input className={fieldClass} name="rfc" maxLength={13} defaultValue={selected?.rfc ?? ""} />
+          <label className={labelClass}>RFC *
+            <input className={fieldClass} name="rfc" required maxLength={13} defaultValue={selected?.rfc ?? ""} />
           </label>
-          <label className={labelClass}>Correo de contacto
-            <input className={fieldClass} type="email" name="contactEmail" maxLength={100} defaultValue={selected?.contactEmail ?? ""} />
+          <label className={labelClass}>Correo de contacto *
+            <input className={fieldClass} type="email" required name="contactEmail" maxLength={100} defaultValue={selected?.contactEmail ?? ""} />
           </label>
-          <label className={labelClass}>Nombre de contacto
-            <input className={fieldClass} name="contactName" maxLength={100} defaultValue={selected?.contactName ?? ""} />
+          <label className={labelClass}>Nombre de contacto *
+            <input className={fieldClass} name="contactName" required maxLength={100} defaultValue={selected?.contactName ?? ""} />
           </label>
-          <label className={labelClass}>Domicilio de entrega
-            <input className={fieldClass} name="deliveryAddress" maxLength={250} defaultValue={selected?.deliveryAddress ?? ""} />
+          <label className={labelClass}>Dirección fiscal *
+            <input className={fieldClass} name="fiscalAddress" required maxLength={250} defaultValue={selected?.fiscalAddress ?? ""} />
+            {selected && !selected.fiscalAddress && <span className="text-destructive">Pendiente de completar para este cliente.</span>}
           </label>
+          <DeliveryAddresses key={selected?.id ?? "new-client"}
+            initialAddresses={addresses.length ? addresses.map((entry) => entry.address) : selected?.deliveryAddress ? [selected.deliveryAddress] : []} />
           <label className="flex items-center gap-2 text-sm sm:col-span-2">
             <input name="requiresCertificate" type="checkbox" defaultChecked={selected?.requiresCertificate ?? true} />
             Requiere certificado de calidad
@@ -130,7 +135,7 @@ async function ClientsContent({ searchParams }: Props) {
           <div className="rounded-xl border p-5">
             <h2 className="font-semibold">Valores de referencia particulares</h2>
             <p className="mb-4 text-sm text-muted-foreground">
-              Solo los parámetros configurados aquí reemplazan sus límites internacionales (BR-REF-01).
+              Los límites particulares deben ser iguales o más exigentes que los internacionales. Los parámetros sin valores propios usan la referencia internacional.
             </p>
             <div className="space-y-3">
               {allParameters.map((parameter) => {
