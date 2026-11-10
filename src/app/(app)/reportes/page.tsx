@@ -1,8 +1,8 @@
+import { connection } from 'next/server';
 import { getCertificateHistory, getReportStatistics, ReportFilters } from "./data";
-import { exportCertificatesAction } from "./actions";
+import { ExportButton } from "./export-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Download, FileText, CheckCircle2, AlertTriangle, BarChart3 } from "lucide-react";
+import { FileText, CheckCircle2, AlertTriangle, BarChart3 } from "lucide-react";
 
 interface PageProps {
   searchParams: Promise<{
@@ -12,10 +12,10 @@ interface PageProps {
   }>;
 }
 
-/**
- * Reports and Statistics page (UC-08 / RF-07).
- */
 export default async function ReportesPage({ searchParams }: PageProps) {
+  // Forzar renderizado dinámico en el servidor (compatible con Next.js 16)
+  await connection();
+
   const resolvedParams = await searchParams;
   const filters: ReportFilters = {
     startDate: resolvedParams.startDate,
@@ -37,17 +37,9 @@ export default async function ReportesPage({ searchParams }: PageProps) {
             Consulta el historial de certificados emitidos, tasas de cumplimiento y análisis de calidad (UC-08).
           </p>
         </div>
-        <form
-          action={async () => {
-            "use server";
-            await exportCertificatesAction(filters);
-          }}
-        >
-          <Button type="submit" variant="outline" className="gap-2">
-            <Download className="h-4 w-4" />
-            Exportar a Excel / CSV (Q-09)
-          </Button>
-        </form>
+        
+        {/* Usamos el componente cliente para manejar la descarga */}
+        <ExportButton filters={filters} />
       </div>
 
       {/* KPI Cards */}
