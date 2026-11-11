@@ -25,12 +25,16 @@ Each step is one PR. Modules after step 3 can run in parallel.
 5. [x] Lotes and Inspecciones (UC-03, UC-04) with automatic sequence, completeness and deviation preview. Done 2026-11-04 in `feat/lotes-inspecciones` (stacked on `feat/equipos-uc01`): lot list with search, create and edit (locked once certified), inspections started from the lot with the system sequence, re-inspection only after a complete one and with the equipment-failure reason (D-15), capture of both machines with live deviation preview against international limits, partial saves, only usable equipment (BR-EQP-03). Rules in `src/lib/domain/lot.ts`. Checked end to end in a browser against a local database; still to check against Neon
 6. [x] Certificados (UC-05, UC-06, UC-07) with react-pdf, delivery evidence and inspection lock (D-13). Done 2026-11-11 in `certificados`: draft with D-17 id, live preview of the ten lines with deviation and reference source, BR-CER-05 checklist, issue (snapshot D-10, SHA-256 D-26, inspection lock BR-AUD-03), PDF route `/certificados/[id]/pdf`, simulated email with delivery evidence and resend (D-13), cancellation with reason (D-25), destination and carrier (D-24), latest-inspection rule (D-27). Migration 0003 applied. Rules in `src/lib/domain/certificate.ts`, services in `src/lib/services/`. Checked end to end in a browser against Neon on 2026-11-11 (test client `PRUEBA01`, lots `L-PRUEBA-001`/`L-PRUEBA-002`): blockers, draft edit, issue, PDF, send, resend, cancel, inspection lock. Email is still simulated (logged); switching to Resend needs an API key
 7. [ ] Reportes (UC-08) with filters, charts, Excel export (Q-09)
-8. [ ] Bitácora screen
+8. [x] Bitácora screen (RF-08, D-20). Done 2026-11-11 in `feat/bitacora`: read-only `/bitacora` for both roles, 50 rows per page newest first, filters in the URL (entity, action, employee id or name, date range, record id), Spanish labels with a raw-code fallback, link to the entity when it has a page the role may open, expandable JSON detail. No write action exists. Not yet checked in a browser against a database
 8a. [ ] Usuarios screen to add accounts and set roles (D-14)
 8b. [ ] Mobile navigation (the sidebar is hidden below `md`)
 9. [ ] Tests by type and their written guides ([testing.md](testing.md)), CI workflow
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned
+
+## Bitácora note (2026-11-11)
+
+- The Clientes module writes the entity code `clients` and the actions `update_limit` and `remove_limit`, which are outside `AuditEntity` and `AuditAction`. The screen labels them and the client filter matches both `client` and `clients`. The export named in the Traceability row of requirements.md is not part of this screen.
 
 ## Inspection follow-up (2026-11-04)
 
