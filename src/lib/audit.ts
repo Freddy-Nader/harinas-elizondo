@@ -32,6 +32,7 @@ export type AuditAction =
   | "issue"
   | "send"
   | "resend"
+  | "cancel"
   | "export";
 
 export type AuditEntry = {

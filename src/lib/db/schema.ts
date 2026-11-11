@@ -175,7 +175,8 @@ export const inspectionResults = pgTable(
 );
 
 // RF-05 · UC-05
-export const certificateStatus = pgEnum("certificate_status", ["draft", "issued", "sent"]);
+// "cancelled" (D-25): an issued certificate is never deleted, it is cancelled with a reason
+export const certificateStatus = pgEnum("certificate_status", ["draft", "issued", "sent", "cancelled"]);
 
 export const certificates = pgTable(
   "certificates",
@@ -195,11 +196,20 @@ export const certificates = pgTable(
     quantityRequested: measure(),
     quantityDelivered: measure(),
     shippedOn: date(),
+    // D-24. Copy of the chosen client destination (D-22), so later address edits never change it
+    deliveryAddress: varchar({ length: 250 }),
+    carrier: varchar({ length: 100 }),
     requiresSignature: boolean().notNull().default(false),
     status: certificateStatus().notNull().default("draft"),
     pdfUrl: text(),
     issuedAt: timestamp({ withTimezone: true }),
     issuedBy: createdBy(),
+    // D-26. SHA-256 of the issued content, printed on the PDF and re-checked on screen
+    signatureHash: char({ length: 64 }),
+    // D-25. Cancellation keeps the row, the snapshot and the inspection lock
+    cancelledAt: timestamp({ withTimezone: true }),
+    cancelledBy: createdBy(),
+    cancellationReason: varchar({ length: 200 }),
     createdAt: createdAt(),
   },
   (t) => [index("certificates_client_idx").on(t.clientId), index("certificates_lot_idx").on(t.lotId)],

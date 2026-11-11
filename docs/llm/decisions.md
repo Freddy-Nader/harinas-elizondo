@@ -34,6 +34,17 @@ The user's direct review notes supplement the local architecture document. D-22:
 
 The local PDF data dictionary also marks client RFC (unique), contact name and contact email mandatory. Forms now enforce those fields. The user corrected existing duplicate RFCs. Preflight confirmed no duplicates, then migration 0002 applied the unique constraint; no records were automatically merged or deleted.
 
+## Certificates (2026-11-10, resolves Q-15)
+
+| Id | Date | Decision | Why |
+| --- | --- | --- | --- |
+| D-24 | 2026-11-10 | A certificate stores a copy of the chosen client destination (`certificates.delivery_address`) and the carrier (`carrier`). Both are required before issuing, with invoice, delivered quantity and shipping date (BR-CER-05) | D-22 gives a client several destinations; a copy keeps issued certificates unchanged when addresses are edited later (same idea as D-10). The PDF dictionary asks for the carrier |
+| D-25 | 2026-11-10 | Issued or sent certificates are cancelled with a reason (`cancelled_at`, `cancelled_by`, `cancellation_reason`, status `cancelled`), never deleted. The snapshot, hash and inspection lock stay. A draft is not cancelled, it is just never issued | The PDF dictionary asks for a cancellation status. Keeps history and traceability |
+| D-26 | 2026-11-10 | The "signature hash" is a SHA-256 of the issued content (`signature_hash`), computed at issue time, printed on the PDF and re-checked on screen against the stored data. It complements D-18 (printed signature block), it does not replace it | Gives the dictionary's hash and tamper evidence without key management |
+| D-27 | 2026-11-10 | BR-CER-01 uses the lot's LATEST inspection. If it is incomplete the certificate is blocked; an older complete inspection is never picked silently | Professor review (`docs/revision-requisitos-es.md`) |
+
+Migration `0003_certificate_shipping_cancel` adds those columns and the enum value. Additive only, applied to the shared Neon database on 2026-11-10.
+
 ## Open questions
 
 | Id | Question | Proposed answer | Owner |
@@ -43,4 +54,3 @@ The local PDF data dictionary also marks client RFC (unique), contact name and c
 
 | Q-13 | Humidity mentioned in professor review is not one of the ten factors in RF-02; which method/equipment captures it and is it an additional factor? | Await direct clarification; do not substitute water absorption for moisture | Team |
 | Q-14 | Which authoritative specification supplies numerical reference ranges and confirmed units for the ten rheological factors? | Current seed values are demo-only | Team |
-| Q-15 | PDF certificate dictionary asks for a signature hash, carrier and cancellation status, while D-18 uses a printed signature block and the schema lacks the latter fields | Reconcile before implementing certificates; do not silently override D-18 | Team |
