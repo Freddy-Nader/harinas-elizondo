@@ -33,7 +33,7 @@ async function ClientsContent({ searchParams }: Props) {
   // RF-01: wait for an actual request before constructing DB-backed auth.
   await connection();
   const session = await getAuth().api.getSession({ headers: await headers() });
-  if (!session?.user) {
+  if (!session?.user || session.user.active === false) {
     return <p>Debes <Link className="underline" href="/login">iniciar sesión</Link> para consultar clientes.</p>;
   }
   if (session.user.role !== "transaction") {
