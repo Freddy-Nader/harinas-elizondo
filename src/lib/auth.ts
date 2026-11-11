@@ -11,11 +11,21 @@ import * as schema from "@/lib/db/schema";
  */
 function createAuth() {
   return betterAuth({
+    databaseHooks: {
+      session: { create: { before: async (session) => {
+        const account = await getDb().query.user.findFirst({
+          where: (user, { eq }) => eq(user.id, session.userId),
+          columns: { active: true },
+        });
+        return account?.active === true;
+      } } },
+    },
     database: drizzleAdapter(getDb(), { provider: "pg", schema }),
     // Public sign-up is off (D-14). Accounts come from scripts/seed.ts and the Usuarios screen
     emailAndPassword: { enabled: true, disableSignUp: true },
     user: {
       additionalFields: {
+        active: { type: "boolean", defaultValue: true, input: false },
         role: { type: "string", required: false, defaultValue: "query", input: false },
         employeeId: { type: "string", required: false, input: false },
       },
@@ -31,4 +41,4 @@ export function getAuth() {
   return instance;
 }
 
-export type Role = "transaction" | "query";
+export type Role = "transaction" | "query" | "admin";
