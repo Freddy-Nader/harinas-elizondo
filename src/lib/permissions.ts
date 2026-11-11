@@ -5,10 +5,11 @@ import { MODULES } from "@/lib/modules";
  * RF-01. Pure access rules shared by the nav, the pages and the server actions.
  * Transaction users can do everything. Query users only read reports, history and the audit log.
  */
-export const ROLES = ["transaction", "query"] as const satisfies readonly Role[];
+export const ROLES = ["transaction", "query", "admin"] as const satisfies readonly Role[];
 
 /** Spanish labels shown in the UI. */
 export const ROLE_LABELS: Record<Role, string> = {
+  admin: "Administrador",
   transaction: "Usuario de transacción",
   query: "Usuario de consulta",
 };

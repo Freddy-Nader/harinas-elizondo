@@ -24,9 +24,12 @@ describe("canAccess", () => {
     expect(canAccess("query", "/bitacora")).toBe(true);
   });
 
-  it("RF-01 closes unknown routes to query users by default", () => {
+  it("RF-01 reserves Usuarios for administrators", () => {
     expect(canAccess("query", "/usuarios")).toBe(false);
-    expect(canAccess("transaction", "/usuarios")).toBe(true);
+    expect(canAccess("transaction", "/usuarios")).toBe(false);
+    expect(canAccess("admin", "/usuarios")).toBe(true);
+    expect(canAccess("admin", "/clientes")).toBe(false);
+    expect(canMutate("admin")).toBe(false);
   });
 
   it("does not treat a shared prefix as the same module", () => {
@@ -42,10 +45,11 @@ describe("canMutate", () => {
 });
 
 describe("isRole", () => {
-  it("accepts only the two known roles", () => {
+  it("accepts only the known roles", () => {
     expect(isRole("transaction")).toBe(true);
     expect(isRole("query")).toBe(true);
-    expect(isRole("admin")).toBe(false);
+    expect(isRole("admin")).toBe(true);
+    expect(isRole("owner")).toBe(false);
     expect(isRole(undefined)).toBe(false);
   });
 });

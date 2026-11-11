@@ -36,7 +36,7 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
   // Read the request first. During prerender this suspends, so the DB is never touched at build time
   const requestHeaders = await headers();
   const session = await getAuth().api.getSession({ headers: requestHeaders });
-  if (!session) return null;
+  if (!session || session.user.active === false) return null;
   const { id, name, email, role, employeeId } = session.user;
   return {
     id,

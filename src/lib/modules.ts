@@ -16,6 +16,14 @@ export type AppModule = {
 
 export const MODULES: readonly AppModule[] = [
   {
+    href: "/usuarios",
+    title: "Usuarios",
+    summary: "Alta de cuentas, asignación de roles y control de acceso.",
+    requirement: "RF-01",
+    useCase: "—",
+    roles: ["admin"],
+  },
+  {
     href: "/clientes",
     title: "Clientes",
     summary:

@@ -5,6 +5,7 @@ Summary of the team document (delivery 1) and the professor's functional require
 ## Functional requirements (RF)
 
 ### RF-01 Access control
+- A separate administrator manages transaction and query accounts. The screen cannot create or modify administrators.
 - Two user types. **Transaction users** (lab and Quality Control management) can do everything, which means registering clients, equipment, lots and analyses, issuing certificates and producing statistics. **Query users** (Quality Assurance, plant managers, the Operations Director) can only see reports, statistics and history.
 - Permission levels differ between management and direction, limited by profile. The Manager and the Operations Director can see any report they need.
 - Every action (create, update, issue) is recorded with the **employee id and the name** of who did it.
