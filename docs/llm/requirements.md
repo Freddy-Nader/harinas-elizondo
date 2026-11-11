@@ -87,12 +87,12 @@ Ids referenced from code in `src/lib/domain/`.
 | BR-INS-02 | Sequence A..Z then AA..ZZ then AAA, assigned by the system | `inspection-sequence.ts` |
 | BR-INS-03 | Complete inspection means all ten parameters (both machines) have a value | `quality.ts` `missingParameters` |
 | BR-INS-04 | A new inspection after a complete one needs an equipment-failure reason and authorization | `lot.ts` `startInspection` (D-15) |
-| BR-CER-01 | Certificate uses the latest inspection of the lot only if complete; do not fall back to an older complete one | todo |
+| BR-CER-01 | Certificate uses the latest inspection of the lot only if complete; do not fall back to an older complete one (D-27) | `certificate.ts` `pickCertifiableInspection` |
 | BR-CER-02 | Certificate is blocked unless both machines' results are present | `quality.ts` `missingParameters` |
 | BR-CER-04 | Out-of-range values never block, they produce a signed deviation | `quality.ts` `evaluate` |
-| BR-CER-05 | Invoice and shipping data are required before closing the certificate | todo |
+| BR-CER-05 | Invoice and shipping data are required before closing the certificate, plus destination and carrier (D-24) | `certificate.ts` `issueBlockers` |
 | BR-AUD-01 | Every create/update/issue writes an audit row with employee id and name | `audit.ts` `recordAudit`, `auditInsert` (each module calls it) |
-| BR-AUD-03 | Inspection results are read-only once a certificate uses them (`inspections.locked_at`) | todo |
+| BR-AUD-03 | Inspection results are read-only once a certificate uses them (`inspections.locked_at`) | set by `issueCertificate`, enforced by `saveInspectionResults` |
 
 ## Quality characteristics (non-functional)
 
