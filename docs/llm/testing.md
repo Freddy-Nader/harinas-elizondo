@@ -9,7 +9,7 @@ Delivery 3 asks for **test guides (scripts) for every test type**, not only test
 | Pruebas unitarias | Pure business rules (BR-*) | Vitest | `src/**/*.test.ts` next to the code |
 | Pruebas de componentes | Server actions and data functions against a test database | Vitest + Neon branch | `src/**/*.int.test.ts` (to set up) |
 | Pruebas integrales / de sistema | Full flows in the browser, for example lot → inspection → certificate → delivery | Playwright (to install) | `e2e/` |
-| Pruebas de regresión | Whole suite in CI on every PR | GitHub Actions (to add) | `.github/workflows/` |
+| Pruebas de regresión | Whole suite in CI on every PR and on every push to `main` | GitHub Actions | `.github/workflows/ci.yml` |
 | Pruebas de aceptación (UAT) | Real users follow scripted tasks and sign off | Written script + results table | `docs/testing/` (to create) |
 
 ## Naming
@@ -25,6 +25,14 @@ Each guide (one per type, Spanish, because it is handed in and read by the profe
 | PU-01 | BR-INS-02 | Lote sin inspecciones | Registrar inspección | Lote L-001 | Secuencia "A" | | |
 
 Ids are `PU-` (unitarias), `PC-` (componentes), `PI-` (integrales), `PS-` (sistema), `PR-` (regresión) and `PA-` (aceptación).
+
+## Regression (CI)
+
+The workflow `.github/workflows/ci.yml` (named `CI`) is the regression suite. It runs on every pull request, including the ones opened from forks, and on every push to `main`. The job `Typecheck, lint, test, build` installs with `pnpm install --frozen-lockfile` on Node 22 and then runs `pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm build`. It uses dummy environment values and no GitHub secrets.
+
+Each green run is the evidence for the regression guide. A `PR-xx` row cites the pull request and the URL of its run (https://github.com/ValleryR/harinas-elizondo/actions/workflows/ci.yml) as the obtained result. A change that breaks an earlier rule fails the check before it can be merged, once the repo owner makes the check required on `main`.
+
+The integration and e2e suites (issues #21 and #22) will be added as a separate job. A commented placeholder for it is already in the workflow.
 
 ## UAT tasks to script
 

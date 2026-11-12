@@ -1,15 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
+import { safeNextPath } from "@/lib/permissions";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [pending, setPending] = useState(false);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -25,7 +27,9 @@ export function LoginForm() {
       toast.error("No pudimos iniciar sesión. Revisa tu correo y contraseña.");
       return;
     }
-    router.push("/panel");
+    // RF-01. Back to the page the proxy sent us from, same-site only
+    router.replace(safeNextPath(searchParams.get("next")));
+    router.refresh();
   }
 
   return (

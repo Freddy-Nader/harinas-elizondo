@@ -55,3 +55,23 @@ export function missingReferenceValues(
 function round(n: number) {
   return Math.round(n * 1000) / 1000;
 }
+
+/** UC-04 / UC-05: retain both comparisons so certificates can state each reference. */
+export function assessQuality(
+  results: Record<string, number>,
+  international: LimitsByParameter,
+  particular: LimitsByParameter | null,
+) {
+  return Object.entries(results).map(([parameterCode, value]) => {
+    const global = international[parameterCode];
+    const own = particular?.[parameterCode];
+    const applied = own ?? global;
+    return {
+      parameterCode, value,
+      source: own ? "client" as const : "international" as const,
+      limits: applied ?? null,
+      assessment: applied ? evaluate(value, applied) : null,
+      internationalAssessment: global ? evaluate(value, global) : null,
+    };
+  });
+}
