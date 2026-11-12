@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppNavSkeleton } from "@/components/app-nav";
@@ -33,9 +34,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
 function Brand() {
   return (
-    <Link href="/panel" className="px-2.5">
-      <span className="block text-sm font-semibold tracking-tight">Harinas Elizondo</span>
-      <span className="block text-xs text-muted-foreground">Control de laboratorio</span>
+    <Link href="/panel" className="flex items-center gap-3 px-2.5 md:flex-col md:gap-2 md:py-2 md:text-center">
+      <BrandLogo className="w-12 shrink-0 md:w-36" />
+      <div>
+        <span className="block text-sm font-semibold tracking-tight md:text-base">Harinas Elizondo</span>
+        <span className="block text-xs text-muted-foreground">Control de laboratorio</span>
+      </div>
     </Link>
   );
 }

@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoginForm } from "./login-form";
@@ -6,9 +7,10 @@ export const metadata: Metadata = { title: "Iniciar sesión" };
 
 export default function LoginPage() {
   return (
-    <main className="flex flex-1 items-center justify-center px-4">
+    <main className="flex flex-1 items-center justify-center px-4 py-8">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <header className="flex flex-col gap-1 text-center">
+          <BrandLogo className="mx-auto mb-3 w-36 sm:w-44" />
           <h1 className="text-xl font-semibold tracking-tight">Harinas Elizondo</h1>
           <p className="text-sm text-muted-foreground">Inicia sesión con tu cuenta de empleado.</p>
         </header>
