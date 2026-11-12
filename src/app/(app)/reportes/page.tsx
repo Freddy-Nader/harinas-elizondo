@@ -1,19 +1,29 @@
 import Link from "next/link";
-import { connection } from "next/server";
-import { getClientOptions, getReportData, ReportFilters } from "./data";
+import { Suspense } from "react";
+import { getClientOptions, getReportData } from "./data";
 import { ExportButton } from "./export-button";
 import { ReportCharts } from "./charts";
+import { CertificateStatusBadge } from "../certificados/_components/status-badge";
+import { ModuleGate, PageSkeleton } from "@/components/module-gate";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, CheckCircle2, AlertTriangle, BarChart3 } from "lucide-react";
+import { CERTIFICATE_STATUS_LABEL } from "@/lib/domain/certificate";
+import {
+  filtersToParams,
+  paginate,
+  parseReportFilters,
+  PERIOD_LABEL,
+  PERIOD_PRESETS,
+  plantToday,
+  REPORT_STATUSES,
+} from "@/lib/domain/report";
+import { requireRole } from "@/lib/session";
+import { FileText, CheckCircle2, AlertTriangle, BarChart3, Ban, MailX } from "lucide-react";
+
+export const metadata = { title: "Reportes" };
 
 interface PageProps {
-  searchParams: Promise<{
-    startDate?: string;
-    endDate?: string;
-    clientId?: string;
-    detalle?: string;
-  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 const fmt = (n: number) => n.toLocaleString("es-MX", { maximumFractionDigits: 3 });
@@ -26,24 +36,36 @@ function buildHref(params: Record<string, string | undefined>, hash = "") {
   return `?${qs.toString()}${hash}`;
 }
 
-export default async function ReportesPage({ searchParams }: PageProps) {
-  // Forzar renderizado dinámico en el servidor (compatible con Next.js 16)
-  await connection();
+// RF-01: only roles listed for /reportes in modules.ts (transaction and query). The session
+// is read inside <Suspense> (Cache Components), and the data layer checks the role again.
+export default function ReportesPage({ searchParams }: PageProps) {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <ModuleGate href="/reportes">
+        <ReportContent searchParams={searchParams} />
+      </ModuleGate>
+    </Suspense>
+  );
+}
 
+async function ReportContent({ searchParams }: PageProps) {
+  const currentUser = await requireRole("transaction", "query");
   const resolvedParams = await searchParams;
-  const filters: ReportFilters = {
-    startDate: resolvedParams.startDate,
-    endDate: resolvedParams.endDate,
-    clientId: resolvedParams.clientId,
-  };
+  const filters = parseReportFilters(resolvedParams, plantToday(new Date()));
   const showDeviations = resolvedParams.detalle === "desviaciones";
 
   const [report, clientOptions] = await Promise.all([getReportData(filters), getClientOptions()]);
   const { history, deviations, byParameter, monthly, stats } = report;
+  const historyPage = paginate(history, filters.page);
+  // The query role cannot open /certificados, so its link opens the PDF, which both roles can read
+  const certificateHref = (id: string) =>
+    currentUser.role === "transaction" ? `/certificados/${id}` : `/certificados/${id}/pdf`;
+  const pageHref = (page: number) =>
+    buildHref({ ...filtersToParams(filters), page: page > 1 ? String(page) : undefined, detalle: resolvedParams.detalle as string | undefined });
 
-  // Al abrir/cerrar el detalle se conservan los filtros activos
+  // Opening or closing the detail keeps the active filters
   const deviationsHref = buildHref(
-    { ...filters, detalle: showDeviations ? undefined : "desviaciones" },
+    { ...filtersToParams(filters), detalle: showDeviations ? undefined : "desviaciones" },
     showDeviations ? "" : "#detalle-desviaciones",
   );
 
@@ -53,8 +75,8 @@ export default async function ReportesPage({ searchParams }: PageProps) {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Reportes y Estadísticas</h1>
           <p className="text-sm text-muted-foreground">
-            Consulta el historial de certificados emitidos, tasas de cumplimiento y análisis de calidad (UC-08).
-            Solo se cuentan certificados emitidos o enviados.
+            Consulta el historial de certificados emitidos, tasas de cumplimiento y análisis de calidad.
+            Las estadísticas solo cuentan certificados emitidos o enviados; los cancelados se muestran aparte.
           </p>
         </div>
 
@@ -64,6 +86,21 @@ export default async function ReportesPage({ searchParams }: PageProps) {
 
       {/* Filtros */}
       <form method="get" className="flex flex-wrap items-end gap-3">
+        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+          Periodo
+          <select
+            name="period"
+            defaultValue={filters.period ?? ""}
+            className="h-9 rounded-md border bg-background px-3 text-sm text-foreground"
+          >
+            <option value="">Por fechas</option>
+            {PERIOD_PRESETS.map((p) => (
+              <option key={p} value={p}>
+                {PERIOD_LABEL[p]}
+              </option>
+            ))}
+          </select>
+        </label>
         <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
           Desde
           <input
@@ -97,6 +134,21 @@ export default async function ReportesPage({ searchParams }: PageProps) {
             ))}
           </select>
         </label>
+        <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+          Estado
+          <select
+            name="status"
+            defaultValue={filters.status ?? ""}
+            className="h-9 rounded-md border bg-background px-3 text-sm text-foreground"
+          >
+            <option value="">Todos</option>
+            {REPORT_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {CERTIFICATE_STATUS_LABEL[s]}
+              </option>
+            ))}
+          </select>
+        </label>
         <Button type="submit">Filtrar</Button>
         <Link
           href="?"
@@ -107,7 +159,7 @@ export default async function ReportesPage({ searchParams }: PageProps) {
       </form>
 
       {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">Total de Certificados</CardTitle>
@@ -150,6 +202,28 @@ export default async function ReportesPage({ searchParams }: PageProps) {
               {stats.complianceRate === null ? "—" : `${stats.complianceRate}%`}
             </div>
             <p className="text-xs text-muted-foreground">Proporción dentro de norma</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">Cancelados</CardTitle>
+            <Ban className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.cancelledCertificates}</div>
+            <p className="text-xs text-muted-foreground">No cuentan en las estadísticas</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">Entregas Fallidas</CardTitle>
+            <MailX className="h-4 w-4 text-destructive" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.failedDeliveries}</div>
+            <p className="text-xs text-muted-foreground">Intentos de envío que no se completaron</p>
           </CardContent>
         </Card>
       </div>
@@ -244,20 +318,25 @@ export default async function ReportesPage({ searchParams }: PageProps) {
                   <th className="p-3 font-medium">Lote ID</th>
                   <th className="p-3 font-medium">Inspección</th>
                   <th className="p-3 font-medium">Estado</th>
+                  <th className="p-3 font-medium">Resultado</th>
                   <th className="p-3 font-medium">Emitido Por</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {history.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="h-24 text-center text-muted-foreground">
+                    <td colSpan={8} className="h-24 text-center text-muted-foreground">
                       No se encontraron registros de certificados para los filtros aplicados.
                     </td>
                   </tr>
                 ) : (
-                  history.map((row) => (
+                  historyPage.items.map((row) => (
                     <tr key={row.id} className="hover:bg-muted/50">
-                      <td className="p-3 font-medium">{row.id}</td>
+                      <td className="p-3 font-medium">
+                        <Link href={certificateHref(row.id)} className="underline-offset-4 hover:underline">
+                          {row.id}
+                        </Link>
+                      </td>
                       <td className="p-3">
                         {row.issuedAt ? new Date(row.issuedAt).toLocaleDateString("es-MX") : "-"}
                       </td>
@@ -266,6 +345,9 @@ export default async function ReportesPage({ searchParams }: PageProps) {
                       </td>
                       <td className="p-3">{row.lotId}</td>
                       <td className="p-3">{row.inspectionSequence}</td>
+                      <td className="p-3">
+                        <CertificateStatusBadge status={row.status} />
+                      </td>
                       <td className="p-3">
                         {row.deviationParams.length === 0 ? (
                           <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
@@ -289,6 +371,25 @@ export default async function ReportesPage({ searchParams }: PageProps) {
               </tbody>
             </table>
           </div>
+          {historyPage.pageCount > 1 && (
+            <nav aria-label="Paginación del historial" className="mt-3 flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                Página {historyPage.page} de {historyPage.pageCount} · {historyPage.total} certificados
+              </span>
+              <div className="flex gap-2">
+                {historyPage.page > 1 && (
+                  <Link href={pageHref(historyPage.page - 1)} className="rounded-md border px-3 py-1.5 hover:bg-muted">
+                    Anterior
+                  </Link>
+                )}
+                {historyPage.page < historyPage.pageCount && (
+                  <Link href={pageHref(historyPage.page + 1)} className="rounded-md border px-3 py-1.5 hover:bg-muted">
+                    Siguiente
+                  </Link>
+                )}
+              </div>
+            </nav>
+          )}
         </CardContent>
       </Card>
     </div>
