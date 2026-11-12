@@ -10,7 +10,7 @@ Delivery 3 asks for **test guides (scripts) for every test type**, not only test
 | Pruebas de componentes | Server actions and data functions against a test database | Vitest + local or CI Postgres | `src/**/*.int.test.ts` |
 | Pruebas integrales / de sistema | Full flows in the browser, for example lot → inspection → certificate → delivery | Playwright | `e2e/` |
 | Pruebas de regresión | Whole suite in CI on every PR and on every push to `main` | GitHub Actions | `.github/workflows/ci.yml` |
-| Pruebas de aceptación (UAT) | Real users follow scripted tasks and sign off | Written script + results table | `docs/testing/` (to create) |
+| Pruebas de aceptación (UAT) | Real users follow scripted tasks and sign off | Written script + results table | `docs/testing/` |
 
 ## Naming
 
