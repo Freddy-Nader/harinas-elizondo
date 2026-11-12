@@ -1,90 +1,81 @@
 "use server";
 
-import { getAuth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { getExportableCertificateData, ReportFilters } from "./data";
+import { recordAudit } from "@/lib/audit";
+import { parseReportFilters, plantToday } from "@/lib/domain/report";
+import { toCsv, toXlsx } from "@/lib/services/report-export";
+import { ForbiddenError, requireRole } from "@/lib/session";
+import { getExportableCertificateData } from "./data";
+
+export type ExportFormat = "xlsx" | "csv";
+
+export type ExportResult =
+  | { success: true; filename: string; mimeType: string; base64: boolean; data: string }
+  | { success: false; error: string };
+
+const MIME: Record<ExportFormat, string> = {
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  csv: "text/csv;charset=utf-8",
+};
 
 /**
- * Escapa una celda de CSV: duplica las comillas internas y neutraliza valores
- * que Excel interpretaría como fórmula (=, +, -, @).
+ * RF-07 · UC-08 · D-19. Exports the certificate history with the filters on screen, as
+ * `.xlsx` (exceljs) or CSV, both readable by Excel and Power BI.
+ * RF-01: both roles can export. Without a session `requireRole` redirects to /login.
+ * BR-AUD-01: every export writes an `export` audit row with the format and the filters.
+ *
+ * Errors come back as a result, not thrown, because production builds hide the message of
+ * an error thrown by a server action.
  */
-function csvCell(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  let text = String(value);
-  if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
-  return `"${text.replace(/"/g, '""')}"`;
-}
-
-/**
- * Server action to securely handle the export of certificate history to CSV/Excel.
- * Satisfies Q-09, RF-01, and RF-07.
- */
-export async function exportCertificatesAction(filters: ReportFilters = {}) {
-  // 1. Verify session and role authorization server-side (RF-01)
-  const auth = await getAuth();
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session || !session.user) {
-    throw new Error("No autorizado. Debe iniciar sesión.");
+export async function exportCertificatesAction(
+  rawFilters: Record<string, unknown> = {},
+  format: ExportFormat = "xlsx",
+): Promise<ExportResult> {
+  let user;
+  try {
+    user = await requireRole("transaction", "query");
+  } catch (error) {
+    if (error instanceof ForbiddenError) {
+      return { success: false, error: "Acceso denegado: no cuenta con permisos para exportar reportes." };
+    }
+    throw error; // the /login redirect
   }
 
-  const userRole = (session.user as { role?: string }).role;
-  if (!userRole || !["transaction", "query", "admin"].includes(userRole)) {
-    throw new Error("Acceso denegado: No cuenta con permisos para exportar reportes.");
-  }
+  // The filters come from the browser, so they are validated again here
+  const today = plantToday(new Date());
+  const filters = parseReportFilters(rawFilters, today);
+  const fileFormat: ExportFormat = format === "csv" ? "csv" : "xlsx";
 
-  // 2. Fetch exportable data (solo certificados emitidos o enviados)
   const data = await getExportableCertificateData(filters);
-
-  if (!data || data.length === 0) {
-    throw new Error("No hay registros disponibles para exportar con los filtros seleccionados.");
+  if (data.length === 0) {
+    return { success: false, error: "No hay registros disponibles para exportar con los filtros seleccionados." };
   }
 
-  // 3. Transform data into CSV format (compatible with Excel / Power BI - Q-09)
-  const headersRow = [
-    "ID Certificado",
-    "Fecha de Emisión",
-    "Clave SAP Cliente",
-    "Nombre del Cliente",
-    "RFC",
-    "ID Lote",
-    "Secuencia Inspección",
-    "Orden de Compra",
-    "No. Factura",
-    "Emitido Por",
-    "Con Desviación",
-    "Parámetros Fuera de Rango",
-  ];
+  const content =
+    fileFormat === "csv" ? toCsv(data) : Buffer.from(await toXlsx(data)).toString("base64");
 
-  const csvRows = [
-    headersRow.map(csvCell).join(","),
-    ...data.map((row) =>
-      [
-        row.id,
-        row.issuedAt ? new Date(row.issuedAt).toISOString() : "",
-        row.sapKey,
-        row.clientName,
-        row.rfc,
-        row.lotId,
-        row.inspectionSequence,
-        row.purchaseOrder,
-        row.invoiceNumber,
-        row.issuedByName,
-        row.deviationParams.length > 0 ? "Sí" : "No",
-        row.deviationParams.join("; "),
-      ]
-        .map(csvCell)
-        .join(","),
-    ),
-  ];
-
-  const csvContent = csvRows.join("\r\n");
+  await recordAudit({
+    user,
+    action: "export",
+    entity: "certificate",
+    entityId: "history",
+    detail: {
+      format: fileFormat,
+      rows: data.length,
+      filters: {
+        startDate: filters.startDate ?? null,
+        endDate: filters.endDate ?? null,
+        period: filters.period ?? null,
+        clientId: filters.clientId ?? null,
+        status: filters.status ?? null,
+      },
+    },
+  });
 
   return {
     success: true,
-    filename: `reporte-certificados-${new Date().toISOString().split("T")[0]}.csv`,
-    csvData: csvContent,
+    filename: `reporte-certificados-${today}.${fileFormat}`,
+    mimeType: MIME[fileFormat],
+    base64: fileFormat === "xlsx",
+    data: content,
   };
 }
