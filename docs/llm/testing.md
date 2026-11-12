@@ -7,9 +7,9 @@ Delivery 3 asks for **test guides (scripts) for every test type**, not only test
 | Type (course name) | What | Tool | Where |
 | --- | --- | --- | --- |
 | Pruebas unitarias | Pure business rules (BR-*) | Vitest | `src/**/*.test.ts` next to the code |
-| Pruebas de componentes | Server actions and data functions against a test database | Vitest + Neon branch | `src/**/*.int.test.ts` (to set up) |
-| Pruebas integrales / de sistema | Full flows in the browser, for example lot → inspection → certificate → delivery | Playwright (to install) | `e2e/` |
-| Pruebas de regresión | Whole suite in CI on every PR | GitHub Actions (to add) | `.github/workflows/` |
+| Pruebas de componentes | Server actions and data functions against a test database | Vitest + local or CI Postgres | `src/**/*.int.test.ts` |
+| Pruebas integrales / de sistema | Full flows in the browser, for example lot → inspection → certificate → delivery | Playwright | `e2e/` |
+| Pruebas de regresión | Whole suite in CI on every PR and on every push to `main` | GitHub Actions | `.github/workflows/ci.yml` |
 | Pruebas de aceptación (UAT) | Real users follow scripted tasks and sign off | Written script + results table | `docs/testing/` (to create) |
 
 ## Naming
@@ -25,6 +25,37 @@ Each guide (one per type, Spanish, because it is handed in and read by the profe
 | PU-01 | BR-INS-02 | Lote sin inspecciones | Registrar inspección | Lote L-001 | Secuencia "A" | | |
 
 Ids are `PU-` (unitarias), `PC-` (componentes), `PI-` (integrales), `PS-` (sistema), `PR-` (regresión) and `PA-` (aceptación).
+
+## Regression (CI)
+
+The workflow `.github/workflows/ci.yml` (named `CI`) is the regression suite. It runs on every pull request, including the ones opened from forks, and on every push to `main`. The job `Typecheck, lint, test, build` installs with `pnpm install --frozen-lockfile` on Node 22 and then runs `pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm build`. It uses dummy environment values and no GitHub secrets.
+
+Each green run is the evidence for the regression guide. A `PR-xx` row cites the pull request and the URL of its run (https://github.com/ValleryR/harinas-elizondo/actions/workflows/ci.yml) as the obtained result. A change that breaks an earlier rule fails the check before it can be merged, once the repo owner makes the check required on `main`.
+
+The job Integration tests (Postgres) runs `pnpm test:int` against a `postgres:16` service with non-secret credentials (issue #21). The job E2E tests (Playwright) runs `pnpm test:e2e` against the same kind of service and uploads screenshots, videos and traces of failed tests (issue #22).
+
+## Component tests (PC-xx)
+
+`pnpm test:int` runs `src/**/*.int.test.ts` (config `vitest.int.config.mts`) against the database in `TEST_DATABASE_URL`. The global setup drops the schema and applies every migration in `drizzle/`, each file starts from truncated tables plus synthetic seed data, and only the session is mocked (`signInAs` in `src/test/int/session.ts`). The app's Neon HTTP driver cannot reach plain Postgres, so the suite swaps `@/lib/db` for the same schema over node-postgres, and `batch` runs in one real transaction. `src/test/int/guard.ts` refuses any URL whose host is not localhost, 127.0.0.1, [::1] or `postgres`, or whose database name does not end in `_test`. Never point it at Neon.
+
+Start a local database with Docker, then run the suite.
+
+```bash
+docker run -d --name harinas-test-db -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -e POSTGRES_DB=harinas_test -p 127.0.0.1:54329:5432 postgres:16
+TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:int
+```
+
+Cases: PC-01 RF-03/BR-AUD-01 client and audit together, PC-02 RF-03 duplicate RFC, PC-03 RF-03 concurrent RFC, PC-04 BR-INS-02/04 sequence A then B, PC-05 BR-INS-02/04 concurrent start, PC-06 BR-AUD-01 rollback when the audit row fails, PC-07 RF-01 query user, PC-08 BR-AUD-03 issue locks the inspection, PC-09 BR-AUD-03 concurrent issue, PC-10 BR-CER-01/02 incomplete inspection, PC-11 RF-01 only an active admin creates users, PC-12 RF-01/BR-AUD-01 user, credential and audit together.
+
+## Integral and system tests (PI-/PS-)
+
+`pnpm test:e2e` (config `playwright.config.ts`, specs in `e2e/`) builds the app, starts it with `next start` and drives Chromium. The same guard refuses any `TEST_DATABASE_URL` that is not a local `*_test` database. The global setup applies the migrations and seeds the catalog, the demo limits and one user per role with a fake password. `E2E_LOCAL_POSTGRES=1` makes `getDb()` use node-postgres (`src/lib/db/local-postgres.ts`), and it is ignored on Vercel. `E2E_SKIP_BUILD=1` reuses the last build. Install the browser once with `pnpm exec playwright install chromium`.
+
+```bash
+TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:e2e
+```
+
+Cases: PS-01 RF-01 redirect to login and back, PS-02 RF-01 wrong password, PS-03 RF-01 sign in and out with each role, PI-01 RF-03 client with two destinations and own limits, PI-02 RF-03 duplicate RFC, PI-03 RF-02 alveograph and farinograph with limits, PI-04 RF-02 lower above upper, PI-05 RF-04 lot with a complete inspection and a deviation, PI-06 UC-05/06/07 issue, send and PDF with the inspection lock, PS-04 lot to delivery end to end, PS-05 RF-01 query user cannot issue, PS-06 RF-01 only admin opens Usuarios, PS-07 RF-07 report filtered by client as the query role, with the `.xlsx` read back with exceljs and the CSV checked.
 
 ## UAT tasks to script
 

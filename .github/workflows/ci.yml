@@ -1,0 +1,131 @@
+# Regression suite (PR-xx in docs/llm/testing.md): typecheck, lint, unit tests and
+# production build on every pull request and on every push to main.
+#
+# The `checks` job uses no GitHub secrets on purpose, so it also runs on pull
+# requests opened from forks. The env values below are dummies, not credentials.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Dummy values, never real ones. Nothing connects to them during the checks.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-dummy-secret-not-used-anywhere-real
+      BETTER_AUTH_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v7
+      # Reads the pnpm version from `packageManager` in package.json.
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Lint
+        run: pnpm lint
+      - name: Unit tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+
+  # Component (integration) tests of issue #21, PC-xx in docs/llm/testing.md. They run
+  # the server actions against a throwaway Postgres 16 service. The credentials below are
+  # not secrets, they only exist inside this job, so the job also runs on fork PRs.
+  integration:
+    name: Integration tests (Postgres)
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: harinas_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d harinas_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://test:test@localhost:5432/harinas_test
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Integration tests
+        run: pnpm test:int
+
+  # Integral and system tests of issue #22, PI-/PS- in docs/llm/testing.md. Playwright
+  # builds and starts the app against a throwaway Postgres 16 service (never Neon). The
+  # auth secret and passwords are fakes defined in playwright.config.ts and e2e/support.
+  # Screenshots, videos and traces of failed tests are uploaded as an artifact.
+  e2e:
+    name: E2E tests (Playwright)
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: harinas_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d harinas_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://test:test@localhost:5432/harinas_test
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: E2E tests
+        run: pnpm test:e2e
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
