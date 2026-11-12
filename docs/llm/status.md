@@ -29,7 +29,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 8. [x] Bitácora screen (RF-08, D-20). Done 2026-11-11 in `feat/bitacora`: read-only `/bitacora` for both roles, 50 rows per page newest first, filters in the URL (entity, action, employee id or name, date range, record id), Spanish labels with a raw-code fallback, link to the entity when it has a page the role may open, expandable JSON detail. No write action exists. Not yet checked in a browser against a database
 8a. [ ] Usuarios screen to add accounts and set roles (D-14)
 8b. [x] Mobile navigation (the sidebar is hidden below `md`). Done 2026-11-11 in `feat/mobile-nav`: menu button in the header below `md` opens a base-ui Drawer from the left with the same role-filtered links (`navItemsFor` in `src/lib/modules.ts`, shared with the sidebar) and the user menu. Closes on navigation, Escape, backdrop or swipe. Desktop unchanged
-9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner. Component tests done 2026-11-11 (issue #21): `pnpm test:int`, 12 PC cases against Postgres 16, local Docker or the CI job. E2E done 2026-11-11 (issue #22): `pnpm test:e2e`, 13 PI/PS cases in Playwright, PS-07 Reportes included since 2026-11-12
+9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner. Component tests done 2026-11-11 (issue #21): `pnpm test:int`, 12 PC cases against Postgres 16, local Docker or the CI job. E2E done 2026-11-11 (issue #22): `pnpm test:e2e`, 13 PI/PS cases in Playwright, PS-07 Reportes included since 2026-11-12. Written guides done 2026-11-11 (issue #23): `docs/testing/`, one per type with results from the run at 331ef38, PS-07 updated from the run at 856f7e0. UAT and the #19 live rows are still pending
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned
 
@@ -41,7 +41,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 
 - BR-INS-02/04: concurrent starts now fail on a sequence collision instead of retrying with an unauthorized next sequence. The sequence comes from the same latest inspection used for authorization.
 - Added server-action regression coverage for concurrent starts, incomplete inspections, query-role denial, unauthenticated redirects and certified-inspection write denial. Unit suite: 82 tests.
-- Manual verification guide: `docs/testing-inspections-es.md`. These tests mock database boundaries; live Neon and concurrent certification checks remain pending.
+- Manual verification guide: now in `docs/testing/pruebas-sistema-es.md` (section Guía manual de Inspecciones). These tests mock database boundaries; live Neon and concurrent certification checks remain pending.
 
 ## Professor/PDF alignment (2026-11-04)
 

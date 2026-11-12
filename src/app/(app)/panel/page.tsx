@@ -7,7 +7,7 @@ import { requireUser } from "@/lib/session";
 export default function PanelPage() {
   return (
     <section className="flex max-w-5xl flex-col gap-6">
-      <header className="flex flex-col gap-1">
+      <header className="flex flex-col gap-1 rounded-2xl border border-blue-900/15 bg-blue-50/60 p-5 dark:bg-blue-950/25 sm:p-6">
         <h1 className="text-2xl font-semibold tracking-tight">Panel</h1>
         <p className="text-muted-foreground">
           Emisión de certificados de calidad de harina de trigo, desde el lote hasta el envío.
@@ -33,7 +33,7 @@ async function ModuleGrid() {
             href={mod.href}
             className="block h-full rounded-xl transition-transform duration-150 ease-out active:scale-[0.98]"
           >
-            <Card className="h-full transition-colors duration-150 hover:bg-muted/50">
+            <Card className="h-full transition-colors duration-150 hover:bg-blue-50/70 dark:hover:bg-blue-950/30">
               <CardHeader>
                 <CardTitle>{mod.title}</CardTitle>
                 <CardDescription className="line-clamp-3">{mod.summary}</CardDescription>
