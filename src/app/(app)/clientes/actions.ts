@@ -14,7 +14,7 @@ import { clientInputSchema, limitInputSchema, isWithinInternational, optionalTex
 /** RF-01 · RF-08 · BR-AUD-01: authorization cannot rely on hidden buttons. */
 async function requireTransactionUser() {
   const session = await getAuth().api.getSession({ headers: await headers() });
-  if (!session?.user) redirect("/login");
+  if (!session?.user || session.user.active === false) redirect("/login");
   if (session.user.role !== "transaction") throw new Error("Acceso restringido.");
   return session.user;
 }
