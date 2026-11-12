@@ -32,8 +32,8 @@ export function ExportButton({ filters }: ExportButtonProps) {
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
           }
-        } catch (error: any) {
-          alert(error.message || "Ocurrió un error al exportar los certificados.");
+        } catch (error: unknown) {
+          alert((error instanceof Error && error.message) || "Ocurrió un error al exportar los certificados.");
         }
       }}
     >

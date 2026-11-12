@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { connection } from 'next/server';
 import { getCertificateHistory, getReportStatistics, ReportFilters } from "./data";
 import { ExportButton } from "./export-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageSkeleton } from "@/components/module-gate";
 import { FileText, CheckCircle2, AlertTriangle, BarChart3 } from "lucide-react";
 
 interface PageProps {
@@ -12,7 +14,16 @@ interface PageProps {
   }>;
 }
 
-export default async function ReportesPage({ searchParams }: PageProps) {
+// Cache Components: the request data is read inside <Suspense>, or `next build` fails
+export default function ReportesPage(props: PageProps) {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <ReportesContent {...props} />
+    </Suspense>
+  );
+}
+
+async function ReportesContent({ searchParams }: PageProps) {
   // Forzar renderizado dinámico en el servidor (compatible con Next.js 16)
   await connection();
 
