@@ -55,7 +55,7 @@ Cases: PC-01 RF-03/BR-AUD-01 client and audit together, PC-02 RF-03 duplicate RF
 TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:e2e
 ```
 
-Cases: PS-01 RF-01 redirect to login and back, PS-02 RF-01 wrong password, PS-03 RF-01 sign in and out with each role, PI-01 RF-03 client with two destinations and own limits, PI-02 RF-03 duplicate RFC, PI-03 RF-02 alveograph and farinograph with limits, PI-04 RF-02 lower above upper, PI-05 RF-04 lot with a complete inspection and a deviation, PI-06 UC-05/06/07 issue, send and PDF with the inspection lock, PS-04 lot to delivery end to end, PS-05 RF-01 query user cannot issue, PS-06 RF-01 only admin opens Usuarios, PS-07 RF-07 report filter and export (skipped until Reportes #15 is merged).
+Cases: PS-01 RF-01 redirect to login and back, PS-02 RF-01 wrong password, PS-03 RF-01 sign in and out with each role, PI-01 RF-03 client with two destinations and own limits, PI-02 RF-03 duplicate RFC, PI-03 RF-02 alveograph and farinograph with limits, PI-04 RF-02 lower above upper, PI-05 RF-04 lot with a complete inspection and a deviation, PI-06 UC-05/06/07 issue, send and PDF with the inspection lock, PS-04 lot to delivery end to end, PS-05 RF-01 query user cannot issue, PS-06 RF-01 only admin opens Usuarios, PS-07 RF-07 report filtered by client as the query role, with the `.xlsx` read back with exceljs and the CSV checked.
 
 ## UAT tasks to script
 
