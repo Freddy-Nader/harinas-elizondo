@@ -16,7 +16,8 @@ test.describe("RF-01 inicio y cierre de sesión", () => {
     await page.getByLabel("Correo").fill("analista@prueba.test");
     await page.getByLabel("Contraseña").fill("contrasena-incorrecta");
     await page.getByRole("button", { name: "Iniciar sesión" }).click();
-    await expect(page.getByText("No pudimos iniciar sesión. Revisa tu correo y contraseña.")).toBeVisible();
+    // Prefix only, so it holds before and after the visual identity PR (#34) splits the message in two
+    await expect(page.getByText(/^No pudimos iniciar sesión/)).toBeVisible();
     await expect(page).toHaveURL(/\/login/);
   });
 
