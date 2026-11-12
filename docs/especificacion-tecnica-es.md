@@ -24,7 +24,7 @@ El alcance de la versión 1 cubre los requisitos RF-01 a RF-08 y los casos de us
 | Autenticación | Better Auth con correo y contraseña, campos extra `role`, `employeeId` y `active` | D-03, D-14 |
 | PDF | `@react-pdf/renderer` en el servidor | D-13 |
 | Correo | Interfaz `sendEmail` hoy simulada (se registra en el log), Resend planeado | D-13 |
-| Exportación | exceljs para `.xlsx` y CSV propio (pendiente de integrar, PR #33 y PR #37) | D-19 |
+| Exportación | exceljs para `.xlsx` y CSV propio (integrado en `main` con el PR #33 y el PR #37) | D-19 |
 | Hospedaje | Vercel, con deploy de producción en https://harinas-elizondo.vercel.app | D-01 |
 | Pruebas | Vitest (unitarias y de componentes), Playwright (integrales y de sistema), GitHub Actions (regresión) | ver Calidad de servicio |
 
@@ -39,7 +39,7 @@ La arquitectura del documento del equipo es por capas (presentación, lógica de
 | Acceso a datos | `src/lib/db/` (esquema y cliente Drizzle) y un `data.ts` por módulo |
 | Seguridad | `src/proxy.ts`, `src/lib/session.ts`, `src/lib/permissions.ts`, `src/lib/modules.ts` |
 | Auditoría | `src/lib/audit.ts` |
-| Servicios e integración | `src/lib/services/` (PDF, correo y, pendiente de integrar con el PR #37, exportación) |
+| Servicios e integración | `src/lib/services/` (PDF, correo y, exportación, integrada en `main` con el PR #37) |
 
 ```mermaid
 flowchart LR
@@ -158,7 +158,7 @@ flowchart TD
 | `/certificados` | Certificados de calidad | Lista con folio, cliente, lote, orden de compra, estado, desviaciones y fecha de emisión |
 | `/certificados/nuevo` | Nuevo certificado | Cliente, lote, orden de compra, cantidades, factura, fecha de envío, dirección de entrega del cliente, transportista y casilla de firma |
 | `/certificados/[id]` | Detalle de certificado | Resultados (diez líneas con origen del límite y desviación), lista de bloqueos BR-CER-05, emisión con envío opcional, envíos y reenvíos, cancelación con motivo y verificación de la huella SHA-256 |
-| `/reportes` | Reportes y Estadísticas | Filtros por periodo, cliente y estado, indicadores, gráficas, histórico paginado y exportación (pendiente de integrar, PR #33 y PR #37) |
+| `/reportes` | Reportes y Estadísticas | Filtros por periodo, cliente y estado, indicadores, gráficas, histórico paginado y exportación (integrado en `main` con el PR #33 y el PR #37) |
 | `/bitacora` | Bitácora | Tabla de solo lectura con filtros por entidad, acción, empleado, fechas e id, 50 filas por página y detalle JSON expandible (pendiente de integrar, PR #31) |
 | Encabezado móvil | Menú móvil | Botón de menú abajo de `md` que abre un panel lateral con los mismos módulos del rol (pendiente de integrar, PR #35) |
 
@@ -178,7 +178,7 @@ flowchart TD
 
 > TODO (equipo): captura de `/certificados/[id]` en borrador con bloqueos, emitido y cancelado.
 
-> TODO (equipo): captura de `/reportes` con filtros y gráficas, cuando se integren el PR #33 y el PR #37.
+> TODO (equipo): captura de `/reportes` con filtros y gráficas. El PR #33 y el PR #37 ya están en `main`.
 
 > TODO (equipo): captura de `/bitacora` con filtros, cuando se integre el PR #31.
 
@@ -192,7 +192,7 @@ Cuando la casilla de firma está activa se imprime el bloque firmado con nombre,
 
 > TODO (equipo): imagen del PDF de un certificado emitido con datos de prueba (por ejemplo del cliente `PRUEBA01`), sin datos reales.
 
-### Reportes en pantalla y exportación (pendiente de integrar, PR #33 y PR #37)
+### Reportes en pantalla y exportación (integrado en `main` con el PR #33 y el PR #37)
 
 La pantalla de Reportes parte del trabajo del PR #33 y lo completa el PR #37. Muestra estos elementos.
 
@@ -623,7 +623,7 @@ ORDER BY at DESC
 LIMIT 50 OFFSET $pagina;
 ```
 
-Histórico de Reportes (pendiente de integrar, PR #33 y PR #37). Filtra por `issued_at` en hora de planta, nunca incluye borradores y lee las desviaciones de la copia guardada en `certificate_lines`.
+Histórico de Reportes (integrado en `main` con el PR #33 y el PR #37). Filtra por `issued_at` en hora de planta, nunca incluye borradores y lee las desviaciones de la copia guardada en `certificate_lines`.
 
 ```sql
 SELECT c.*, cl.business_name, cl.sap_key, cl.rfc
@@ -857,7 +857,7 @@ Flujos alternos
 - A2. El rol no es transacción ni consulta. La ruta responde 403.
 - A3. El certificado es un borrador o está cancelado. El PDF sale con la marca "BORRADOR · sin validez" o "CANCELADO · sin validez", y el nombre del archivo de un borrador termina en `-borrador.pdf`.
 
-#### UC-08 Consultar histórico, reportes y estadísticas (pendiente de integrar, PR #33 y PR #37)
+#### UC-08 Consultar histórico, reportes y estadísticas (integrado en `main` con el PR #33 y el PR #37)
 
 - Actor principal. Usuario de consulta. El usuario de transacción también tiene acceso.
 - Requisitos y reglas. RF-07, D-19, D-25, BR-AUD-01.
@@ -974,7 +974,7 @@ Las mutaciones son server actions de Next.js en `src/app/(app)/<módulo>/actions
 | Certificados | `issueCertificate` | transacción | issue, certificate |
 | Certificados | `sendCertificate` | transacción | send o resend, certificate |
 | Certificados | `cancelCertificate` | transacción | cancel, certificate |
-| Reportes | `exportCertificatesAction(filtros, formato)` (pendiente de integrar, PR #37) | transacción y consulta | export, certificate con id `history` |
+| Reportes | `exportCertificatesAction(filtros, formato)` (integrado en `main` con el PR #37) | transacción y consulta | export, certificate con id `history` |
 
 Las lecturas viven en `data.ts` de cada módulo y en `src/lib/certificate-data.ts`, `inspection-data.ts` y `reference-data.ts`. La Bitácora lee con `listAuditLog`, que llama a `requireRole("transaction", "query")` y no tiene ninguna función de escritura (pendiente de integrar, PR #31).
 
@@ -998,7 +998,7 @@ sendEmail({ to: string[], subject: string, text: string, attachments?: { filenam
 
 Hoy `isEmailSimulated()` devuelve `true`, así que el mensaje se registra en el log del servidor con destinatarios, asunto y tamaño de los adjuntos, nunca con el contenido. El buzón de almacén sale de `WAREHOUSE_EMAIL` y, si no existe, usa `almacen@demo.test`. Para enviar de verdad hay que implementar Resend detrás de `RESEND_API_KEY` con la misma firma, y quien llama no cambia (D-13).
 
-### Exportación a Excel y Power BI (pendiente de integrar, PR #37)
+### Exportación a Excel y Power BI (integrado en `main` con el PR #37)
 
 `src/lib/services/report-export.ts` genera dos formatos con las mismas quince columnas descritas en Diseño de pantallas y reportes.
 
@@ -1031,7 +1031,7 @@ Los números de esta tabla son solo los que reportan los PR, con la corrida que 
 | Unitarias | PU-01 a PU-44 | Vitest | 133 de 133 pruebas pasan, 44 casos en Pass | PR #39 |
 | Componentes | PC-01 a PC-14 | Vitest con Postgres 16 local | 12 de 12 pasan, PC-13 y PC-14 Pendiente | PR #36, PR #39 |
 | Integrales | PI-01 a PI-06 | Playwright con Postgres local | 6 pasan | PR #38, PR #39 |
-| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 6 pasan, PS-07 omitida, 10 Pendiente | PR #38, PR #39 |
+| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 7 pasan, 9 Pendiente | PR #38, PR #39 |
 | Regresión | PR-01 a PR-07 | GitHub Actions | 4 Pass, 3 Pendiente | PR #29, PR #39 |
 | Aceptación | PA-01 a PA-06 | Guion con usuarios reales | 0 ejecutadas, 6 Pendiente | PR #39 |
 
@@ -1049,7 +1049,7 @@ Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/acti
 | Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | Pendiente (#19) |
 | Usabilidad | Interfaz clara y navegación simple | Todo en español, avisos por acción, errores por campo sin perder lo escrito, menú filtrado por rol, menú móvil (pendiente de integrar, PR #35) | PA-01 a PA-06 pendientes |
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
-| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora (pendiente de integrar, PR #31), exportación auditada (pendiente de integrar, PR #37) | PC-14 y PS-15 pendientes |
+| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora (pendiente de integrar, PR #31), exportación auditada (integrado en `main` con el PR #37) | PC-14 y PS-15 pendientes |
 
 > TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
 
@@ -1244,7 +1244,7 @@ Las decisiones están registradas en `docs/llm/decisions.md`.
 
 ### Decisiones sin confirmar de Reportes (PR #32 y PR #37)
 
-Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que todavía no están en `decisions.md`. El equipo debe confirmarlas antes del merge. Este documento describe la versión del PR #37, que va encima del PR #33.
+Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que todavía no están en `decisions.md`. El PR #33 y el PR #37 ya tienen merge en `main`, así que la versión que corre es la del PR #37. El equipo todavía debe pasar estas decisiones a `decisions.md`.
 
 | Tema | PR #32 | PR #37 |
 | --- | --- | --- |
@@ -1260,7 +1260,7 @@ Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que 
 ### Observaciones encontradas en el código
 
 - El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients` (pendiente de integrar, PR #31). Clientes tampoco usa `requireRole` ni `ActionState` como los demás módulos.
-- `main` en 2b30a0f falla `pnpm lint` en `reportes/export-button.tsx` y `pnpm build` en `/reportes`. Lo corrigen el PR #37 y, como arreglo mínimo para CI, el commit cf231f5 del PR #36.
+- `main` en 2b30a0f fallaba `pnpm lint` en `reportes/export-button.tsx` y `pnpm build` en `/reportes`. El merge del PR #37 lo corrigió y `main` en ff92f19 pasa CI.
 - El correo sigue simulado. Pasar a Resend necesita una llave de API (D-13).
 - La exportación no se ha abierto en Excel ni en Power BI, y la regla que exige CI en `main` y una corrida desde un fork siguen pendientes (PR-05 a PR-07).
 
