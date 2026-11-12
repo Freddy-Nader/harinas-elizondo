@@ -27,7 +27,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 7. [ ] Reportes (UC-08) with filters, charts, Excel export (Q-09)
 8. [ ] Bitácora screen
 8a. [ ] Usuarios screen to add accounts and set roles (D-14)
-8b. [ ] Mobile navigation (the sidebar is hidden below `md`)
+8b. [x] Mobile navigation (the sidebar is hidden below `md`). Done 2026-11-11 in `feat/mobile-nav`: menu button in the header below `md` opens a base-ui Drawer from the left with the same role-filtered links (`navItemsFor` in `src/lib/modules.ts`, shared with the sidebar) and the user menu. Closes on navigation, Escape, backdrop or swipe. Desktop unchanged
 9. [ ] Tests by type and their written guides ([testing.md](testing.md)), CI workflow
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned
@@ -54,6 +54,10 @@ Each step is one PR. Modules after step 3 can run in parallel.
 ## Client duplicate alerts (2026-11-04)
 
 - RF-03: separate user-facing messages for duplicate RFC and SAP keys, both during preflight and concurrent database unique-constraint failures. Existing edits exclude the current client from duplicate lookup. Unit tests verify rejection without writes and concurrent-conflict messages.
+
+## Mobile navigation (2026-11-11)
+
+- RF-01: `src/components/mobile-nav.tsx`. Checked in a browser at 375 px on a temporary unauthenticated preview (keyboard open, focus inside, Escape closes and returns focus, closes when widened past `md`). Not checked behind login with real sessions. Every table outside Reportes and Bitácora already had a horizontal scroll wrapper, so no module changed.
 
 ## Waiting on the team
 
