@@ -1,26 +1,24 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
 export function SignOutButton() {
-  const router = useRouter();
   const [pending, setPending] = useState(false);
 
   async function onClick() {
     setPending(true);
-    const { error } = await authClient.signOut();
-    if (error) {
+    try {
+      const { error } = await authClient.signOut();
+      if (error) throw error;
+      window.location.replace("/login");
+    } catch {
       setPending(false);
       toast.error("No pudimos cerrar la sesión. Intenta de nuevo.");
-      return;
     }
-    router.replace("/login");
-    router.refresh();
   }
 
   return (

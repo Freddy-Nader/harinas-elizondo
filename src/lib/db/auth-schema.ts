@@ -12,6 +12,7 @@ export const user = pgTable("user", {
   emailVerified: boolean().notNull().default(false),
   image: text(),
   role: text().notNull().default("query"),
+  active: boolean().notNull().default(true),
   employeeId: text().unique(),
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp()

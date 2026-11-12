@@ -17,8 +17,7 @@ export function AccessDenied() {
     <section className="flex max-w-xl flex-col gap-2">
       <h1 className="text-2xl font-semibold tracking-tight">Acceso restringido</h1>
       <p className="text-pretty text-muted-foreground">
-        Tu perfil es de consulta. Puedes revisar los reportes y la bitácora, pero este módulo
-        solo está disponible para usuarios de transacción.
+        Tu cuenta no tiene permiso para abrir este módulo.
       </p>
     </section>
   );
