@@ -5,6 +5,17 @@ import { headers } from "next/headers";
 import { getExportableCertificateData, ReportFilters } from "./data";
 
 /**
+ * Escapa una celda de CSV: duplica las comillas internas y neutraliza valores
+ * que Excel interpretaría como fórmula (=, +, -, @).
+ */
+function csvCell(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  let text = String(value);
+  if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+  return `"${text.replace(/"/g, '""')}"`;
+}
+
+/**
  * Server action to securely handle the export of certificate history to CSV/Excel.
  * Satisfies Q-09, RF-01, and RF-07.
  */
@@ -24,7 +35,7 @@ export async function exportCertificatesAction(filters: ReportFilters = {}) {
     throw new Error("Acceso denegado: No cuenta con permisos para exportar reportes.");
   }
 
-  // 2. Fetch exportable data using the data layer
+  // 2. Fetch exportable data (solo certificados emitidos o enviados)
   const data = await getExportableCertificateData(filters);
 
   if (!data || data.length === 0) {
@@ -43,27 +54,33 @@ export async function exportCertificatesAction(filters: ReportFilters = {}) {
     "Orden de Compra",
     "No. Factura",
     "Emitido Por",
+    "Con Desviación",
+    "Parámetros Fuera de Rango",
   ];
 
   const csvRows = [
-    headersRow.join(","),
+    headersRow.map(csvCell).join(","),
     ...data.map((row) =>
       [
-        row.certificateId,
-        row.issuedDate ? new Date(row.issuedDate).toISOString() : "",
-        `"${row.clientSapKey ?? ""}"`,
-        `"${row.clientName ?? ""}"`,
-        `"${row.clientRfc ?? ""}"`,
-        `"${row.lotId ?? ""}"`,
-        `"${row.inspectionSequence ?? ""}"`,
-        `"${row.purchaseOrder ?? ""}"`,
-        `"${row.invoiceNumber ?? ""}"`,
-        `"${row.issuedBy ?? ""}"`,
-      ].join(",")
+        row.id,
+        row.issuedAt ? new Date(row.issuedAt).toISOString() : "",
+        row.sapKey,
+        row.clientName,
+        row.rfc,
+        row.lotId,
+        row.inspectionSequence,
+        row.purchaseOrder,
+        row.invoiceNumber,
+        row.issuedByName,
+        row.deviationParams.length > 0 ? "Sí" : "No",
+        row.deviationParams.join("; "),
+      ]
+        .map(csvCell)
+        .join(","),
     ),
   ];
 
-  const csvContent = csvRows.join("\n");
+  const csvContent = csvRows.join("\r\n");
 
   return {
     success: true,
