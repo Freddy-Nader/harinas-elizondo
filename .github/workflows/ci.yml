@@ -46,22 +46,39 @@ jobs:
       - name: Build
         run: pnpm build
 
-  # Placeholder for the integration and end-to-end suites of issues #21 and #22.
-  # Those scripts and their GitHub secrets do not exist yet, so the job stays
-  # commented out. When they land, enable it, keep it out of the required checks,
-  # and skip it on fork pull requests because forks cannot read secrets.
-  #
-  # integration-e2e:
-  #   name: Integration and e2e
-  #   needs: checks
-  #   if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v7
-  #     - uses: pnpm/action-setup@v6
-  #     - uses: actions/setup-node@v7
-  #       with:
-  #         node-version: 22
-  #         cache: pnpm
-  #     - run: pnpm install --frozen-lockfile
-  #     - run: echo "add the integration (#21) and e2e (#22) commands here"
+  # Component (integration) tests of issue #21, PC-xx in docs/llm/testing.md. They run
+  # the server actions against a throwaway Postgres 16 service. The credentials below are
+  # not secrets, they only exist inside this job, so the job also runs on fork PRs.
+  # The e2e suite of issue #22 will get its own job.
+  integration:
+    name: Integration tests (Postgres)
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: harinas_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d harinas_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://test:test@localhost:5432/harinas_test
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Integration tests
+        run: pnpm test:int
