@@ -11,6 +11,8 @@
   > [!NOTE]
   > <b>Proyecto escolar no oficial.</b> Se hizo para una materia universitaria y no está afiliado, avalado ni en uso por Harinas Elizondo. El logo aparece solo para identificar el caso de estudio.
 
+  [![CI](https://github.com/ValleryR/harinas-elizondo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ValleryR/harinas-elizondo/actions/workflows/ci.yml)
+
   [English version](README.md) • [Qué es](#qué-es) • [Funciones](#funciones) • [Cómo empezar](#cómo-empezar) • [Para LLMs](docs/llm/README.md)
 </div>
 

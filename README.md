@@ -10,6 +10,8 @@
   > [!NOTE]
   > <b>Unofficial school project.</b> Made for a university course and not affiliated with, endorsed by or used by Harinas Elizondo. The logo is shown only to identify the case study.
 
+  [![CI](https://github.com/ValleryR/harinas-elizondo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ValleryR/harinas-elizondo/actions/workflows/ci.yml)
+
   [Versión en español](README-es.md) • [What it is](#what-it-is) • [Features](#features) • [Getting Started](#getting-started) • [For LLMs](docs/llm/README.md)
 </div>
 
