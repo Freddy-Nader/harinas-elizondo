@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { MODULES, navItemsFor } from "./modules";
 import { canAccess, canMutate, isRole, safeNextPath } from "./permissions";
 
 describe("canAccess", () => {
@@ -71,5 +72,46 @@ describe("safeNextPath", () => {
   it("never sends the user back to login or the auth API", () => {
     expect(safeNextPath("/login")).toBe("/panel");
     expect(safeNextPath("/api/auth/session")).toBe("/panel");
+  });
+});
+
+describe("navItemsFor", () => {
+  const hrefs = (role: Parameters<typeof navItemsFor>[0]) => navItemsFor(role).map((item) => item.href);
+
+  it("RF-01 gives administrators the panel and Usuarios only", () => {
+    expect(hrefs("admin")).toEqual(["/panel", "/usuarios"]);
+  });
+
+  it("RF-01 gives transaction users the panel and every operational module, without Usuarios", () => {
+    expect(hrefs("transaction")).toEqual([
+      "/panel",
+      "/clientes",
+      "/equipos",
+      "/lotes",
+      "/inspecciones",
+      "/certificados",
+      "/reportes",
+      "/bitacora",
+    ]);
+  });
+
+  it("RF-01 gives query users the panel, Reportes and Bitácora only", () => {
+    expect(hrefs("query")).toEqual(["/panel", "/reportes", "/bitacora"]);
+  });
+
+  it("RF-01 lists exactly the modules canAccess allows, so sidebar and mobile menu match the guards", () => {
+    for (const role of ["admin", "transaction", "query"] as const) {
+      const allowed = MODULES.filter((mod) => canAccess(role, mod.href)).map((mod) => mod.href);
+      expect(hrefs(role)).toEqual(["/panel", ...allowed]);
+      expect(navItemsFor(role).every((item) => canAccess(role, item.href))).toBe(true);
+    }
+  });
+
+  it("returns only href and title, in Spanish, for the links", () => {
+    expect(navItemsFor("query")).toEqual([
+      { href: "/panel", title: "Panel" },
+      { href: "/reportes", title: "Reportes" },
+      { href: "/bitacora", title: "Bitácora" },
+    ]);
   });
 });

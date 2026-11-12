@@ -3,16 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Role } from "@/lib/auth";
-import { MODULES } from "@/lib/modules";
+import { navItemsFor } from "@/lib/modules";
 import { cn } from "@/lib/utils";
 
+type AppNavProps = {
+  role: Role;
+  /** Called when a link is activated. The mobile menu uses it to close itself. */
+  onNavigate?: () => void;
+  /** Larger rows for touch screens (mobile menu). The desktop sidebar keeps the compact rows. */
+  touch?: boolean;
+};
+
 /** RF-01. Shows only the modules the role can open. */
-export function AppNav({ role }: { role: Role }) {
+export function AppNav({ role, onNavigate, touch = false }: AppNavProps) {
   const pathname = usePathname();
-  const items = [
-    { href: "/panel", title: "Panel" },
-    ...MODULES.filter((mod) => mod.roles.includes(role)),
-  ];
+  const items = navItemsFor(role);
 
   return (
     <nav aria-label="Módulos" className="flex flex-col gap-0.5">
@@ -23,9 +28,11 @@ export function AppNav({ role }: { role: Role }) {
             key={item.href}
             href={item.href}
             aria-current={active ? "page" : undefined}
+            onClick={onNavigate}
             className={cn(
               "rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors duration-150",
               "hover:bg-muted hover:text-foreground",
+              touch && "flex min-h-11 items-center text-base active:bg-muted",
               active && "bg-muted font-medium text-foreground",
             )}
           >
