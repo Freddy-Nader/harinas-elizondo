@@ -1,0 +1,30 @@
+# Keeps this fork's main in sync with ValleryR/harinas-elizondo main.
+# Every push it makes triggers the Vercel Git deployment of this fork, so production follows upstream.
+# Needs the repository secret SYNC_TOKEN: a fine-grained token for this repo only,
+# with Contents and Workflows set to Read and write (GITHUB_TOKEN cannot update workflow files).
+name: Sync from upstream
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'Freddy-Nader/harinas-elizondo'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge upstream main into this fork
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "::error::SYNC_TOKEN secret is missing"; exit 1; fi
+          gh api -X POST "repos/${{ github.repository }}/merge-upstream" -f branch=main \
+            --jq '"result \(.merge_type) from \(.base_branch)"'
