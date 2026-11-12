@@ -10,7 +10,7 @@ Las pruebas de aceptación las hacen personas reales que no forman parte del equ
 - Cargar solo datos de prueba. Nunca usar clientes, lotes ni correos reales.
 - Tener una cuenta de transacción y una de consulta de demostración. El moderador entrega las credenciales en persona y no las escribe en este documento.
 - Antes de PA-04 debe existir un cliente activo, y antes de PA-05 debe haber al menos un certificado emitido para ese cliente.
-- La tarea PA-05 necesita el módulo de Reportes, que está en #33 y #37 sin merge. Si no está integrado el día de la sesión, se marca como no ejecutada con ese motivo.
+- La tarea PA-05 usa el módulo de Reportes, que ya está en `main` desde #33 y #37.
 - El moderador lee la tarea en voz alta, no ayuda durante la tarea y toma el tiempo desde que la persona toca la pantalla hasta que dice que terminó. Un error es cualquier acción que la persona tiene que deshacer o un mensaje de validación que aparece por un dato mal puesto.
 
 ## Guion de tareas

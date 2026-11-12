@@ -8,14 +8,14 @@ Playwright compila la aplicación, la inicia con `next start` y la conecta a una
 
 | Dato | Valor |
 | --- | --- |
-| Fecha | 2026-11-11 |
-| Commit | 331ef38 (rama `test/e2e`, PR #38) |
+| Fecha | 2026-11-12 |
+| Commit | 856f7e0 (rama `test/e2e`, PR #38) |
 | Comando | `TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:e2e` |
 | Base | PostgreSQL 16.13 en Docker local, base `harinas_test`, nunca Neon |
 | Entorno | macOS arm64, Node 22.22.0, Playwright 1.65.0, Chromium |
-| Resultado de la suite | 13 pruebas, 12 pasan, 1 omitida (PS-07), 0 fallan, 36.2 s |
+| Resultado de la suite | 13 pruebas, 13 pasan, 0 omitidas, 0 fallan, 30.7 s |
 
-En CI el job E2E tests (Playwright) corre la misma suite. La corrida verde del commit 331ef38 es https://github.com/ValleryR/harinas-elizondo/actions/runs/43161348610.
+En CI el job E2E tests (Playwright) corre la misma suite. La corrida del commit 856f7e0 está en la pestaña Checks de https://github.com/ValleryR/harinas-elizondo/pull/38.
 
 ## Cómo repetirla
 

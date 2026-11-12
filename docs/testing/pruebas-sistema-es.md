@@ -8,14 +8,14 @@ La primera parte son las pruebas automatizadas con Playwright contra una base lo
 
 | Dato | Valor |
 | --- | --- |
-| Fecha | 2026-11-11 |
-| Commit | 331ef38 (rama `test/e2e`, PR #38) |
+| Fecha | 2026-11-12 |
+| Commit | 856f7e0 (rama `test/e2e`, PR #38) |
 | Comando | `TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:e2e` |
 | Base | PostgreSQL 16.13 en Docker local, base `harinas_test`, nunca Neon |
 | Entorno | macOS arm64, Node 22.22.0, Playwright 1.65.0, Chromium |
-| Resultado de la suite | 13 pruebas, 12 pasan, 1 omitida (PS-07), 0 fallan, 36.2 s |
+| Resultado de la suite | 13 pruebas, 13 pasan, 0 omitidas, 0 fallan, 30.7 s |
 
-En CI el job E2E tests (Playwright) corre la misma suite. La corrida verde del commit 331ef38 es https://github.com/ValleryR/harinas-elizondo/actions/runs/43161348610. Los pasos para repetirla están en la guía de pruebas integrales.
+En CI el job E2E tests (Playwright) corre la misma suite. La corrida del commit 856f7e0 está en la pestaña Checks de https://github.com/ValleryR/harinas-elizondo/pull/38. Los pasos para repetirla están en la guía de pruebas integrales.
 
 ## Pruebas automatizadas con base local
 
@@ -27,7 +27,7 @@ En CI el job E2E tests (Playwright) corre la misma suite. La corrida verde del c
 | PS-04 | RF-04, RF-05, RF-06 | Equipos listos y cliente activo | Crear un lote, completar su inspección, crear y emitir el certificado, enviarlo | Lote sintético, resultados dentro de rango, factura y transportista ficticios | El certificado dice que todos los parámetros están dentro de referencia, queda enviado al contacto, aparece como Enviado en la lista y el lote avisa que ya tiene un certificado emitido | Pasa (5.0 s) | Pass |
 | PS-05 | RF-01 | Sesión de consulta | Revisar el menú y escribir a mano las rutas de emisión y captura | /certificados, /certificados/nuevo y /lotes/nuevo | El menú ofrece Reportes y Bitácora y oculta Certificados, Clientes, Equipos, Lotes, Inspecciones y Usuarios. Cada ruta muestra "Acceso restringido" sin los botones de crear o emitir | Pasa (1.2 s) | Pass |
 | PS-06 | RF-01, D-14 | Sesión de transacción y de administrador | Abrir /usuarios con cada uno | Usuarios de prueba | Transacción ve "Acceso restringido" y el administrador ve Usuarios en el menú y abre la pantalla | Pasa (1.4 s) | Pass |
-| PS-07 | RF-07, UC-08, Q-09 | Módulo de Reportes integrado | Abrir /reportes, filtrar por cliente y exportar | Certificados sintéticos | La tabla se filtra y se descarga el archivo | Omitida en la corrida (`test.skip`) | Pendiente, Reportes (#15) no está integrado en esta rama porque #33 y #37 no tienen merge. Los selectores de la prueba pueden cambiar con la versión que se integre |
+| PS-07 | RF-07, UC-08, Q-09 | Un certificado emitido para un cliente propio de la prueba | Entrar como consulta, abrir /reportes, filtrar por el cliente, exportar a Excel y a CSV | Certificados sintéticos | La tabla muestra solo el certificado del cliente. El `.xlsx` tiene la hoja Certificados con ese certificado y el CSV también lo trae | La tabla muestra una fila, el `.xlsx` leído con exceljs tiene 2 filas (encabezado y certificado) y el CSV lo contiene | Pass |
 
 ## Verificación en vivo contra Neon (#19)
 
@@ -71,5 +71,5 @@ Esta sección integra la antigua guía `docs/testing-inspections-es.md`. Cada pa
 
 | Estado | Casos |
 | --- | --- |
-| Pass | 6 (PS-01 a PS-06) |
-| Pendiente | 10 (PS-07 por Reportes, PS-08 a PS-14 por #19, PS-15 y PS-16 por PRs sin merge) |
+| Pass | 7 (PS-01 a PS-07) |
+| Pendiente | 9 (PS-08 a PS-14 por #19, PS-15 y PS-16 por PRs sin merge) |
