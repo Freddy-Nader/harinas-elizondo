@@ -12,6 +12,7 @@ Last updated 2026-11-11. Deadline **2026-11-13 23:59** (delivery 3). Update this
 - [x] App shell with Spanish navigation and a placeholder per module
 - [x] Domain rules with tests for sequence, reference fallback, deviation and completeness
 - [x] Agent docs (`AGENTS.md`, `docs/llm/`)
+- [x] Project skill `dsw` in `.agents/skills/dsw/`, which resumes work from these docs and lists the course deliverables (2026-11-05)
 - [x] Vercel deploy of the fork at https://harinas-elizondo.vercel.app, with Neon Postgres (Washington, D.C.) attached
 
 ## Next, in suggested order
@@ -57,4 +58,4 @@ Each step is one PR. Modules after step 3 can run in parallel.
 
 ## Waiting on the team
 
-See open questions in [decisions.md](decisions.md). Only Q-11 (parameter units) and Q-12 (who builds what) are left, and both are for the team.
+See open questions in [decisions.md](decisions.md). Q-11 (parameter units), Q-12 (who builds what) and Q-13 to Q-15 (humidity, numerical references, certificate fields) are for the team.
