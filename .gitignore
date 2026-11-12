@@ -48,3 +48,7 @@ legacy/prototipo-v0.1/clientes.json
 
 # private docs
 docs/private/
+
+# playwright
+/blob-report
+/playwright/.cache
