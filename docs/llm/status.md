@@ -28,8 +28,8 @@ Each step is one PR. Modules after step 3 can run in parallel.
 7. [x] Reportes (UC-08) with filters, charts and Excel/CSV export (D-19). Done 2026-11-11 in PR #33 (`feat/reportes-uc08`, by laxmxn: real deviations, detail per parameter, Pareto and monthly charts) plus `feat/reportes-complement` on top: `requireRole("transaction", "query")` and `ModuleGate`, filters in the URL over `issuedAt` (presets, range, client, state), paginated history with a link to each certificate, KPIs for cancelled certificates and failed deliveries, export action with `.xlsx` (exceljs) and CSV plus an `export` audit row. Cancelled certificates (D-25) stay in the history and are counted apart; drafts are excluded. Rules in `src/lib/domain/report.ts`, export in `src/lib/services/report-export.ts`. Not yet checked in a browser against Neon or opened in Excel/Power BI
 8. [x] Bitácora screen (RF-08, D-20). Done 2026-11-11 in `feat/bitacora`: read-only `/bitacora` for both roles, 50 rows per page newest first, filters in the URL (entity, action, employee id or name, date range, record id), Spanish labels with a raw-code fallback, link to the entity when it has a page the role may open, expandable JSON detail. No write action exists. Not yet checked in a browser against a database
 8a. [ ] Usuarios screen to add accounts and set roles (D-14)
-8b. [ ] Mobile navigation (the sidebar is hidden below `md`)
-9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner
+8b. [x] Mobile navigation (the sidebar is hidden below `md`). Done 2026-11-11 in `feat/mobile-nav`: menu button in the header below `md` opens a base-ui Drawer from the left with the same role-filtered links (`navItemsFor` in `src/lib/modules.ts`, shared with the sidebar) and the user menu. Closes on navigation, Escape, backdrop or swipe. Desktop unchanged
+9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner. Component tests done 2026-11-11 (issue #21): `pnpm test:int`, 12 PC cases against Postgres 16, local Docker or the CI job
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned
 
@@ -59,6 +59,10 @@ Each step is one PR. Modules after step 3 can run in parallel.
 ## Client duplicate alerts (2026-11-04)
 
 - RF-03: separate user-facing messages for duplicate RFC and SAP keys, both during preflight and concurrent database unique-constraint failures. Existing edits exclude the current client from duplicate lookup. Unit tests verify rejection without writes and concurrent-conflict messages.
+
+## Mobile navigation (2026-11-11)
+
+- RF-01: `src/components/mobile-nav.tsx`. Checked in a browser at 375 px on a temporary unauthenticated preview (keyboard open, focus inside, Escape closes and returns focus, closes when widened past `md`). Not checked behind login with real sessions. Every table outside Reportes and Bitácora already had a horizontal scroll wrapper, so no module changed.
 
 ## Waiting on the team
 

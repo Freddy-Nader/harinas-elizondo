@@ -86,6 +86,19 @@ export const MODULES: readonly AppModule[] = [
   },
 ];
 
+export type NavItem = Pick<AppModule, "href" | "title">;
+
+/**
+ * RF-01. Links a role sees in the navigation, in display order. The desktop sidebar and
+ * the mobile menu both render this list, so they can never disagree.
+ */
+export function navItemsFor(role: Role): NavItem[] {
+  return [
+    { href: "/panel", title: "Panel" },
+    ...MODULES.filter((mod) => mod.roles.includes(role)).map(({ href, title }) => ({ href, title })),
+  ];
+}
+
 export function findModule(href: string) {
   const mod = MODULES.find((m) => m.href === href);
   if (!mod) throw new Error(`Unknown module ${href}`);
