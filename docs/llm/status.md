@@ -28,7 +28,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 8. [ ] Bitácora screen
 8a. [ ] Usuarios screen to add accounts and set roles (D-14)
 8b. [ ] Mobile navigation (the sidebar is hidden below `md`)
-9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner. Component tests done 2026-11-11 (issue #21): `pnpm test:int`, 12 PC cases against Postgres 16, local Docker or the CI job
+9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner. Component tests done 2026-11-11 (issue #21): `pnpm test:int`, 12 PC cases against Postgres 16, local Docker or the CI job. E2E done 2026-11-11 (issue #22): `pnpm test:e2e`, 12 PI/PS cases in Playwright plus PS-07 Reportes skipped until #15 is merged
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned
 
