@@ -29,7 +29,7 @@ Each step is one PR. Modules after step 3 can run in parallel.
 8. [ ] Bitácora screen
 8a. [ ] Usuarios screen to add accounts and set roles (D-14)
 8b. [x] Mobile navigation (the sidebar is hidden below `md`). Done 2026-11-11 in `feat/mobile-nav`: menu button in the header below `md` opens a base-ui Drawer from the left with the same role-filtered links (`navItemsFor` in `src/lib/modules.ts`, shared with the sidebar) and the user menu. Closes on navigation, Escape, backdrop or swipe. Desktop unchanged
-9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner
+9. [ ] Tests by type and their written guides ([testing.md](testing.md)). CI workflow done 2026-11-11 (issue #20): `.github/workflows/ci.yml` runs typecheck, lint, test and build on every PR and on every push to `main`, and it replaces `clients-checks.yml`. The branch rule that makes the check required on `main` is still pending with the repo owner. Component tests done 2026-11-11 (issue #21): `pnpm test:int`, 12 PC cases against Postgres 16, local Docker or the CI job
 10. [ ] Technical specification (Spanish), based on the case study template (Technical Overview, Screen and Report Design, Data Design, SQL Design, Behavior Design, Interface Design, Quality of Service, Database Design, Installation, Open and Closed Issues)
 11. [ ] Class presentation, team conclusions, individual lessons learned
 
