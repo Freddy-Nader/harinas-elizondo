@@ -1,0 +1,67 @@
+# Regression suite (PR-xx in docs/llm/testing.md): typecheck, lint, unit tests and
+# production build on every pull request and on every push to main.
+#
+# The `checks` job uses no GitHub secrets on purpose, so it also runs on pull
+# requests opened from forks. The env values below are dummies, not credentials.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Dummy values, never real ones. Nothing connects to them during the checks.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-dummy-secret-not-used-anywhere-real
+      BETTER_AUTH_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v7
+      # Reads the pnpm version from `packageManager` in package.json.
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Lint
+        run: pnpm lint
+      - name: Unit tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+
+  # Placeholder for the integration and end-to-end suites of issues #21 and #22.
+  # Those scripts and their GitHub secrets do not exist yet, so the job stays
+  # commented out. When they land, enable it, keep it out of the required checks,
+  # and skip it on fork pull requests because forks cannot read secrets.
+  #
+  # integration-e2e:
+  #   name: Integration and e2e
+  #   needs: checks
+  #   if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v7
+  #     - uses: pnpm/action-setup@v6
+  #     - uses: actions/setup-node@v7
+  #       with:
+  #         node-version: 22
+  #         cache: pnpm
+  #     - run: pnpm install --frozen-lockfile
+  #     - run: echo "add the integration (#21) and e2e (#22) commands here"
