@@ -5,7 +5,9 @@ import {
   certificates,
   clients,
   deliveries,
+  inspectionResults,
   inspections,
+  lots,
   parameters,
   user,
 } from "@/lib/db/schema";
@@ -17,6 +19,8 @@ import {
   type ReportFilters,
   type ReportStatus,
 } from "@/lib/domain/report";
+import { buildProductionQuality } from "@/lib/domain/production-quality";
+import { getInternationalLimits } from "@/lib/reference-data";
 import { requireRole } from "@/lib/session";
 
 export type {
@@ -119,6 +123,44 @@ export async function getReportData(filters: ReportFilters = {}) {
 export async function getExportableCertificateData(filters: ReportFilters = {}) {
   const { history } = await getReportData(filters);
   return history;
+}
+
+/**
+ * RF-07 · UC-08. Quality of the flour produced in the period, from the lots and their
+ * inspections, certified or not. The period applies to the production date, and the client
+ * filter does not apply because a lot has no client until it is certified. The rules live in
+ * `buildProductionQuality` (src/lib/domain/production-quality.ts).
+ */
+export async function getProductionQualityData(filters: ReportFilters = {}) {
+  await requireRole("transaction", "query");
+  const db = getDb();
+
+  const conditions = [];
+  if (filters.startDate) conditions.push(gte(lots.producedOn, filters.startDate));
+  if (filters.endDate) conditions.push(lte(lots.producedOn, filters.endDate));
+  const lotWhere = conditions.length ? and(...conditions) : undefined;
+
+  const [lotRows, inspectionRows, resultRows, limits] = await Promise.all([
+    db.select({ id: lots.id, producedOn: lots.producedOn }).from(lots).where(lotWhere),
+    db
+      .select({ id: inspections.id, lotId: inspections.lotId, sequence: inspections.sequence })
+      .from(inspections)
+      .innerJoin(lots, eq(inspections.lotId, lots.id))
+      .where(lotWhere),
+    db
+      .select({
+        inspectionId: inspectionResults.inspectionId,
+        parameterCode: inspectionResults.parameterCode,
+        value: inspectionResults.value,
+      })
+      .from(inspectionResults)
+      .innerJoin(inspections, eq(inspectionResults.inspectionId, inspections.id))
+      .innerJoin(lots, eq(inspections.lotId, lots.id))
+      .where(lotWhere),
+    getInternationalLimits(),
+  ]);
+
+  return buildProductionQuality(lotRows, inspectionRows, resultRows, limits);
 }
 
 /** Options for the client filter. */

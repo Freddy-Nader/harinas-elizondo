@@ -83,6 +83,16 @@ No necesita base de datos ni variables de entorno. Las pruebas de acciones del s
 
 Ningún caso unitario queda pendiente. Los módulos de Reportes (#33 y #37) y Bitácora (#31) todavía no están integrados en esta rama, así que sus pruebas no forman parte de esta corrida.
 
+## Casos agregados después de la corrida registrada
+
+La sección Calidad de la producción de Reportes se agregó el 16 de noviembre de 2026. Sus pruebas viven en `src/lib/domain/production-quality.test.ts` y se corrieron ese día con `pnpm test` sobre la rama `chore/final-review`, junto con toda la suite (23 archivos, 197 pruebas, todas pasan).
+
+| Id | Requisito | Precondición | Pasos | Datos de entrada | Resultado esperado | Resultado obtenido | Estado |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PU-45 | RF-07, UC-08 | Ninguna | Calcular desviación estándar muestral y Cpk | Un valor, ocho valores, media centrada y cargada al límite, dispersión cero | Desviación con n − 1, Cpk igual a la distancia al límite más cercano entre tres sigma, nulo sin dispersión | 2 de 2 pasan | Pass |
+| PU-46 | RF-07, D-27, BR-INS-03, BR-CER-04 | Ninguna | Resumir la calidad de la producción | Lotes con reinspección, secuencias después de Z, última inspección incompleta, un factor fuera de rango, valor igual al límite, factor sin límites, inspecciones de lotes fuera del periodo | Cada lote cuenta una vez por su última inspección, solo cuentan inspecciones completas, un factor fuera de rango saca al lote de especificación, el límite cuenta como dentro, y un factor sin límites no tiene tasa ni Cpk | 8 de 8 pasan | Pass |
+| PU-47 | RF-07 | Ninguna | Leer el factor de la gráfica de control desde la URL | Código válido, arreglo, texto arbitrario, vacío | Acepta solo códigos de los diez factores y si no usa el primero | 1 de 1 pasa | Pass |
+
 ## Anexo de pruebas por nombre
 
 Lista generada desde la salida de `vitest run --reporter=verbose` del commit 331ef38. Los nombres están en inglés porque son identificadores del código.
