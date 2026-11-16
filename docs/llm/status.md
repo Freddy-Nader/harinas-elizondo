@@ -11,6 +11,7 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 | Technical specification | `docs/especificacion-tecnica-es.md` | Case study template. Merged in PR #40, refreshed 2026-11-16 |
 | Development process | `docs/proceso-desarrollo-es.md` | Method, timeline, Git flow, tools, testing, professor feedback (2026-11-16) |
 | Docs index | `docs/README.md`, `docs/README-es.md` | One table per document and course delivery |
+| Security headers | `next.config.ts` | X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin on every response (2026-11-16). No CSP yet |
 | Session, roles, audit | `src/lib/session.ts`, `permissions.ts`, `audit.ts`, `src/proxy.ts` | RF-01, BR-AUD-01 |
 | Usuarios (D-14) | `/usuarios` | Administrator creates accounts, sets role, deactivates |
 | Clientes (UC-02) | `/clientes` | Fiscal address, several destinations, unique RFC, own limits that narrow the international ones (D-22, D-23) |

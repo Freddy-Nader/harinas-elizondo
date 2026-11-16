@@ -900,7 +900,7 @@ Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/acti
 
 | Atributo | Indicador | Cómo lo cumple el diseño | Evidencia |
 | --- | --- | --- | --- |
-| Seguridad | Acceso restringido por perfil | `requireRole` en cada acción y lectura, `ModuleGate` en cada pantalla, rol desconocido tratado como consulta, cuenta inactiva sin sesión, registro público apagado, redirección solo a rutas del mismo sitio | PU de `permissions.test.ts`, PC-07, PC-11, PS-01 a PS-03, PS-05, PS-06 |
+| Seguridad | Acceso restringido por perfil | `requireRole` en cada acción y lectura, `ModuleGate` en cada pantalla, rol desconocido tratado como consulta, cuenta inactiva sin sesión, registro público apagado, redirección solo a rutas del mismo sitio, cabeceras `X-Frame-Options`, `X-Content-Type-Options` y `Referrer-Policy` en todas las respuestas | PU de `permissions.test.ts`, PC-07, PC-11, PS-01 a PS-03, PS-05, PS-06 |
 | Confiabilidad | Datos validados antes de emitir | Zod en cada formulario, `issueBlockers`, última inspección completa obligatoria, restricciones únicas y CHECK en la base de datos, emisión atómica | PU de `certificate.test.ts`, PC-08 a PC-10, PI-06, PS-04 |
 | Integridad de la información | Bitácora y control de cambios | Fila de bitácora en cada mutación dentro del mismo lote, inspecciones bloqueadas, copia fija de líneas, hash SHA-256 verificado en pantalla | PC-01, PC-06, PC-08, PC-12 |
 | Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | Pendiente (#19) |
