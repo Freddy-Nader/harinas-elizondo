@@ -59,6 +59,12 @@ pnpm build
 - Preview deployments are behind Vercel Authentication, so plain `curl` gets a 401. Use `vercel curl <path> --deployment <url>` (it creates a protection bypass token) or open the preview in a browser signed in to Vercel. The production alias is public.
 - Neon was added from the Vercel Marketplace (free plan, Washington, D.C., Neon Auth off because the app uses Better Auth). It provides `DATABASE_URL` and `DATABASE_URL_UNPOOLED` to every environment.
 
+## Email (Resend, D-13)
+
+- `src/lib/services/mailer.ts` sends with Resend when `RESEND_API_KEY` is set. Without it every email is simulated and logged, so local dev and tests never send.
+- Set `RESEND_API_KEY` (and optionally `EMAIL_FROM`, `WAREHOUSE_EMAIL`, `EMAIL_REDIRECT_TO`) in Vercel for Production, then redeploy. Env changes only apply to new deployments.
+- Without a verified domain Resend sends only from `onboarding@resend.dev` and only to the Resend account owner's address. Other recipients fail with a validation error, which is stored as a failed delivery. For the demo set `EMAIL_REDIRECT_TO` to the owner's address, or verify a domain in Resend and set `EMAIL_FROM` on it.
+
 ## Legacy prototype
 
 ```bash
