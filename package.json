@@ -16,7 +16,8 @@
     "db:studio": "drizzle-kit studio",
     "db:create-admin": "tsx scripts/create-admin.ts",
     "db:seed": "tsx scripts/seed.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "docs:pdf": "tsx scripts/docs-to-pdf.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -50,6 +51,8 @@
     "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "marked": "^18.2.0",
+    "mermaid": "^12.3.0",
     "pg": "^8.23.1",
     "shadcn": "^4.22.1",
     "tailwindcss": "^4",

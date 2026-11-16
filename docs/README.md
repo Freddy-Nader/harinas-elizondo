@@ -15,4 +15,6 @@ Everything written about Harinas Elizondo lives in this folder. The course docum
 
 `private/` is gitignored and only exists on team machines (the original delivery 1 PDF).
 
+To upload the documents to Teams, run `pnpm docs:pdf`. It writes one PDF per document plus `entrega-3-completa.pdf` to `docs/pdf/` (gitignored), with the Mermaid diagrams drawn. Add new documents to the list at the top of `scripts/docs-to-pdf.ts`.
+
 How to run the app is in the root [README](../README.md).

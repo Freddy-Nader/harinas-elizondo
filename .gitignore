@@ -52,3 +52,6 @@ docs/private/
 
 # local scratch notes (reports, drafts)
 tmp/
+
+# generated PDFs of the course documents (they go to Teams, not git)
+docs/pdf/

@@ -15,4 +15,6 @@ Todo lo escrito sobre Harinas Elizondo vive en esta carpeta. Los documentos del 
 
 La carpeta `private/` está en `.gitignore` y solo existe en las computadoras del equipo (el PDF original de la entrega 1).
 
+Para subir los documentos a Teams corre `pnpm docs:pdf`. Genera un PDF por documento y `entrega-3-completa.pdf` en `docs/pdf/` (ignorada por Git), con los diagramas Mermaid dibujados. Los documentos nuevos se agregan a la lista al inicio de `scripts/docs-to-pdf.ts`.
+
 Cómo correr la aplicación está en el [README](../README-es.md) de la raíz.

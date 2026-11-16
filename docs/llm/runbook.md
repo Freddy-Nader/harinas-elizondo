@@ -48,6 +48,10 @@ pnpm test
 pnpm build
 ```
 
+## Export docs to PDF
+
+`pnpm docs:pdf` writes one PDF per course document plus `entrega-3-completa.pdf` to `docs/pdf/` (gitignored, uploaded to Teams by hand). It needs Playwright Chromium (`pnpm exec playwright install chromium`) and works offline because Mermaid is loaded from `node_modules`. Add new documents to the `DOCS` list in `scripts/docs-to-pdf.ts`.
+
 ## Git flow
 
 - The team repo is https://github.com/ValleryR/harinas-elizondo (`upstream` in Freddy's clone). Contributors with push access create a branch there (`feat/`, `fix/`, `docs/`, `test/`, `ci/`), open a PR against `main`, and the PR merges with a merge commit once CI passes.

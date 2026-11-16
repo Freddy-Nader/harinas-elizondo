@@ -39,4 +39,4 @@ Las suites con base de datos solo aceptan una base local cuyo nombre termina en 
 
 ## Exportar a PDF
 
-Las guías son Markdown normal sin extensiones, así que se pueden abrir en GitHub e imprimir a PDF desde el navegador, o convertir con una herramienta como Pandoc. La exportación todavía no se ha probado.
+Para subir las guías a Teams corre `pnpm docs:pdf`, que genera un PDF por documento y `entrega-3-completa.pdf` en `docs/pdf/`. Los diagramas Mermaid salen dibujados y la carpeta no se sube a Git.
