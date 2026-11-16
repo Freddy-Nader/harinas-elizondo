@@ -33,7 +33,7 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 - [ ] Branch rule that makes CI required on `main` (repo owner, PR-05). PR-06 passed with the green run of PR #47 from a fork and PR-07 passed on 2026-11-16. PC-13 and PC-14 pass with the new component tests for Reportes and Bitácora.
 - [ ] Team conclusions and individual lessons learned (outside the repo, they hold personal opinions).
 - [ ] Open questions Q-11 (units), Q-13 (humidity) and Q-14 (official numeric ranges) in [decisions.md](decisions.md). The seeded limits are demo values.
-- [ ] Apply migration `0005` (`rate_limit` table, D-28) to Neon with `pnpm db:migrate`, then rotate the demo password to 16+ characters. The seed does not update existing users, see the runbook.
+- [ ] Apply migration `0005` (`rate_limit` table, D-28) to Neon with `pnpm db:migrate`, then rotate the demo password to 16+ characters for both demo accounts with `pnpm db:set-password` (plan 010, built, still to be run against Neon by the operator). See the runbook.
 
 Handoff plans for agents that pick up the open items live in `plans/`.
 

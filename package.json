@@ -16,6 +16,7 @@
     "db:studio": "drizzle-kit studio",
     "db:create-admin": "tsx scripts/create-admin.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "db:set-password": "tsx scripts/set-password.ts",
     "test:e2e": "playwright test",
     "docs:pdf": "tsx scripts/docs-to-pdf.ts",
     "he": "tsx cli/he.ts"
