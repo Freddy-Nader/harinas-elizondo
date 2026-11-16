@@ -32,6 +32,7 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 - [ ] Branch rule that makes CI required on `main` (repo owner) and a CI run from a fork (PR-05 to PR-07).
 - [ ] Team conclusions and individual lessons learned (outside the repo, they hold personal opinions).
 - [ ] Open questions Q-11 (units), Q-13 (humidity) and Q-14 (official numeric ranges) in [decisions.md](decisions.md). The seeded limits are demo values.
+- [ ] Apply migration `0005` (`rate_limit` table, D-28) to Neon with `pnpm db:migrate`, then rotate the demo password to 16+ characters. The seed does not update existing users, see the runbook.
 
 Handoff plans for agents that pick up the open items live in `plans/`.
 

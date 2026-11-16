@@ -33,6 +33,12 @@ pnpm db:seed
 
 `pnpm db:studio` opens Drizzle Studio to browse the data.
 
+`SEED_PASSWORD` must have 16 or more characters, and the seed refuses a shorter one. It lives in `.env` on each machine, so never write its value in a file or a chat.
+
+Sign-in rate limits (D-28) are stored in the `rate_limit` table, created by migration `0005`. Run `pnpm db:migrate` against Neon before the new code reaches production, because sign-in fails while that table is missing.
+
+To rotate the demo password, note that the seed leaves existing users alone. Running `pnpm db:seed` again does not change the stored hash of `laboratorio@demo.test` or `consulta@demo.test`, and the app has no screen to change a password. A new 16+ character `SEED_PASSWORD` therefore only applies to users created after the change, and rotating the two existing accounts still needs a separate step that the team has not built.
+
 ## Checks (run before every PR)
 
 ```bash

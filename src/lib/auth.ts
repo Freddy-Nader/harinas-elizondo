@@ -30,6 +30,14 @@ function createAuth() {
         employeeId: { type: "string", required: false, input: false },
       },
     },
+    // RF-01. Counters live in Postgres because serverless instances do not share memory (D-28)
+    rateLimit: {
+      enabled: true,
+      storage: "database",
+      window: 60,
+      max: 100,
+      customRules: { "/sign-in/email": { window: 60, max: 5 } },
+    },
     plugins: [nextCookies()],
   });
 }

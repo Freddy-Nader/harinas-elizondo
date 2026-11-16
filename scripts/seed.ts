@@ -23,8 +23,8 @@ config({ path: [".env.local", ".env"], quiet: true });
 const url = process.env.DATABASE_URL;
 const password = process.env.SEED_PASSWORD;
 if (!url) throw new Error("DATABASE_URL is not set. Run `vercel env pull .env.local` first.");
-if (!password || password.length < 8) {
-  throw new Error("SEED_PASSWORD (8+ chars) is not set in .env.local");
+if (!password || password.length < 16) {
+  throw new Error("SEED_PASSWORD (16+ chars) is not set in .env.local");
 }
 
 const db = drizzle(neon(url), { schema, casing: "snake_case" });
