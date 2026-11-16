@@ -58,18 +58,18 @@ Esta sección integra la antigua guía `docs/testing-inspections-es.md`. Cada pa
 | Capturar con una cuenta de consulta o sin sesión | Niega el acceso o pide iniciar sesión (RF-01) | PC-07, PU-41, PS-05 | Pass | Pass el 2026-11-16 solo con consulta, ver PS-13. Falta el caso sin sesión |
 | Guardar en una inspección certificada | Rechaza los cambios (BR-AUD-03) | PC-08, PI-06, PU-41 | Pass | Pendiente (#19) |
 | Iniciar la misma inspección desde dos sesiones | Una se crea y la otra pide actualizar, nunca dos nuevas | PC-05, PU-42 | Pass | Pendiente (#19) |
-| Revisar la auditoría de la inspección | Guarda usuario, inspección, secuencia y cambios (BR-AUD-01) | PC-06, PU-32 | Pass | Pass el 2026-11-16 solo en la Bitácora, que muestra Alta, Modificación y Reinspección de las inspecciones 6 y 7, ver PS-15 |
+| Revisar la auditoría de la inspección | Guarda usuario, inspección, secuencia y cambios (BR-AUD-01) | PC-06, PU-32 | Pass | Pass el 2026-11-16 solo en la Bitácora, con ambos roles, que muestra Alta, Modificación y Reinspección de las inspecciones 6 y 7, ver PS-15 |
 
 ## Bitácora y navegación móvil
 
 | Id | Requisito | Precondición | Pasos | Datos de entrada | Resultado esperado | Resultado obtenido | Estado |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| PS-15 | RF-08, D-20 | Pantalla de Bitácora en `main` | Abrir Bitácora con transacción y con consulta y filtrar | Filas de auditoría de prueba | Ambos roles la leen y nadie la modifica | 2026-11-16 en producción. Con consulta se abrió `/bitacora`, que lista los movimientos con empleado, acción y entidad, y se filtró por entidad Certificado y acción Emisión. El filtro dejó tres filas de Emisión, una del 16 nov 2026 (CER-2026-000003) y dos del 11 nov 2026 (CER-2026-000002 y CER-2026-000001). Con transacción solo se verificó que la Bitácora aparece en el menú, y la pantalla no se abrió porque la sesión se cerró antes. Los botones para editar o borrar filas se buscaron solo con consulta y no había ninguno. Solo aparecen las cuentas de demostración | Pass con consulta. Pendiente con transacción, porque la sesión se cerró antes de abrir la pantalla |
+| PS-15 | RF-08, D-20 | Pantalla de Bitácora en `main` | Abrir Bitácora con transacción y con consulta y filtrar | Filas de auditoría de prueba | Ambos roles la leen y nadie la modifica | 2026-11-16 en producción. Con consulta se abrió `/bitacora`, que lista los movimientos con empleado, acción y entidad, y se filtró por entidad Certificado y acción Emisión. El filtro dejó tres filas de Emisión, una del 16 nov 2026 (CER-2026-000003) y dos del 11 nov 2026 (CER-2026-000002 y CER-2026-000001). Con transacción se abrió la misma pantalla y se aplicó el mismo filtro, que dejó las mismas tres filas de Emisión. En ambos roles el único botón de la pantalla es Filtrar, cada fila solo tiene el enlace Ver detalle y no hay botones para editar ni borrar. Solo aparecen las cuentas de demostración | Pass con consulta y con transacción |
 | PS-16 | RF-01 | Navegación móvil en `main` | Abrir la aplicación con un ancho menor a `md` y navegar con el menú | Ventana de teléfono | El menú móvil abre todos los módulos permitidos para el rol | 2026-11-16 en producción a 375 px de ancho. El botón Abrir menú abre un panel lateral. Con transacción el panel lista Panel, Clientes, Equipos, Lotes, Inspecciones, Certificados, Reportes y Bitácora, y con consulta solo Panel, Reportes y Bitácora. Al tocar Reportes con consulta la aplicación abrió `/reportes` | Pass |
 
 ## Resumen
 
 | Estado | Casos |
 | --- | --- |
-| Pass | 15 (PS-01 a PS-14 y PS-16) |
-| Pendiente | 1 (PS-15 con transacción) |
+| Pass | 16 (PS-01 a PS-16) |
+| Pendiente | 0 |

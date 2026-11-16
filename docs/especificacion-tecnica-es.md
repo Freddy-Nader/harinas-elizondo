@@ -220,9 +220,11 @@ La misma inspección ya completa, con la desviación calculada contra los valore
 
 ![Certificado en borrador](img/certificado-borrador.png)
 
-El certificado `CER-2026-000004` en borrador, con sus resultados. La lista de bloqueos por falta de datos de embarque queda debajo de esta captura y no se alcanzó a incluir.
+El certificado `CER-2026-000004` en borrador, con sus resultados. La lista de bloqueos queda más abajo en la página, y se muestra en la captura siguiente.
 
-> TODO (equipo): captura del certificado en borrador con la lista de bloqueos visible. Falta porque la lista queda debajo del área visible de la captura y las sesiones ya estaban cerradas cuando se notó.
+![Bloqueos para emitir el certificado en borrador](img/certificado-borrador-bloqueos.png)
+
+La sección Emitir del mismo borrador `CER-2026-000004`, con la lista de bloqueos en rojo que impide emitirlo mientras falten el número de factura, la cantidad entregada, la fecha de envío y el transportista, y con el botón Emitir certificado deshabilitado.
 
 ![Certificado emitido](img/certificado-emitido.png)
 
@@ -244,7 +246,9 @@ La pantalla de `/reportes` con indicadores y gráficas, vista con el usuario de 
 
 Los reportes filtrados por el cliente `PRUEBA02`, que dejan una sola fila.
 
-> TODO (equipo): captura de la sección Calidad de la producción de Reportes. Falta porque la sección llegó a producción el 16 de noviembre de 2026 después de esta corrida de verificaciones en vivo, y tomar la captura requiere una nueva sesión de las cuentas de demostración.
+![Calidad de la producción en Reportes](img/reportes-calidad.png)
+
+La sección Calidad de la producción de `/reportes`, con los indicadores de lotes producidos, lotes dentro de especificación, reinspecciones y capacidad del proceso, la gráfica de control de Tenacidad (P) y el porcentaje de lotes dentro de especificación por factor, vista con el usuario de transacción y datos de prueba.
 
 ![Bitácora filtrada](img/bitacora.png)
 
