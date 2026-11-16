@@ -21,7 +21,9 @@ src/
 │   │   ├── panel/  clientes/  equipos/  lotes/  inspecciones/  certificados/  reportes/  bitacora/
 │   │   └── layout.tsx    ← static shell, no session read here
 │   ├── login/            ← sign-in screen
-│   └── api/auth/[...all] ← Better Auth handler
+│   └── api/
+│       ├── auth/[...all] ← Better Auth handler
+│       └── v1/[...op]    ← JSON API, thin adapter over src/lib/api (D-29)
 ├── components/
 │   ├── ui/               ← shadcn components (base-ui flavor). Do not edit by hand unless needed
 │   └── *.tsx             ← app components
@@ -29,6 +31,7 @@ src/
     ├── domain/           ← pure business rules + *.test.ts next to them
     ├── db/               ← schema.ts, auth-schema.ts, index.ts (lazy getDb)
     ├── auth.ts           ← lazy getAuth(), roles
+    ├── api/              ← contracts, use cases and registry shared by the site, the API and the CLI (docs/llm/api-cli.md). Clientes only so far
     ├── session.ts        ← data access layer for the session: getCurrentUser, requireUser, requireRole
     ├── permissions.ts    ← pure role rules (canAccess, canMutate, safeNextPath), unit tested
     ├── audit.ts          ← recordAudit / auditInsert (BR-AUD-01)
@@ -40,7 +43,8 @@ src/
     ├── modules.ts        ← nav + module metadata (single source)
     └── utils.ts          ← cn()
 drizzle/                  ← generated migrations (after the first db:generate)
-src/proxy.ts              ← optimistic redirect to /login when there is no session cookie
+src/proxy.ts              ← optimistic redirect to /login when there is no session cookie (not for /api/v1)
+cli/he.ts                 ← `pnpm he`, talks to /api/v1 over HTTP
 ```
 
 Suggested shape for a module when it is built, for example clients:
@@ -98,4 +102,5 @@ House style so far is quiet and dense, like an internal tool. Neutral palette, G
 - Authorization rule of thumb. Pages decide what to show, server actions and data functions decide what is allowed. Always check the role server-side.
 - Module pages wrap their body in `<Suspense fallback={<PageSkeleton />}><ModuleGate href="/ruta">…</ModuleGate></Suspense>`. The gate shows "Acceso restringido" to roles not listed in `modules.ts`.
 - Forms use `useFormAction(action)` from `src/hooks/use-form-action.ts` and `onSubmit`, not `<form action>`, so a validation error does not wipe what the user typed. Actions return `ActionState`; the hook shows the toast. Reference module: `src/app/(app)/equipos/` (`data.ts` reads, `actions.ts` writes, `_components/` client forms).
+- Business logic of a migrated module lives in `src/lib/api/<module>/use-cases.ts` (Clientes so far). Its server action only guards, reads the form, calls the use case and redirects, and the API route and the CLI call the same use case. See `api-cli.md`.
 - Every server action starts with `const user = await requireRole()` (transaction only) or `requireRole("transaction", "query")` for reads, then writes its audit row. When the change and the audit row must land together, use `getDb().batch([change, auditInsert({ user, action, entity, entityId })])`, since the Neon HTTP driver has no interactive transactions.

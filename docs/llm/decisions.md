@@ -27,6 +27,7 @@ Add a row when something is decided. Move a question to the decisions table once
 | D-20 | 2026-10-22 | Both roles can read the audit log | Managers audit, and it supports the Traceability characteristic |
 | D-21 | 2026-10-22 | A lot's product is free text, with suggestions from earlier lots | No catalog needed while limits are per client (D-12) |
 | D-11 | 2026-10-22 | Work happens in Freddy's fork with PRs against the fork's own `main`. One PR upstream later, when Freddy is ready, together with a request to be added as collaborator. Superseded once Freddy got push access upstream (November 2026). Branches now go straight to the team repo, see runbook.md | Freddy has read-only access upstream, and the scaffold should mature before the team reviews it. Vercel previews run from the fork |
+| D-29 | 2026-11-16 | One API behind the site and a CLI. Each operation has a contract (zod input, roles, Spanish field labels) and a use case in `src/lib/api/`. Server actions and the route handler `POST/GET /api/v1/<module>/<operation>` (one catch-all) are thin adapters, and `pnpm he` calls the route over HTTP with the normal session cookie. `/api/v1` is outside the proxy matcher and answers 401 itself. Clientes is the first module. Map and details in `api-cli.md` | An agent can run every backend action from a terminal against a real database and see the same Spanish messages as the screen, and a backend change is tested once for both. The CLI needs no key other than the session cookie |
 
 ## Professor review (2026-11-04)
 

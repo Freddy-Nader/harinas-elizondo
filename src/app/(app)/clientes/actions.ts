@@ -1,14 +1,13 @@
 "use server";
 
-import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq, ne } from "drizzle-orm";
-import { pgError } from "@/lib/action-state";
+import { and, eq } from "drizzle-orm";
 import { requireRole } from "@/lib/session";
 import { getDb } from "@/lib/db";
-import { auditLog, clients, clientDeliveryAddresses, clientLimits, internationalLimits, parameters } from "@/lib/db/schema";
-import { clientInputSchema, limitInputSchema, isWithinInternational, optionalText } from "@/lib/domain/client-validation";
+import { auditLog, clients, clientLimits, internationalLimits, parameters } from "@/lib/db/schema";
+import { clientInputSchema, limitInputSchema, isWithinInternational } from "@/lib/domain/client-validation";
+import { saveClient as saveClientUseCase } from "@/lib/api/clients/use-cases";
 
 function readClient(form: FormData) {
   return clientInputSchema.safeParse({
@@ -37,60 +36,13 @@ async function logChange(
   });
 }
 
-/** RF-03 · UC-02 · BR-CLI-01/02: create or update with DB-enforced unique SAP key. */
+/** RF-03 · UC-02 · BR-CLI-01/02: adapter over the shared use case (src/lib/api/clients). */
 export async function saveClient(form: FormData) {
   const user = await requireRole();
   const parsed = readClient(form);
   if (!parsed.success) validationError(parsed.error.issues[0]?.message ?? "Datos inválidos.");
-  const input = parsed.data;
-  const id = String(form.get("id") ?? "");
-  const db = getDb();
-  const values = {
-    sapKey: input.sapKey, businessName: input.businessName,
-    rfc: optionalText(input.rfc), fiscalAddress: input.fiscalAddress,
-    deliveryAddress: input.deliveryAddresses[0],
-    contactName: optionalText(input.contactName), contactEmail: optionalText(input.contactEmail),
-    requiresCertificate: input.requiresCertificate,
-  };
-  const clientId = id || randomUUID();
-  if (id) {
-    const [existing] = await db.select({ id: clients.id }).from(clients).where(eq(clients.id, id));
-    if (!existing) validationError("No se encontró el cliente.");
-  }
-  // RF-03: friendly preflight messages; database constraints also protect concurrent saves.
-  const [sameRfc] = await db.select({ id: clients.id }).from(clients)
-    .where(id ? and(eq(clients.rfc, input.rfc), ne(clients.id, id)) : eq(clients.rfc, input.rfc)).limit(1);
-  if (sameRfc) validationError("El RFC ya pertenece a otro cliente. Revisa los datos existentes.");
-  const [sameSapKey] = await db.select({ id: clients.id }).from(clients)
-    .where(id ? and(eq(clients.sapKey, input.sapKey), ne(clients.id, id)) : eq(clients.sapKey, input.sapKey)).limit(1);
-  if (sameSapKey) validationError("La clave SAP ya pertenece a otro cliente. Usa una clave diferente.");
-  // RF-03 / BR-AUD-01: client, destinations and audit commit together.
-  const destinations = input.deliveryAddresses.map((address, position) => ({ clientId, address, position }));
-  try {
-    await db.batch([
-      id ? db.update(clients).set(values).where(eq(clients.id, id))
-        : db.insert(clients).values({ id: clientId, ...values, createdBy: user.id }),
-      db.delete(clientDeliveryAddresses).where(eq(clientDeliveryAddresses.clientId, clientId)),
-      db.insert(clientDeliveryAddresses).values(destinations),
-      db.insert(auditLog).values({
-        userId: user.id, userName: user.name, employeeId: user.employeeId ?? null,
-        action: id ? "update" : "create", entity: "clients", entityId: clientId,
-        detail: { sapKey: input.sapKey, deliveryAddressCount: destinations.length },
-      }),
-    ]);
-  } catch (error) {
-    const conflict = pgError(error);
-    if (conflict.code === "23505") {
-      if (conflict.constraint === "clients_rfc_unique") {
-        validationError("El RFC ya pertenece a otro cliente. Revisa los datos existentes.");
-      }
-      if (conflict.constraint === "clients_sap_key_unique") {
-        validationError("La clave SAP ya pertenece a otro cliente. Usa una clave diferente.");
-      }
-      validationError("Ya existe un cliente con esa clave SAP o RFC.");
-    }
-    throw error;
-  }
+  const result = await saveClientUseCase(user, { ...parsed.data, id: String(form.get("id") ?? "") || undefined });
+  if (!result.ok) validationError(result.message);
   revalidatePath("/clientes");
   redirect("/clientes");
 }

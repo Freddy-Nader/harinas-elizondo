@@ -3,7 +3,7 @@
 import { useId, useRef, useState } from "react";
 
 /** UC-02: one independently editable field for each delivery destination. */
-export function DeliveryAddresses({ initialAddresses }: { initialAddresses: string[] }) {
+export function DeliveryAddresses({ initialAddresses, label }: { initialAddresses: string[]; label: string }) {
   const prefix = useId();
   const [addresses, setAddresses] = useState(() =>
     (initialAddresses.length ? initialAddresses : [""]).map((value, id) => ({ id, value })),
@@ -12,7 +12,7 @@ export function DeliveryAddresses({ initialAddresses }: { initialAddresses: stri
 
   return (
     <fieldset className="flex flex-col gap-3 sm:col-span-2">
-      <legend className="mb-2 text-xs font-medium">Direcciones de entrega *</legend>
+      <legend className="mb-2 text-xs font-medium">{label}</legend>
       {addresses.map((address, index) => (
         <div key={address.id} className="flex items-end gap-2">
           <label htmlFor={`${prefix}-${address.id}`} className="flex min-w-0 flex-1 flex-col gap-1 text-xs font-medium">

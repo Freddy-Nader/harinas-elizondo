@@ -17,7 +17,8 @@
     "db:create-admin": "tsx scripts/create-admin.ts",
     "db:seed": "tsx scripts/seed.ts",
     "test:e2e": "playwright test",
-    "docs:pdf": "tsx scripts/docs-to-pdf.ts"
+    "docs:pdf": "tsx scripts/docs-to-pdf.ts",
+    "he": "tsx cli/he.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

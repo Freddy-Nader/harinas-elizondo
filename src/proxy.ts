@@ -18,6 +18,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except the login screen, the auth API, Next internals and static files
-  matcher: ["/((?!login|api/auth|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|webp|ico)$).*)"],
+  // Everything except the login screen, the auth API, the JSON API (its handler answers 401 itself), Next internals and static files
+  matcher: ["/((?!login|api/auth|api/v1(?:/|$)|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|webp|ico)$).*)"],
 };

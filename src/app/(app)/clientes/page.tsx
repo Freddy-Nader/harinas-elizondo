@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ModuleGate, PageSkeleton } from "@/components/module-gate";
 import { listClients, listDeliveryAddresses, listClientLimits, listInternationalLimits, listParameters } from "./data";
+import { clientLabel } from "@/lib/api/clients/contracts";
 import { changeClientStatus, removeClientLimit, saveClient, saveClientLimit } from "./actions";
 
 type Props = { searchParams: Promise<{ editar?: string; error?: string }> };
@@ -84,30 +85,30 @@ async function ClientsContent({ searchParams }: Props) {
         <h2 className="mb-4 text-lg font-semibold">{selected ? "Modificar cliente" : "Registrar cliente"}</h2>
         <form action={saveClient} className="grid gap-4 sm:grid-cols-2">
           {selected && <input type="hidden" name="id" value={selected.id} />}
-          <label className={labelClass}>Clave SAP *
+          <label className={labelClass}>{clientLabel("sapKey")}
             <input className={fieldClass} name="sapKey" maxLength={10} required defaultValue={selected?.sapKey ?? ""} />
           </label>
-          <label className={labelClass}>Razón social *
+          <label className={labelClass}>{clientLabel("businessName")}
             <input className={fieldClass} name="businessName" maxLength={150} required defaultValue={selected?.businessName ?? ""} />
           </label>
-          <label className={labelClass}>RFC *
+          <label className={labelClass}>{clientLabel("rfc")}
             <input className={fieldClass} name="rfc" required maxLength={13} defaultValue={selected?.rfc ?? ""} />
           </label>
-          <label className={labelClass}>Correo de contacto *
+          <label className={labelClass}>{clientLabel("contactEmail")}
             <input className={fieldClass} type="email" required name="contactEmail" maxLength={100} defaultValue={selected?.contactEmail ?? ""} />
           </label>
-          <label className={labelClass}>Nombre de contacto *
+          <label className={labelClass}>{clientLabel("contactName")}
             <input className={fieldClass} name="contactName" required maxLength={100} defaultValue={selected?.contactName ?? ""} />
           </label>
-          <label className={labelClass}>Dirección fiscal *
+          <label className={labelClass}>{clientLabel("fiscalAddress")}
             <input className={fieldClass} name="fiscalAddress" required maxLength={250} defaultValue={selected?.fiscalAddress ?? ""} />
             {selected && !selected.fiscalAddress && <span className="text-destructive">Pendiente de completar para este cliente.</span>}
           </label>
-          <DeliveryAddresses key={selected?.id ?? "new-client"}
+          <DeliveryAddresses key={selected?.id ?? "new-client"} label={clientLabel("deliveryAddresses")}
             initialAddresses={addresses.length ? addresses.map((entry) => entry.address) : selected?.deliveryAddress ? [selected.deliveryAddress] : []} />
           <label className="flex items-center gap-2 text-sm sm:col-span-2">
             <input name="requiresCertificate" type="checkbox" defaultChecked={selected?.requiresCertificate ?? true} />
-            Requiere certificado de calidad
+            {clientLabel("requiresCertificate")}
           </label>
           <div className="sm:col-span-2">
             <button className={actionClass} type="submit">{selected ? "Guardar cambios" : "Registrar cliente"}</button>

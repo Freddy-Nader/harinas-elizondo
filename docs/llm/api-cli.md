@@ -69,3 +69,17 @@ Differences to know about. The plan table lists "transaction (reads)" for client
 ## Adding an operation
 
 Contract first, then the use case, then the adapters. A server action that holds business logic is a review blocker.
+
+## Try it locally
+
+Start the app against a throwaway `_test` database (see the e2e setup in `playwright.config.ts` and `e2e/support/global-setup.ts`, which seed one fake user per role), then in another shell.
+
+```bash
+export HE_URL=http://localhost:3108
+HE_PASSWORD=<the fake e2e password> pnpm he login --email analista@prueba.test
+pnpm he clients create --sap-key CLI001 --business-name "Panificadora de Prueba" --rfc TEST050505FFF --fiscal-address "Calle Ficticia 5" --delivery-address "Bodega 1" --contact-name "Contacto" --contact-email contacto@prueba.test
+pnpm he clients list --json
+pnpm he --help
+```
+
+The fake password lives in `e2e/support/users.ts`. Set `XDG_CONFIG_HOME` to a temporary folder to keep the session file out of your home. `pnpm he logout` deletes it.

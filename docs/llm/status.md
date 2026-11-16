@@ -21,6 +21,7 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 | Reportes (UC-08) | `/reportes` | Certificate history, KPIs, Pareto and monthly charts, `.xlsx` and CSV export. Since 2026-11-16 also a production quality section (lots in spec, control chart per factor, mean, standard deviation, Cpk, re-inspections) in `src/lib/domain/production-quality.ts` |
 | Bitácora (RF-08) | `/bitacora` | Read-only for both roles, filters in the URL |
 | Mobile navigation | `src/components/mobile-nav.tsx` | Drawer below `md` |
+| API and CLI (D-29) | `src/lib/api/`, `/api/v1`, `cli/he.ts`, `docs/llm/api-cli.md` | Phase 1 of plan 008. Clientes create, update and list work from the site, `/api/v1` and `pnpm he`. Other modules are only mapped in `api-cli.md` |
 | Tests | `docs/testing/` | Unit (197 tests on 2026-11-16), component, integration, system and regression suites, CI on every PR |
 | Production | https://harinas-elizondo.vercel.app | Neon Postgres, Resend with `EMAIL_REDIRECT_TO` to a test inbox |
 
