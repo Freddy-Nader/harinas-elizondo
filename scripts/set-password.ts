@@ -23,8 +23,13 @@ async function main() {
     process.exit(1);
   }
   const credential = and(eq(account.userId, found.id), eq(account.providerId, "credential"));
-  const [updated] = await db.batch([
-    db.update(account).set({ password: await hashPassword(input!.password) }).where(credential).returning({ id: account.id }),
+  const [hasCredential] = await db.select({ id: account.id }).from(account).where(credential).limit(1);
+  if (!hasCredential) {
+    console.error("La cuenta no tiene contraseña propia (no usa inicio de sesión con credenciales).");
+    process.exit(1);
+  }
+  await db.batch([
+    db.update(account).set({ password: await hashPassword(input!.password) }).where(credential),
     db.delete(session).where(eq(session.userId, found.id)),
     db.insert(auditLog).values({
       userName: "Script de mantenimiento",
@@ -34,10 +39,6 @@ async function main() {
       detail: { field: "password" },
     }),
   ]);
-  if (updated.length === 0) {
-    console.error("La cuenta no tiene contraseña propia (no usa inicio de sesión con credenciales).");
-    process.exit(1);
-  }
   console.log("Contraseña actualizada. Las sesiones abiertas de esa cuenta se cerraron.");
 }
 main().catch(() => {
