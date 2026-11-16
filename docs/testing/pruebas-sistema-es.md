@@ -8,25 +8,27 @@ La primera parte son las pruebas automatizadas con Playwright contra una base lo
 
 | Dato | Valor |
 | --- | --- |
-| Fecha | 2026-11-12 |
-| Commit | 856f7e0 (rama `test/e2e`, PR #38) |
-| Comando | `TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:e2e` |
-| Base | PostgreSQL 16.13 en Docker local, base `harinas_test`, nunca Neon |
-| Entorno | macOS arm64, Node 22.22.0, Playwright 1.65.0, Chromium |
-| Resultado de la suite | 13 pruebas, 13 pasan, 0 omitidas, 0 fallan, 30.7 s |
+| Fecha | 2026-11-16 |
+| Commit | 23d9967 (rama `chore/improve-plans`, que ya incluye las API y la CLI de Clientes, D-28 y D-29) |
+| Comando | `E2E_PORT=3106 TEST_DATABASE_URL=postgresql://localhost:5432/harinas_plan006_test pnpm test:e2e` |
+| Base | PostgreSQL 14.24 (Homebrew) local, base `harinas_plan006_test` creada para esta corrida, nunca Neon |
+| Entorno | macOS arm64, Node 22.22.0, Playwright 1.65.0, Chromium, sin Docker |
+| Resultado de la suite | 13 pruebas, 13 pasan, 0 omitidas, 0 fallan, 34.2 s |
 
-En CI el job E2E tests (Playwright) corre la misma suite. La corrida del commit 856f7e0 está en la pestaña Checks de https://github.com/ValleryR/harinas-elizondo/pull/38. Los pasos para repetirla están en la guía de pruebas integrales.
+En CI el job E2E tests (Playwright) corre la misma suite. La última corrida verde en `main`, del commit f767e75, es https://github.com/ValleryR/harinas-elizondo/actions/runs/43849955128 y su job E2E tests (Playwright) terminó en verde. Los pasos para repetirla están en la guía de pruebas integrales.
+
+En esta corrida el límite de intentos de inicio de sesión se guarda en Postgres (D-28, tabla `rate_limit`). Cada prueba usa su propia dirección de cliente, así que las entradas repetidas de la suite no chocan con el límite de 5 intentos por minuto.
 
 ## Pruebas automatizadas con base local
 
 | Id | Requisito | Precondición | Pasos | Datos de entrada | Resultado esperado | Resultado obtenido | Estado |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| PS-01 | RF-01 | Sin sesión | Abrir /clientes, entrar con el usuario de transacción | Usuario de prueba `@prueba.test` | Manda a /login con la ruta de regreso y después de entrar vuelve a /clientes | Pasa (0.5 s) | Pass |
-| PS-02 | RF-01 | Sin sesión | Entrar con una contraseña incorrecta | Contraseña equivocada | Muestra "No pudimos iniciar sesión. Revisa tu correo y contraseña." y sigue en /login | Pasa (0.4 s) | Pass |
-| PS-03 | RF-01 | Un usuario por rol | Entrar y salir con transacción, consulta y administrador | Usuarios de prueba de cada rol | La barra lateral muestra el nombre, el rol y el número de empleado, y al salir /panel manda a /login | Pasa (3.3 s) | Pass |
-| PS-04 | RF-04, RF-05, RF-06 | Equipos listos y cliente activo | Crear un lote, completar su inspección, crear y emitir el certificado, enviarlo | Lote sintético, resultados dentro de rango, factura y transportista ficticios | El certificado dice que todos los parámetros están dentro de referencia, queda enviado al contacto, aparece como Enviado en la lista y el lote avisa que ya tiene un certificado emitido | Pasa (5.0 s) | Pass |
-| PS-05 | RF-01 | Sesión de consulta | Revisar el menú y escribir a mano las rutas de emisión y captura | /certificados, /certificados/nuevo y /lotes/nuevo | El menú ofrece Reportes y Bitácora y oculta Certificados, Clientes, Equipos, Lotes, Inspecciones y Usuarios. Cada ruta muestra "Acceso restringido" sin los botones de crear o emitir | Pasa (1.2 s) | Pass |
-| PS-06 | RF-01, D-14 | Sesión de transacción y de administrador | Abrir /usuarios con cada uno | Usuarios de prueba | Transacción ve "Acceso restringido" y el administrador ve Usuarios en el menú y abre la pantalla | Pasa (1.4 s) | Pass |
+| PS-01 | RF-01 | Sin sesión | Abrir /clientes, entrar con el usuario de transacción | Usuario de prueba `@prueba.test` | Manda a /login con la ruta de regreso y después de entrar vuelve a /clientes | Pasa (0.3 s) | Pass |
+| PS-02 | RF-01 | Sin sesión | Entrar con una contraseña incorrecta | Contraseña equivocada | Muestra "No pudimos iniciar sesión. Revisa tu correo y contraseña." y sigue en /login | Pasa (0.3 s) | Pass |
+| PS-03 | RF-01 | Un usuario por rol | Entrar y salir con transacción, consulta y administrador | Usuarios de prueba de cada rol | La barra lateral muestra el nombre, el rol y el número de empleado, y al salir /panel manda a /login | Pasa (0.9 s) | Pass |
+| PS-04 | RF-04, RF-05, RF-06 | Equipos listos y cliente activo | Crear un lote, completar su inspección, crear y emitir el certificado, enviarlo | Lote sintético, resultados dentro de rango, factura y transportista ficticios | El certificado dice que todos los parámetros están dentro de referencia, queda enviado al contacto, aparece como Enviado en la lista y el lote avisa que ya tiene un certificado emitido | Pasa (4.6 s) | Pass |
+| PS-05 | RF-01 | Sesión de consulta | Revisar el menú y escribir a mano las rutas de emisión y captura | /certificados, /certificados/nuevo y /lotes/nuevo | El menú ofrece Reportes y Bitácora y oculta Certificados, Clientes, Equipos, Lotes, Inspecciones y Usuarios. Cada ruta muestra "Acceso restringido" sin los botones de crear o emitir | Pasa (2.1 s) | Pass |
+| PS-06 | RF-01, D-14 | Sesión de transacción y de administrador | Abrir /usuarios con cada uno | Usuarios de prueba | Transacción ve "Acceso restringido" y el administrador ve Usuarios en el menú y abre la pantalla | Pasa (1.3 s) | Pass |
 | PS-07 | RF-07, UC-08, Q-09 | Un certificado emitido para un cliente propio de la prueba | Entrar como consulta, abrir /reportes, filtrar por el cliente, exportar a Excel y a CSV | Certificados sintéticos | La tabla muestra solo el certificado del cliente. El `.xlsx` tiene la hoja Certificados con ese certificado y el CSV también lo trae | La tabla muestra una fila, el `.xlsx` leído con exceljs tiene 2 filas (encabezado y certificado) y el CSV lo contiene | Pass |
 
 ## Verificación en vivo contra Neon (#19)
@@ -45,7 +47,7 @@ Estas filas repiten los flujos en la aplicación desplegada y en su base Neon. S
 
 ## Guía manual de Inspecciones
 
-Esta sección integra la antigua guía `docs/testing-inspections-es.md`. Cada paso de esa guía ya está cubierto por una prueba automatizada que se ejecutó con base local en el commit 331ef38. La repetición manual en el deploy con Neon forma parte de PS-12 y PS-13.
+Esta sección integra la antigua guía `docs/testing-inspections-es.md`. Cada paso de esa guía ya está cubierto por una prueba automatizada que se ejecutó con base local en el commit 23d9967 el 2026-11-16. La repetición manual en el deploy con Neon forma parte de PS-12 y PS-13.
 
 | Paso | Qué comprueba | Cubierto con base local por | Resultado local | En vivo con Neon |
 | --- | --- | --- | --- | --- |

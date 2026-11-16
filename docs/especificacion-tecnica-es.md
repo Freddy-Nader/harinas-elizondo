@@ -957,24 +957,22 @@ Las guías de prueba escritas están en `docs/testing/`, con un índice en `docs
 
 En GitHub se ven en https://github.com/ValleryR/harinas-elizondo/tree/main/docs/testing.
 
-### Resultados de pruebas reportados en los PR
+### Resultados de pruebas
 
-Los números de esta tabla son solo los que reportan los PR, con la corrida que cada uno cita. Las guías del PR #39 se corrieron el 2026-11-11 en el commit 331ef38, que es la punta de la rama del PR #38, y nunca contra Neon.
+Los números de esta tabla salen de las corridas del 2026-11-16 en el commit 23d9967 de `chore/improve-plans`. Las suites con base de datos corrieron contra un PostgreSQL 14.24 local de Homebrew, sin Docker y nunca contra Neon. Las filas de sistema PS-08 a PS-16 vienen de la verificación en vivo del mismo día.
 
 | Tipo | Ids | Herramienta | Resultado reportado | Fuente |
 | --- | --- | --- | --- | --- |
-| Unitarias | PU-01 a PU-44 | Vitest | 133 de 133 pruebas pasan, 44 casos en Pass | PR #39 |
-| Componentes | PC-01 a PC-14 | Vitest con Postgres 16 local | 12 de 12 pasan, PC-13 y PC-14 Pendiente | PR #36, PR #39 |
-| Integrales | PI-01 a PI-06 | Playwright con Postgres local | 6 pasan | PR #38, PR #39 |
-| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 15 pasan y PS-15 queda pendiente con el rol de transacción | PR #38, PR #39 |
-| Regresión | PR-01 a PR-07 | GitHub Actions | 4 Pass, 3 Pendiente | PR #29, PR #39 |
-| Aceptación | PA-01 a PA-06 | Guion con usuarios reales | 0 ejecutadas, 6 Pendiente | PR #39 |
+| Unitarias | PU-01 a PU-64 | Vitest | 220 de 220 pruebas en 26 archivos pasan, 64 casos en Pass | Corrida del 2026-11-16 |
+| Componentes | PC-01 a PC-23 | Vitest con Postgres 14 local | 21 de 21 pasan en 5 archivos, PC-13 y PC-14 Pendiente porque no existe su prueba | Corrida del 2026-11-16 |
+| Integrales | PI-01 a PI-06 | Playwright con Postgres local | 6 pasan, 13 de 13 pruebas de la suite e2e | Corrida del 2026-11-16 |
+| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 16 pasan, PS-01 a PS-07 con Playwright y PS-08 a PS-16 en vivo | Corrida del 2026-11-16 |
+| Regresión | PR-01 a PR-07 | GitHub Actions | 5 Pass, 2 Pendiente | Corrida del 2026-11-16 |
+| Aceptación | PA-01 a PA-06 | Guion con usuarios reales | 0 ejecutadas, 6 Pendiente | Sin corrida |
 
-Los PR de funciones agregan pruebas que todavía no están en esa corrida. El PR #31 reporta 143 pruebas en 16 archivos con 24 nuevas de Bitácora. El PR #35 reporta 134 pruebas con 5 nuevas de la navegación. El PR #37 reporta 152 pruebas en 18 archivos con 23 nuevas de Reportes. Cada número se midió en su propia rama, así que no se suman.
+La suite unitaria ya incluye las pruebas de Reportes, la calidad de la producción, la Bitácora, el correo y el menú por rol. Las guías de cada tipo guardan el detalle de la corrida.
 
-El 16 de noviembre de 2026, con todos los PR integrados y la sección de calidad de la producción, la suite unitaria corre 197 pruebas en 23 archivos y todas pasan.
-
-Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/actions/runs/43103295253, https://github.com/ValleryR/harinas-elizondo/actions/runs/43159071569 y https://github.com/ValleryR/harinas-elizondo/actions/runs/43161348610.
+La última corrida de CI sobre `main`, del commit f767e75, terminó en verde en sus tres jobs y está en https://github.com/ValleryR/harinas-elizondo/actions/runs/43849955128.
 
 ### Atributos de calidad
 
@@ -986,13 +984,13 @@ Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/acti
 | Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | La aplicación respondió en las pruebas PS-08 a PS-16 del 16 de noviembre de 2026, sin medir la disponibilidad |
 | Usabilidad | Interfaz clara y navegación simple | Todo en español, avisos por acción, errores por campo sin perder lo escrito, menú filtrado por rol, menú móvil | PA-01 a PA-06 pendientes |
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
-| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción solo con consulta y PC-14 sigue pendiente |
+| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción con consulta y con transacción y PC-14 sigue pendiente |
 
 > TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
 
 > TODO (equipo): nota de disponibilidad del deploy durante el periodo de pruebas, tomada de Vercel.
 
-La verificación en vivo contra Neon se corrió el 16 de noviembre de 2026 en https://harinas-elizondo.vercel.app y llenó PS-08 a PS-16, salvo PS-15 con el rol de transacción, que quedó pendiente. El detalle de cada caso está en [Pruebas de sistema](testing/pruebas-sistema-es.md).
+La verificación en vivo contra Neon se corrió el 16 de noviembre de 2026 en https://harinas-elizondo.vercel.app y llenó PS-08 a PS-16, todos en Pass. El detalle de cada caso está en [Pruebas de sistema](testing/pruebas-sistema-es.md).
 
 > TODO (equipo): resultados de la UAT con al menos dos personas externas al equipo, identificadas como P1 y P2, con tareas completadas, tiempos y errores de PA-01 a PA-06.
 
