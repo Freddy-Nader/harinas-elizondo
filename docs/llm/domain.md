@@ -49,7 +49,7 @@ Source of truth in code is `src/lib/domain/parameters.ts`. Units are a first gue
 
 ## Data model
 
-Defined in `src/lib/db/schema.ts` (Drizzle, Postgres, snake_case columns). It ports `docs/02_modelo_bd.sql` and adds the tables the team document implies but the SQL draft did not have yet.
+Defined in `src/lib/db/schema.ts` (Drizzle, Postgres, snake_case columns). It started from the delivery 2 SQL draft (Spanish names, removed from the repo on 2026-11-16, still in git history) and adds the tables the team document implies. The human-facing version with the full ER diagram is `docs/diseno-base-datos-es.md`.
 
 ```mermaid
 erDiagram
@@ -84,4 +84,4 @@ erDiagram
 | `deliveries` | Evidence of each email attempt |
 | `audit_log` | Append-only, copies employee id and name |
 
-Differences from `docs/02_modelo_bd.sql` are listed in [decisions.md](decisions.md) (D-06, D-07).
+Differences from the delivery 2 SQL draft are listed in [decisions.md](decisions.md) (D-06, D-07).

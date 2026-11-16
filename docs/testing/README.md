@@ -8,7 +8,7 @@ Cada Resultado obtenido sale de una corrida real, con su fecha y su commit. Si u
 
 | Guía | Ids | Herramienta | Pass | Pendiente |
 | --- | --- | --- | --- | --- |
-| [Pruebas unitarias](pruebas-unitarias-es.md) | PU-01 a PU-44 (133 pruebas) | Vitest | 44 | 0 |
+| [Pruebas unitarias](pruebas-unitarias-es.md) | PU-01 a PU-47 (197 pruebas en la corrida del 16 de noviembre) | Vitest | 47 | 0 |
 | [Pruebas de componentes](pruebas-componentes-es.md) | PC-01 a PC-14 | Vitest con Postgres local | 12 | 2 |
 | [Pruebas integrales](pruebas-integrales-es.md) | PI-01 a PI-06 | Playwright con Postgres local | 6 | 0 |
 | [Pruebas de sistema](pruebas-sistema-es.md) | PS-01 a PS-16 | Playwright y verificación manual en el deploy | 7 | 9 |
@@ -20,7 +20,7 @@ La guía de sistema también integra la antigua guía manual de Inspecciones, qu
 ## Qué falta
 
 - La verificación en vivo en https://harinas-elizondo.vercel.app con Neon (#19) espera la rotación de credenciales. Afecta PS-08 a PS-14.
-- Reportes ya tiene merge en `main` (#33 y #37) y PS-07 pasa. Bitácora (#31) y la navegación móvil (#35) no tienen merge. Afecta PS-15, PS-16, PC-13, PC-14 y PA-05.
+- Bitácora (#31) y la navegación móvil (#35) ya tienen merge, pero PS-15, PS-16, PC-13, PC-14 y PA-05 siguen sin correrse contra ellos.
 - La UAT con al menos dos personas externas al equipo no se ha hecho. Sus tablas están vacías y solo se llenan con sesiones reales.
 - La regla de rama que exige CI en `main` y una corrida desde un fork siguen pendientes (PR-05 a PR-07).
 

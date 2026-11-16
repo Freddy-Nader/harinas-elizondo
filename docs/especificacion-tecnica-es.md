@@ -2,7 +2,7 @@
 
 Sistema de control de laboratorio para emitir certificados de calidad de harina de trigo. Documento de la entrega 3 de Desarrollo de Software, escrito con la plantilla del caso de estudio.
 
-Este documento describe el código del repositorio https://github.com/ValleryR/harinas-elizondo tal como quedará cuando se integren los pull requests abiertos. La base es `main` en el commit 2b30a0f. Cada parte que depende de un PR que todavía no tiene merge lleva la marca "(pendiente de integrar, PR #n)". Las líneas que empiezan con "TODO (equipo)" piden evidencia que solo el equipo puede aportar, como capturas, números medidos en vivo o resultados de usuarios reales. Nada de eso se inventó.
+Este documento describe el código de `main` en el repositorio https://github.com/ValleryR/harinas-elizondo al 16 de noviembre de 2026, con todos los pull requests de la entrega integrados. La arquitectura en vistas 4+1 está en [Diseño arquitectónico](diseno-arquitectonico-es.md), el diagrama entidad relación en [Diseño de la base de datos](diseno-base-datos-es.md) y la forma de trabajo del equipo en [Proceso de desarrollo](proceso-desarrollo-es.md). Las líneas que empiezan con "TODO (equipo)" piden evidencia que solo el equipo puede aportar, como capturas, números medidos en vivo o resultados de usuarios reales. Nada de eso se inventó.
 
 Los identificadores RF, UC, BR, D y Q son los de `docs/llm/requirements.md` y `docs/llm/decisions.md`, y son los mismos que aparecen en los comentarios del código y en los nombres de las pruebas.
 
@@ -12,7 +12,7 @@ Los identificadores RF, UC, BR, D y Q son los de `docs/llm/requirements.md` y `d
 
 Hoy el laboratorio arma cada certificado a mano con hojas de cálculo y un editor de PDF, así que es lento y permite "ajustar" resultados viejos para que le queden a un cliente. La aplicación reemplaza ese proceso. El laboratorio registra clientes, equipos, lotes e inspecciones, y la aplicación compara los resultados con los límites del cliente o con los internacionales. Después emite un certificado en PDF que muestra cualquier desviación, lo envía al cliente y al almacén, y guarda en la bitácora quién hizo cada acción.
 
-El alcance de la versión 1 cubre los requisitos RF-01 a RF-08 y los casos de uso UC-01 a UC-08. La sincronización de clientes con SAP ByD, el envío real de correo y los límites por producto quedan para una versión 2 (D-12, D-13).
+El alcance de la versión 1 cubre los requisitos RF-01 a RF-08 y los casos de uso UC-01 a UC-08. La sincronización de clientes con SAP ByD y los límites por producto quedan para una versión 2 (D-12).
 
 ### Pila tecnológica
 
@@ -23,8 +23,8 @@ El alcance de la versión 1 cubre los requisitos RF-01 a RF-08 y los casos de us
 | Base de datos | PostgreSQL en Neon, acceso con Drizzle ORM sobre el driver HTTP de Neon | D-02 |
 | Autenticación | Better Auth con correo y contraseña, campos extra `role`, `employeeId` y `active` | D-03, D-14 |
 | PDF | `@react-pdf/renderer` en el servidor | D-13 |
-| Correo | Interfaz `sendEmail` hoy simulada (se registra en el log), Resend planeado | D-13 |
-| Exportación | exceljs para `.xlsx` y CSV propio (integrado en `main` con el PR #33 y el PR #37) | D-19 |
+| Correo | Resend detrás de la interfaz `sendEmail`. Sin `RESEND_API_KEY` el envío se simula y se registra en el log | D-13 |
+| Exportación | exceljs para `.xlsx` y CSV propio | D-19 |
 | Hospedaje | Vercel, con deploy de producción en https://harinas-elizondo.vercel.app | D-01 |
 | Pruebas | Vitest (unitarias y de componentes), Playwright (integrales y de sistema), GitHub Actions (regresión) | ver Calidad de servicio |
 
@@ -39,7 +39,7 @@ La arquitectura del documento del equipo es por capas (presentación, lógica de
 | Acceso a datos | `src/lib/db/` (esquema y cliente Drizzle) y un `data.ts` por módulo |
 | Seguridad | `src/proxy.ts`, `src/lib/session.ts`, `src/lib/permissions.ts`, `src/lib/modules.ts` |
 | Auditoría | `src/lib/audit.ts` |
-| Servicios e integración | `src/lib/services/` (PDF, correo y, exportación, integrada en `main` con el PR #37) |
+| Servicios e integración | `src/lib/services/` (PDF, correo y exportación) |
 
 ```mermaid
 flowchart LR
@@ -63,9 +63,9 @@ flowchart LR
   end
 
   Neon[("Neon PostgreSQL")]
-  Mail["Correo<br/>(simulado, Resend planeado)"]
+  Mail["Correo<br/>(Resend)"]
   BI["Excel / Power BI"]
-  CI["GitHub Actions CI<br/>(PR #29)"]
+  CI["GitHub Actions CI"]
 
   UI --> Proxy --> RSC
   UI --> SA
@@ -98,7 +98,7 @@ flowchart LR
 - El código está en inglés y todo lo que ve el usuario está en español. La tabla de equivalencias está en Diseño de datos.
 - Las páginas leen la sesión dentro de un `<Suspense>`, porque con Cache Components leer cabeceras fuera de esa frontera rompe el build.
 
-> TODO (equipo): agregar la tabla de quién construyó cada módulo y cada sección de este documento (Q-12), usando solo usuarios públicos de GitHub y nunca nombres de estudiantes.
+Quién construyó cada módulo, por usuario de GitHub, está en la sección Organización del equipo de [Proceso de desarrollo](proceso-desarrollo-es.md).
 
 ## Diseño de pantallas y reportes (Screen and Report Design)
 
@@ -158,9 +158,9 @@ flowchart TD
 | `/certificados` | Certificados de calidad | Lista con folio, cliente, lote, orden de compra, estado, desviaciones y fecha de emisión |
 | `/certificados/nuevo` | Nuevo certificado | Cliente, lote, orden de compra, cantidades, factura, fecha de envío, dirección de entrega del cliente, transportista y casilla de firma |
 | `/certificados/[id]` | Detalle de certificado | Resultados (diez líneas con origen del límite y desviación), lista de bloqueos BR-CER-05, emisión con envío opcional, envíos y reenvíos, cancelación con motivo y verificación de la huella SHA-256 |
-| `/reportes` | Reportes y Estadísticas | Filtros por periodo, cliente y estado, indicadores, gráficas, histórico paginado y exportación (integrado en `main` con el PR #33 y el PR #37) |
-| `/bitacora` | Bitácora | Tabla de solo lectura con filtros por entidad, acción, empleado, fechas e id, 50 filas por página y detalle JSON expandible (pendiente de integrar, PR #31) |
-| Encabezado móvil | Menú móvil | Botón de menú abajo de `md` que abre un panel lateral con los mismos módulos del rol (pendiente de integrar, PR #35) |
+| `/reportes` | Reportes y Estadísticas | Filtros por periodo, cliente y estado, indicadores, gráficas, histórico paginado y exportación |
+| `/bitacora` | Bitácora | Tabla de solo lectura con filtros por entidad, acción, empleado, fechas e id, 50 filas por página y detalle JSON expandible |
+| Encabezado móvil | Menú móvil | Botón de menú abajo de `md` que abre un panel lateral con los mismos módulos del rol |
 
 > TODO (equipo): captura de `/login`.
 
@@ -178,11 +178,11 @@ flowchart TD
 
 > TODO (equipo): captura de `/certificados/[id]` en borrador con bloqueos, emitido y cancelado.
 
-> TODO (equipo): captura de `/reportes` con filtros y gráficas. El PR #33 y el PR #37 ya están en `main`.
+> TODO (equipo): captura de `/reportes` con filtros y gráficas.
 
-> TODO (equipo): captura de `/bitacora` con filtros, cuando se integre el PR #31.
+> TODO (equipo): captura de `/bitacora` con filtros.
 
-> TODO (equipo): captura del menú móvil a 375 px, cuando se integre el PR #35.
+> TODO (equipo): captura del menú móvil a 375 px.
 
 ### Reporte impreso, el certificado en PDF
 
@@ -192,13 +192,14 @@ Cuando la casilla de firma está activa se imprime el bloque firmado con nombre,
 
 > TODO (equipo): imagen del PDF de un certificado emitido con datos de prueba (por ejemplo del cliente `PRUEBA01`), sin datos reales.
 
-### Reportes en pantalla y exportación (integrado en `main` con el PR #33 y el PR #37)
+### Reportes en pantalla y exportación
 
 La pantalla de Reportes parte del trabajo del PR #33 y lo completa el PR #37. Muestra estos elementos.
 
 - Filtros en la URL por periodo rápido (este mes, este trimestre, este año), rango de fechas sobre `certificates.issued_at` en hora de planta, cliente y estado. Las fechas inválidas se descartan y un rango al revés se invierte.
 - Indicadores de total de certificados, tasa de cumplimiento, desviaciones registradas, cancelados y entregas fallidas.
 - Gráficas de tendencia mensual y Pareto de parámetros fuera de rango, hechas con recharts.
+- Sección Calidad de la producción, agregada el 16 de noviembre de 2026 por la retroalimentación del profesor. Responde qué tan buena es la harina que se produce, se haya certificado o no. Toma la última inspección completa de cada lote producido en el periodo (D-27, BR-INS-03) y la compara con los límites internacionales. Muestra lotes producidos y analizados, porcentaje de lotes con los diez factores dentro de especificación, reinspecciones, una gráfica de control por factor con sus límites y su promedio, el porcentaje dentro de especificación por factor y una tabla con promedio, desviación estándar, mínimo, máximo, valores fuera de rango y Cpk. El filtro de periodo aplica a la fecha de producción del lote, y los de cliente y estado no aplican porque un lote no tiene cliente hasta que se certifica. Las reglas viven en `src/lib/domain/production-quality.ts`.
 - Detalle de desviaciones por parámetro e histórico paginado de 20 en 20 con enlace al certificado. El usuario de consulta no puede abrir `/certificados`, así que su enlace abre el PDF.
 - Exportación a `.xlsx` y CSV con las columnas ID Certificado, Estado, Fecha de Emisión, Clave SAP Cliente, Nombre del Cliente, RFC, ID Lote, Secuencia Inspección, Orden de Compra, No. Factura, Emitido Por, Con Desviación, Parámetros Fuera de Rango, Entregas Fallidas y Motivo de Cancelación.
 
@@ -210,154 +211,7 @@ Los borradores nunca aparecen porque no se emitieron. Los cancelados se ven en e
 
 ### Modelo entidad relación
 
-El modelo está en `src/lib/db/schema.ts` y `src/lib/db/auth-schema.ts`. Drizzle usa `casing: "snake_case"`, así que una columna `sapKey` en el código es `sap_key` en Postgres. El diagrama muestra las columnas principales y todas las llaves.
-
-```mermaid
-erDiagram
-  user ||--o{ session : "tiene"
-  user ||--o{ account : "credencial"
-  user ||--o{ audit_log : "actúa"
-  user ||--o{ certificates : "emite / cancela"
-  clients ||--o{ client_delivery_addresses : "destinos"
-  clients ||--o{ client_limits : "límites propios"
-  parameters ||--o{ client_limits : "limita"
-  parameters ||--o| international_limits : "límite por omisión"
-  lots ||--o{ inspections : "tiene"
-  inspections ||--o{ inspection_results : "contiene"
-  parameters ||--o{ inspection_results : "mide"
-  equipment ||--o{ inspection_results : "medido con"
-  clients ||--o{ certificates : "recibe"
-  lots ||--o{ certificates : "certifica"
-  inspections ||--o{ certificates : "respalda"
-  certificates ||--o{ certificate_lines : "imprime"
-  parameters ||--o{ certificate_lines : "parámetro"
-  certificates ||--o{ deliveries : "se envía como"
-
-  user {
-    text id PK
-    text name
-    text email UK
-    text role "transaction, query, admin"
-    boolean active
-    text employee_id UK
-  }
-  clients {
-    uuid id PK
-    varchar sap_key UK
-    varchar business_name
-    varchar rfc UK
-    varchar fiscal_address
-    varchar delivery_address "espejo del primer destino"
-    varchar contact_name
-    varchar contact_email
-    boolean requires_certificate
-    record_status status
-    varchar status_reason
-  }
-  client_delivery_addresses {
-    uuid id PK
-    uuid client_id FK
-    varchar address
-    integer position
-  }
-  equipment {
-    char id PK "clave de 8 caracteres"
-    equipment_type type
-    varchar short_description
-    varchar serial_number UK
-    record_status status
-    varchar status_reason
-  }
-  parameters {
-    varchar code PK
-    equipment_type equipment_type
-    varchar label
-    varchar unit
-  }
-  international_limits {
-    varchar parameter_code PK, FK
-    numeric lower_limit
-    numeric upper_limit
-  }
-  client_limits {
-    uuid client_id PK, FK
-    varchar parameter_code PK, FK
-    numeric lower_limit
-    numeric upper_limit
-  }
-  lots {
-    varchar id PK
-    varchar product
-    date produced_on
-    date expires_on
-    record_status status
-  }
-  inspections {
-    serial id PK
-    varchar lot_id FK
-    varchar sequence "A..Z, AA..ZZZ"
-    timestamptz inspected_at
-    varchar reinspection_reason
-    timestamptz locked_at
-  }
-  inspection_results {
-    integer inspection_id PK, FK
-    varchar parameter_code PK, FK
-    char equipment_id FK
-    numeric value
-  }
-  certificates {
-    varchar id PK "CER-YYYY-NNNNNN"
-    uuid client_id FK
-    varchar lot_id FK
-    integer inspection_id FK
-    varchar purchase_order
-    varchar invoice_number
-    numeric quantity_requested
-    numeric quantity_delivered
-    date shipped_on
-    varchar delivery_address
-    varchar carrier
-    boolean requires_signature
-    certificate_status status
-    timestamptz issued_at
-    text issued_by FK
-    char signature_hash
-    timestamptz cancelled_at
-    text cancelled_by FK
-    varchar cancellation_reason
-  }
-  certificate_lines {
-    varchar certificate_id PK, FK
-    varchar parameter_code PK, FK
-    numeric value
-    numeric lower_limit
-    numeric upper_limit
-    numeric deviation
-  }
-  deliveries {
-    serial id PK
-    varchar certificate_id FK
-    text_array recipients
-    boolean succeeded
-    text error
-    timestamptz sent_at
-    text sent_by FK
-  }
-  audit_log {
-    serial id PK
-    timestamptz at
-    text user_id FK
-    varchar employee_id
-    varchar user_name
-    varchar action
-    varchar entity
-    varchar entity_id
-    jsonb detail
-  }
-```
-
-Casi todas las tablas de negocio tienen además `created_at` y `created_by` (o `updated_at` y `updated_by` en los límites), con `created_by` como llave foránea a `user.id`. El diagrama las omite para que se lea mejor.
+El diagrama entidad relación completo, el modelo conceptual y las razones de cada decisión de diseño están en [Diseño de la base de datos](diseno-base-datos-es.md). El modelo está en `src/lib/db/schema.ts` y `src/lib/db/auth-schema.ts`, y Drizzle usa `casing: "snake_case"`, así que una columna `sapKey` en el código es `sap_key` en Postgres.
 
 ### Diccionario de datos
 
@@ -493,7 +347,7 @@ Los diez parámetros obligatorios salen de `src/lib/domain/parameters.ts`. Las u
 
 ### Equivalencia de nombres con el borrador SQL (D-06)
 
-El borrador `docs/02_modelo_bd.sql` de la entrega 2 usaba nombres en español. El esquema final usa inglés por regla del proyecto, y esta tabla mapea los dos.
+El borrador SQL de la entrega 2 usaba nombres en español. Se retiró del repositorio el 16 de noviembre de 2026 y sigue en el historial de Git. El esquema final usa inglés por regla del proyecto, y esta tabla mapea los dos.
 
 | Borrador (español) | Esquema final (inglés) | Cambio |
 | --- | --- | --- |
@@ -611,7 +465,7 @@ SET status = 'cancelled', cancelled_at = now(), cancelled_by = $2, cancellation_
 WHERE id = $1 AND status IN ('issued', 'sent');
 ```
 
-Lectura de la bitácora (pendiente de integrar, PR #31). Los filtros son opcionales y se combinan con `AND`.
+Lectura de la bitácora. Los filtros son opcionales y se combinan con `AND`.
 
 ```sql
 SELECT * FROM audit_log
@@ -623,7 +477,7 @@ ORDER BY at DESC
 LIMIT 50 OFFSET $pagina;
 ```
 
-Histórico de Reportes (integrado en `main` con el PR #33 y el PR #37). Filtra por `issued_at` en hora de planta, nunca incluye borradores y lee las desviaciones de la copia guardada en `certificate_lines`.
+Histórico de Reportes. Filtra por `issued_at` en hora de planta, nunca incluye borradores y lee las desviaciones de la copia guardada en `certificate_lines`.
 
 ```sql
 SELECT c.*, cl.business_name, cl.sap_key, cl.rfc
@@ -808,7 +662,7 @@ sequenceDiagram
     else
       DB-->>A: ok
       A->>M: deliver(id, usuario, "send")
-      M->>M: renderCertificatePdf + sendEmail (simulado)
+      M->>M: renderCertificatePdf + sendEmail (Resend)
       M->>DB: batch [insert deliveries, update certificates a sent, insert audit_log send]
       M-->>A: destinatarios
       A-->>P: succeed("Certificado emitido y enviado a ...")
@@ -828,7 +682,7 @@ Flujo normal
 
 1. Al emitir con envío activado, o al pulsar enviar o reenviar en el detalle, el sistema arma la lista de destinatarios con el correo del contacto del cliente y el del almacén, sin repetidos.
 2. Genera el PDF y lo adjunta a un correo con asunto "Certificado de calidad CER-… · Lote … · OC …".
-3. Entrega el correo a `sendEmail`. Hoy el envío es simulado, así que solo se registra en el log del servidor y se reporta como entregado.
+3. Entrega el correo a `sendEmail`, que lo envía con Resend. Sin `RESEND_API_KEY` el envío se simula, se registra en el log del servidor y se reporta como entregado.
 4. Guarda la evidencia del envío, cambia el estado a enviado y escribe la bitácora en un solo lote.
 
 Flujos alternos
@@ -857,7 +711,7 @@ Flujos alternos
 - A2. El rol no es transacción ni consulta. La ruta responde 403.
 - A3. El certificado es un borrador o está cancelado. El PDF sale con la marca "BORRADOR · sin validez" o "CANCELADO · sin validez", y el nombre del archivo de un borrador termina en `-borrador.pdf`.
 
-#### UC-08 Consultar histórico, reportes y estadísticas (integrado en `main` con el PR #33 y el PR #37)
+#### UC-08 Consultar histórico, reportes y estadísticas
 
 - Actor principal. Usuario de consulta. El usuario de transacción también tiene acceso.
 - Requisitos y reglas. RF-07, D-19, D-25, BR-AUD-01.
@@ -868,9 +722,10 @@ Flujo normal
 
 1. El usuario abre `/reportes`.
 2. Elige un periodo rápido o un rango de fechas, un cliente y un estado. Los filtros quedan en la URL.
-3. El sistema muestra indicadores, gráficas, detalle de desviaciones e histórico paginado.
-4. El usuario pulsa exportar y elige `.xlsx` o CSV.
-5. El sistema vuelve a validar los filtros en el servidor, genera el archivo, escribe la bitácora y lo descarga.
+3. El sistema muestra indicadores, gráficas, detalle de desviaciones, histórico paginado y la calidad de la producción del periodo.
+4. El usuario elige un factor para ver su gráfica de control.
+5. El usuario pulsa exportar y elige `.xlsx` o CSV.
+6. El sistema vuelve a validar los filtros en el servidor, genera el archivo, escribe la bitácora y lo descarga.
 
 Flujos alternos
 
@@ -974,9 +829,9 @@ Las mutaciones son server actions de Next.js en `src/app/(app)/<módulo>/actions
 | Certificados | `issueCertificate` | transacción | issue, certificate |
 | Certificados | `sendCertificate` | transacción | send o resend, certificate |
 | Certificados | `cancelCertificate` | transacción | cancel, certificate |
-| Reportes | `exportCertificatesAction(filtros, formato)` (integrado en `main` con el PR #37) | transacción y consulta | export, certificate con id `history` |
+| Reportes | `exportCertificatesAction(filtros, formato)` | transacción y consulta | export, certificate con id `history` |
 
-Las lecturas viven en `data.ts` de cada módulo y en `src/lib/certificate-data.ts`, `inspection-data.ts` y `reference-data.ts`. La Bitácora lee con `listAuditLog`, que llama a `requireRole("transaction", "query")` y no tiene ninguna función de escritura (pendiente de integrar, PR #31).
+Las lecturas viven en `data.ts` de cada módulo y en `src/lib/certificate-data.ts`, `inspection-data.ts` y `reference-data.ts`. La Bitácora lee con `listAuditLog`, que llama a `requireRole("transaction", "query")` y no tiene ninguna función de escritura.
 
 ### Route handlers
 
@@ -996,9 +851,9 @@ sendEmail({ to: string[], subject: string, text: string, attachments?: { filenam
   => { ok: true, simulated: boolean, messageId } | { ok: false, simulated: boolean, error }
 ```
 
-Hoy `isEmailSimulated()` devuelve `true`, así que el mensaje se registra en el log del servidor con destinatarios, asunto y tamaño de los adjuntos, nunca con el contenido. El buzón de almacén sale de `WAREHOUSE_EMAIL` y, si no existe, usa `almacen@demo.test`. Para enviar de verdad hay que implementar Resend detrás de `RESEND_API_KEY` con la misma firma, y quien llama no cambia (D-13).
+Con `RESEND_API_KEY` el mensaje sale por Resend desde `EMAIL_FROM`. Sin la llave, `isEmailSimulated()` devuelve `true` y el mensaje solo se registra en el log del servidor con destinatarios, asunto y tamaño de los adjuntos, nunca con el contenido, así que el desarrollo local y las pruebas nunca envían correo. El buzón de almacén sale de `WAREHOUSE_EMAIL` y, si no existe, usa `almacen@demo.test`. Cuando existe `EMAIL_REDIRECT_TO`, todos los correos van a ese buzón de prueba, y la pantalla del certificado y el aviso de envío lo dicen (D-13). Producción lo usa porque Resend sin dominio verificado solo entrega al dueño de la cuenta.
 
-### Exportación a Excel y Power BI (integrado en `main` con el PR #37)
+### Exportación a Excel y Power BI
 
 `src/lib/services/report-export.ts` genera dos formatos con las mismas quince columnas descritas en Diseño de pantallas y reportes.
 
@@ -1007,11 +862,11 @@ Hoy `isEmailSimulated()` devuelve `true`, así que el mensaje se registra en el 
 
 ### Interfaz con la base de datos
 
-`getDb()` crea el cliente Drizzle sobre `@neondatabase/serverless` la primera vez que se usa, así que `next build` funciona sin variables de entorno. El driver HTTP de Neon no tiene transacciones interactivas, por eso las operaciones que deben ser atómicas usan `db.batch([...])`. En las pruebas con base local el PR #38 agrega un cliente `node-postgres` que solo se activa con `E2E_LOCAL_POSTGRES=1` y fuera de Vercel (pendiente de integrar, PR #38).
+`getDb()` crea el cliente Drizzle sobre `@neondatabase/serverless` la primera vez que se usa, así que `next build` funciona sin variables de entorno. El driver HTTP de Neon no tiene transacciones interactivas, por eso las operaciones que deben ser atómicas usan `db.batch([...])`. En las pruebas con base local el PR #38 agrega un cliente `node-postgres` que solo se activa con `E2E_LOCAL_POSTGRES=1` y fuera de Vercel.
 
 ## Calidad de servicio (Quality of Service)
 
-Las guías de prueba escritas están en `docs/testing/`, con un índice en `docs/testing/README.md` (pendiente de integrar, PR #39). Las guías son estas.
+Las guías de prueba escritas están en `docs/testing/`, con un índice en `docs/testing/README.md`. Las guías son estas.
 
 - `docs/testing/pruebas-unitarias-es.md`
 - `docs/testing/pruebas-componentes-es.md`
@@ -1020,7 +875,7 @@ Las guías de prueba escritas están en `docs/testing/`, con un índice en `docs
 - `docs/testing/pruebas-regresion-es.md`
 - `docs/testing/pruebas-aceptacion-es.md`
 
-En GitHub se ven en https://github.com/ValleryR/harinas-elizondo/tree/docs/testing-guides/docs/testing mientras el PR #39 no tenga merge.
+En GitHub se ven en https://github.com/ValleryR/harinas-elizondo/tree/main/docs/testing.
 
 ### Resultados de pruebas reportados en los PR
 
@@ -1037,6 +892,8 @@ Los números de esta tabla son solo los que reportan los PR, con la corrida que 
 
 Los PR de funciones agregan pruebas que todavía no están en esa corrida. El PR #31 reporta 143 pruebas en 16 archivos con 24 nuevas de Bitácora. El PR #35 reporta 134 pruebas con 5 nuevas de la navegación. El PR #37 reporta 152 pruebas en 18 archivos con 23 nuevas de Reportes. Cada número se midió en su propia rama, así que no se suman.
 
+El 16 de noviembre de 2026, con todos los PR integrados y la sección de calidad de la producción, la suite unitaria corre 197 pruebas en 23 archivos y todas pasan.
+
 Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/actions/runs/43103295253, https://github.com/ValleryR/harinas-elizondo/actions/runs/43159071569 y https://github.com/ValleryR/harinas-elizondo/actions/runs/43161348610.
 
 ### Atributos de calidad
@@ -1047,9 +904,9 @@ Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/acti
 | Confiabilidad | Datos validados antes de emitir | Zod en cada formulario, `issueBlockers`, última inspección completa obligatoria, restricciones únicas y CHECK en la base de datos, emisión atómica | PU de `certificate.test.ts`, PC-08 a PC-10, PI-06, PS-04 |
 | Integridad de la información | Bitácora y control de cambios | Fila de bitácora en cada mutación dentro del mismo lote, inspecciones bloqueadas, copia fija de líneas, hash SHA-256 verificado en pantalla | PC-01, PC-06, PC-08, PC-12 |
 | Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | Pendiente (#19) |
-| Usabilidad | Interfaz clara y navegación simple | Todo en español, avisos por acción, errores por campo sin perder lo escrito, menú filtrado por rol, menú móvil (pendiente de integrar, PR #35) | PA-01 a PA-06 pendientes |
+| Usabilidad | Interfaz clara y navegación simple | Todo en español, avisos por acción, errores por campo sin perder lo escrito, menú filtrado por rol, menú móvil | PA-01 a PA-06 pendientes |
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
-| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora (pendiente de integrar, PR #31), exportación auditada (integrado en `main` con el PR #37) | PC-14 y PS-15 pendientes |
+| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PC-14 y PS-15 pendientes |
 
 > TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
 
@@ -1097,7 +954,7 @@ El rol del usuario es texto y no enum, porque Better Auth define la tabla `user`
 
 ### Concurrencia y atomicidad
 
-Neon por HTTP no ofrece transacciones interactivas, así que el diseño usa dos mecanismos. Primero, `db.batch([...])` envía varias sentencias que Neon ejecuta en una sola transacción, y se usa en cada cambio que debe guardarse junto con su bitácora. Segundo, las carreras entre usuarios las decide la base de datos con restricciones únicas, y la aplicación traduce el error 23505 a un mensaje en español. Así se resuelven el RFC repetido, la secuencia de inspección simultánea, el folio de certificado y la doble emisión. Las pruebas PC-03, PC-05 y PC-09 fuerzan tres de esas carreras (RFC, secuencia y doble emisión) de forma determinista (pendiente de integrar, PR #36).
+Neon por HTTP no ofrece transacciones interactivas, así que el diseño usa dos mecanismos. Primero, `db.batch([...])` envía varias sentencias que Neon ejecuta en una sola transacción, y se usa en cada cambio que debe guardarse junto con su bitácora. Segundo, las carreras entre usuarios las decide la base de datos con restricciones únicas, y la aplicación traduce el error 23505 a un mensaje en español. Así se resuelven el RFC repetido, la secuencia de inspección simultánea, el folio de certificado y la doble emisión. Las pruebas PC-03, PC-05 y PC-09 fuerzan tres de esas carreras (RFC, secuencia y doble emisión) de forma determinista.
 
 ### Datos iniciales
 
@@ -1110,7 +967,7 @@ Neon por HTTP no ofrece transacciones interactivas, así que el diseño usa dos 
 - Node.js 22 o más reciente.
 - pnpm en la versión fijada en `package.json`, que se instala con `corepack enable`.
 - Una base de datos PostgreSQL en Neon para iniciar sesión y guardar datos.
-- Docker, solo para correr las pruebas de componentes, integrales y de sistema en local (pendiente de integrar, PR #36 y PR #38).
+- Docker, solo para correr las pruebas de componentes, integrales y de sistema en local.
 
 ### Variables de entorno
 
@@ -1125,7 +982,7 @@ Los valores reales nunca se guardan en el repositorio. Solo `.env.example` está
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Cuenta del administrador inicial para `pnpm db:create-admin`, contraseña de 12 a 128 caracteres |
 | `WAREHOUSE_EMAIL` | Buzón del almacén, opcional |
 | `RESEND_API_KEY` | Planeada para el correo real, todavía no se usa |
-| `TEST_DATABASE_URL` | Base local cuyo nombre termina en `_test`, solo para pruebas (pendiente de integrar, PR #36) |
+| `TEST_DATABASE_URL` | Base local cuyo nombre termina en `_test`, solo para pruebas |
 
 ### Pasos
 
@@ -1182,7 +1039,7 @@ Los valores reales nunca se guardan en el repositorio. Solo `.env.example` está
    pnpm build
    ```
 
-9. Correr las pruebas con base de datos local (pendiente de integrar, PR #36 y PR #38). Las suites solo aceptan una base local cuyo nombre termine en `_test` y nunca apuntan a Neon.
+9. Correr las pruebas con base de datos local. Las suites solo aceptan una base local cuyo nombre termine en `_test` y nunca apuntan a Neon.
 
    ```bash
    docker run -d --name harinas-test-db -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -e POSTGRES_DB=harinas_test -p 127.0.0.1:54329:5432 postgres:16
@@ -1193,7 +1050,7 @@ Los valores reales nunca se guardan en el repositorio. Solo `.env.example` está
 
 ### Despliegue
 
-Cada push a una rama crea una vista previa en Vercel y cada push a `main` despliega producción. `vercel.json` fija el preset de Next.js, así que un proyecto nuevo de Vercel no necesita configuración manual. Las vistas previas están detrás de Vercel Authentication y el alias de producción es público. El workflow `CI` de GitHub Actions corre typecheck, lint, pruebas y build en cada PR y en cada push a `main` (pendiente de integrar, PR #29), y después del merge el dueño del repositorio debe marcarlo como check obligatorio.
+Cada push a una rama crea una vista previa en Vercel y cada push a `main` despliega producción. `vercel.json` fija el preset de Next.js, así que un proyecto nuevo de Vercel no necesita configuración manual. Las vistas previas están detrás de Vercel Authentication y el alias de producción es público. El workflow `CI` de GitHub Actions corre typecheck, lint, pruebas y build en cada PR y en cada push a `main`, y después del merge el dueño del repositorio debe marcarlo como check obligatorio.
 
 ## Asuntos abiertos y cerrados (Open and Closed Issues)
 
@@ -1207,7 +1064,7 @@ Las decisiones están registradas en `docs/llm/decisions.md`.
 | D-02 | 2026-10-22 | Postgres en Neon con Drizzle ORM |
 | D-03 | 2026-10-22 | Better Auth con correo y contraseña, `role` y `employeeId` en el usuario |
 | D-04 | 2026-10-22 | shadcn sobre base-ui, Sonner y recharts |
-| D-05 | 2026-10-22 | El prototipo v0.1 se mueve sin cambios a `legacy/prototipo-v0.1/` |
+| D-05 | 2026-10-22 | El prototipo v0.1 se mueve sin cambios a `legacy/prototipo-v0.1/`. Se eliminó el 16 de noviembre de 2026 |
 | D-06 | 2026-10-22 | Nombres de tablas y columnas en inglés, con glosario que mapea el borrador en español |
 | D-07 | 2026-10-22 | Dos tablas de límites, `international_limits` y `client_limits` |
 | D-08 | 2026-10-22 | Después de Z la secuencia sigue AA, AB … ZZ, AAA, con máximo 3 letras |
@@ -1259,9 +1116,9 @@ Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que 
 
 ### Observaciones encontradas en el código
 
-- El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients` (pendiente de integrar, PR #31). Clientes tampoco usa `requireRole` ni `ActionState` como los demás módulos.
+- El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients`. Clientes tampoco usa `requireRole` ni `ActionState` como los demás módulos.
 - `main` en 2b30a0f fallaba `pnpm lint` en `reportes/export-button.tsx` y `pnpm build` en `/reportes`. El merge del PR #37 lo corrigió y `main` en ff92f19 pasa CI.
-- El correo sigue simulado. Pasar a Resend necesita una llave de API (D-13).
+- El correo se envía con Resend desde el 15 de noviembre de 2026 (PR #41). Mientras no haya un dominio verificado, producción manda todo al buzón de prueba de `EMAIL_REDIRECT_TO` (PR #45).
 - La exportación no se ha abierto en Excel ni en Power BI, y la regla que exige CI en `main` y una corrida desde un fork siguen pendientes (PR-05 a PR-07).
 
 > TODO (equipo): revisar este documento completo con todo el equipo antes de exportarlo a PDF (paso 10 del issue #24).

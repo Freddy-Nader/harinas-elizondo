@@ -1,6 +1,6 @@
 /**
- * Domain schema (draft for Entrega 3). Ported from docs/02_modelo_bd.sql and the
- * logical view in the team's architecture document. Column names are camelCase here
+ * Domain schema. Started from the delivery 2 SQL draft and the logical view in the team's
+ * architecture document; docs/diseno-base-datos-es.md explains every design choice. Column names are camelCase here
  * and snake_case in Postgres (drizzle `casing: "snake_case"`).
  *
  * Open points are tracked in docs/llm/decisions.md; do not "fix" them silently.

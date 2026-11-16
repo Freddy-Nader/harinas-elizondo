@@ -10,8 +10,8 @@ Add a row when something is decided. Move a question to the decisions table once
 | D-02 | 2026-10-22 | Postgres on Neon + Drizzle ORM | The SQL draft already targets Postgres. Drizzle keeps the schema typed and readable for the technical spec |
 | D-03 | 2026-10-22 | Better Auth (email and password) with `role` and `employeeId` on the user | RF-01 needs roles and the employee id on every action |
 | D-04 | 2026-10-22 | shadcn on base-ui, Sonner, recharts (curated picks) | Accessible, consistent, small |
-| D-05 | 2026-10-22 | The v0.1 prototype moves to `legacy/prototipo-v0.1/` untouched | Keep it as reference. Its validations (SAP key, RFC regex) get ported. Probably deleted later |
-| D-06 | 2026-10-22 | English table and column names (`clients.sap_key`) instead of the Spanish names in `docs/02_modelo_bd.sql` | Code is English by project rule. The glossary in `domain.md` maps both |
+| D-05 | 2026-10-22 | The v0.1 prototype moves to `legacy/prototipo-v0.1/` untouched | Keep it as reference. Its validations (SAP key, RFC regex) get ported. Deleted on 2026-11-16 once every validation lived in `client-validation.ts` |
+| D-06 | 2026-10-22 | English table and column names (`clients.sap_key`) instead of the Spanish names in the delivery 2 SQL draft (removed 2026-11-16, see git history) | Code is English by project rule. The glossary in `domain.md` maps both |
 | D-07 | 2026-10-22 | Two tables, `international_limits` (one row per parameter) and `client_limits` (one row per client and parameter). The name stays "international" in code and UI | Matches the team doc's wording (a separate table for international values and another for client values). A reserved client (999 or 0) would be a fake row every list, report and count has to exclude, and could collide with a real SAP key. "International" is the term the course documents and lab staff use |
 | D-08 | 2026-10-22 | Inspection sequence after Z continues AA, AB … ZZ, AAA (bijective base 26, max 3 letters) | Team doc says "continue with an additional sequence". `varchar(3)` matches the SQL draft |
 | D-09 | 2026-10-22 | One inspection holds the results of both machines | Logical view puts alveograph and farinograph results in the same inspection, and the certificate needs both |
@@ -26,7 +26,7 @@ Add a row when something is decided. Move a question to the decisions table once
 | D-19 | 2026-10-22 | History export as `.xlsx` (exceljs) plus CSV | Power BI reads both, and xlsx keeps accents, dates and column types right |
 | D-20 | 2026-10-22 | Both roles can read the audit log | Managers audit, and it supports the Traceability characteristic |
 | D-21 | 2026-10-22 | A lot's product is free text, with suggestions from earlier lots | No catalog needed while limits are per client (D-12) |
-| D-11 | 2026-10-22 | Work happens in Freddy's fork with PRs against the fork's own `main`. One PR upstream later, when Freddy is ready, together with a request to be added as collaborator | Freddy has read-only access upstream, and the scaffold should mature before the team reviews it. Vercel previews run from the fork |
+| D-11 | 2026-10-22 | Work happens in Freddy's fork with PRs against the fork's own `main`. One PR upstream later, when Freddy is ready, together with a request to be added as collaborator. Superseded once Freddy got push access upstream (November 2026). Branches now go straight to the team repo, see runbook.md | Freddy has read-only access upstream, and the scaffold should mature before the team reviews it. Vercel previews run from the fork |
 
 ## Professor review (2026-11-04)
 
@@ -50,7 +50,8 @@ Migration `0003_certificate_shipping_cancel` adds those columns and the enum val
 | Id | Question | Proposed answer | Owner |
 | --- | --- | --- | --- |
 | Q-11 | Units for each parameter (current ones are guesses from the equipment annexes) | Team decides, possibly with the professor | Team |
-| Q-12 | Who builds which module before 2026-11-13? | Split by module, one PR each | Team |
+| Q-12 | Who builds which module before 2026-11-13? | Split by module, one PR each. What actually happened, by GitHub user, is in `docs/proceso-desarrollo-es.md` | Team |
 
 | Q-13 | Humidity mentioned in professor review is not one of the ten factors in RF-02; which method/equipment captures it and is it an additional factor? | Await direct clarification; do not substitute water absorption for moisture | Team |
 | Q-14 | Which authoritative specification supplies numerical reference ranges and confirmed units for the ten rheological factors? | Current seed values are demo-only | Team |
+| Q-16 | Is the certificate emailed only to some ("special") clients? | Today every client with a contact email gets it, plus the warehouse (`deliveryRecipients` in `src/lib/domain/certificate.ts`) | Team |
