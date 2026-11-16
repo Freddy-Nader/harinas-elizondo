@@ -9,11 +9,11 @@ La aplicación usa el controlador HTTP de Neon, que no puede hablar con un Postg
 | Dato | Valor |
 | --- | --- |
 | Fecha | 2026-11-16 |
-| Commit | 23d9967 (rama `chore/improve-plans`, que ya incluye las API y la CLI de Clientes, D-28 y D-29) |
-| Comando | `TEST_DATABASE_URL=postgresql://localhost:5432/harinas_plan006_test pnpm test:int` |
-| Base | PostgreSQL 14.24 (Homebrew) local, base `harinas_plan006_test` creada para esta corrida, nunca Neon |
+| Commit | 473324b (rama `test/component-reportes-bitacora`, sobre `chore/improve-plans` con las API y la CLI de Clientes, D-28 y D-29) |
+| Comando | `TEST_DATABASE_URL=postgresql://localhost:5432/harinas_plan009_test pnpm test:int` |
+| Base | PostgreSQL 14.24 (Homebrew) local, base `harinas_plan009_test` creada para esta corrida, nunca Neon |
 | Entorno | macOS arm64, Node 22.22.0, Vitest 5.0.5, sin Docker |
-| Resultado | 5 archivos, 21 pruebas, 21 pasan, 0 fallan |
+| Resultado | 7 archivos, 33 pruebas, 33 pasan, 0 fallan |
 
 En CI el job Integration tests (Postgres) corre la misma suite contra un servicio `postgres:16`. La última corrida verde en `main`, del commit f767e75, es https://github.com/ValleryR/harinas-elizondo/actions/runs/43849955128 y sus tres jobs terminaron en verde. La corrida de esta guía usó Postgres 14 local porque Docker no estaba disponible, mientras que CI usa `postgres:16`.
 
@@ -29,9 +29,9 @@ TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:
 Sin Docker, con un Postgres local de Homebrew, como en la corrida registrada.
 
 ```bash
-createdb harinas_plan006_test
-TEST_DATABASE_URL=postgresql://localhost:5432/harinas_plan006_test pnpm test:int
-dropdb harinas_plan006_test
+createdb harinas_plan009_test
+TEST_DATABASE_URL=postgresql://localhost:5432/harinas_plan009_test pnpm test:int
+dropdb harinas_plan009_test
 ```
 
 `src/test/int/guard.ts` se niega a correr si la URL no es local o si el nombre de la base no termina en `_test`, así que la suite no puede borrar una base real. Las credenciales de arriba solo existen dentro del contenedor y no son secretas.
@@ -52,8 +52,8 @@ dropdb harinas_plan006_test
 | PC-10 | BR-CER-01, BR-CER-02 | Lote cuya última inspección está incompleta | Intentar crear el certificado | Inspección con parámetros faltantes | No se genera el certificado | Pasa (8 ms) | Pass |
 | PC-11 | RF-01 | Usuario de transacción y administrador desactivado | Intentar crear una cuenta | Datos de cuenta sintéticos | Solo un administrador activo crea cuentas | Pasa (11 ms) | Pass |
 | PC-12 | RF-01, BR-AUD-01 | Administrador activo | Crear una cuenta y luego otra con el mismo correo | Correo `@prueba.test`, contraseña ficticia | Cuenta, credencial y auditoría se guardan juntas, y el correo repetido revierte todo | Pasa (97 ms) | Pass |
-| PC-13 | RF-07, UC-08 | Módulo de Reportes integrado | Consultar y exportar el histórico contra Postgres | Certificados sintéticos | Filtros y exportación correctos según el rol | Sin ejecutar | Pendiente, Reportes ya está en `main` pero todavía no existe un archivo `*.int.test.ts` que consulte y exporte el histórico contra Postgres, así que no se corrió |
-| PC-14 | RF-08, D-20 | Pantalla de Bitácora integrada | Leer la bitácora con cada rol | Filas de auditoría sintéticas | Ambos roles leen y nadie modifica | Sin ejecutar | Pendiente, Bitácora ya está en `main` y su lectura se comprobó en vivo en PS-15, pero todavía no existe un archivo `*.int.test.ts` que la lea contra Postgres, así que no se corrió |
+| PC-13 | RF-07, UC-08 | Dos certificados emitidos de dos clientes, creados con las acciones reales | Consultar el histórico con cada rol, filtrar por cliente, exportar en CSV y en xlsx con consulta y llamar sin sesión | Certificados sintéticos de dos clientes ficticios | Filtros y exportación correctos según el rol | Pasa (6 pruebas, 24 ms en total). Ambos roles leen los dos certificados, el filtro por cliente devuelve solo el suyo, cada exportación deja una fila `export` de auditoría con el usuario de consulta y sin sesión redirige a /login | Pass |
+| PC-14 | RF-08, D-20 | Filas de auditoría creadas con las acciones reales de Clientes y Lotes más una de exportación | Leer la bitácora con cada rol, filtrar por entidad y por empleado, llamar sin sesión y revisar lo que exporta el módulo | Filas de auditoría sintéticas | Ambos roles leen y nadie modifica | Pasa (6 pruebas, 9 ms en total). Ambos roles leen 3 filas con el total correcto y la más nueva primero, los filtros devuelven solo sus filas, sin sesión redirige a /login y `listAuditLog` es la única función que exporta el módulo | Pass |
 | PC-15 | RF-01 | Sin sesión | Llamar a la lista y al alta de `/api/v1/clients` | Lista y alta sin sesión | Ambas responden 401 con "Inicia sesión para continuar." | Pasa (10 ms) | Pass |
 | PC-16 | RF-01 | Sesión de consulta | Llamar a la lista y al alta de `/api/v1/clients` | Cliente sintético | Ambas responden 403 con el mensaje de permiso y no se escribe nada | Pasa (2 ms) | Pass |
 | PC-17 | RF-03, BR-AUD-01 | Sesión de transacción | Crear un cliente por `/api/v1/clients/create` | Cliente sintético con RFC ficticio y correo `@prueba.test` | Responde 200 y quedan el cliente y su fila de auditoría | Pasa (6 ms) | Pass |
@@ -70,7 +70,7 @@ La prueba `renderCertificatePdf (component)` genera el PDF sin base de datos, po
 
 | Estado | Casos |
 | --- | --- |
-| Pass | 21 |
-| Pendiente | 2 |
+| Pass | 23 |
+| Pendiente | 0 |
 
 La concurrencia es determinista porque `holdUntilConcurrent` detiene la escritura hasta que llegan las dos llamadas, así que ambas pasan sus revisiones y la base decide.

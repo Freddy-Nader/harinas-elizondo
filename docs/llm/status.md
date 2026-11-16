@@ -22,7 +22,7 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 | Bitácora (RF-08) | `/bitacora` | Read-only for both roles, filters in the URL |
 | Mobile navigation | `src/components/mobile-nav.tsx` | Drawer below `md` |
 | API and CLI (D-29) | `src/lib/api/`, `/api/v1`, `cli/he.ts`, `docs/llm/api-cli.md` | Phase 1 of plan 008. Clientes create, update and list work from the site, `/api/v1` and `pnpm he`. Other modules are only mapped in `api-cli.md` |
-| Tests | `docs/testing/` | Unit (220 tests, PU-01 to PU-64), component (21, PC-01 to PC-23 with PC-13 and PC-14 pending), integration and system (13 e2e) and regression suites, all re-run on 2026-11-16, CI on every PR |
+| Tests | `docs/testing/` | Unit (220 tests, PU-01 to PU-64), component (33 tests, PC-01 to PC-23 all Pass), integration and system (13 e2e) and regression suites, all re-run on 2026-11-16, CI on every PR |
 | Production | https://harinas-elizondo.vercel.app | Neon Postgres, Resend with `EMAIL_REDIRECT_TO` to a test inbox |
 
 ## Still open
@@ -30,7 +30,7 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 - [ ] User acceptance tests with at least two people outside the team (PA-01 to PA-06 in `docs/testing/pruebas-aceptacion-es.md`). Never invent results.
 - [ ] Live verification on production with Neon (PS-08 to PS-16) ran on 2026-11-16 against the production deploy of 2026-11-15, before the redeploy of 2026-11-16, with the demo accounts. PS-08 to PS-16 are all Pass, and PS-15 was run with both the query and the transaction role. Evidence is in `docs/testing/pruebas-sistema-es.md` and the screenshots in `docs/img/`. Still open: the administrator screens (`/panel` as admin and `/usuarios`), the Excel and Power BI screenshots. Test data left in production uses the PRUEBA prefix (client PRUEBA02, lot L-PRUEBA-010, certificates CER-2026-000003 and CER-2026-000004).
 - [x] Screenshots and the sample certificate PDF are in `docs/img/` and linked from the spec. The remaining "TODO (equipo)" screenshot lines are the ones listed in the live verification item above.
-- [ ] Branch rule that makes CI required on `main` (repo owner) and a finished green CI run from a fork (PR-05 and PR-06). PR-07 passed on 2026-11-16. PC-13 and PC-14 stay Pending until component tests exist for Reportes and Bitácora.
+- [ ] Branch rule that makes CI required on `main` (repo owner, PR-05). PR-06 passed with the green run of PR #47 from a fork and PR-07 passed on 2026-11-16. PC-13 and PC-14 pass with the new component tests for Reportes and Bitácora.
 - [ ] Team conclusions and individual lessons learned (outside the repo, they hold personal opinions).
 - [ ] Open questions Q-11 (units), Q-13 (humidity) and Q-14 (official numeric ranges) in [decisions.md](decisions.md). The seeded limits are demo values.
 - [ ] Apply migration `0005` (`rate_limit` table, D-28) to Neon with `pnpm db:migrate`, then rotate the demo password to 16+ characters. The seed does not update existing users, see the runbook.

@@ -964,10 +964,10 @@ Los números de esta tabla salen de las corridas del 2026-11-16 en el commit 23d
 | Tipo | Ids | Herramienta | Resultado reportado | Fuente |
 | --- | --- | --- | --- | --- |
 | Unitarias | PU-01 a PU-64 | Vitest | 220 de 220 pruebas en 26 archivos pasan, 64 casos en Pass | Corrida del 2026-11-16 |
-| Componentes | PC-01 a PC-23 | Vitest con Postgres 14 local | 21 de 21 pasan en 5 archivos, PC-13 y PC-14 Pendiente porque no existe su prueba | Corrida del 2026-11-16 |
+| Componentes | PC-01 a PC-23 | Vitest con Postgres 14 local | 33 de 33 pasan en 7 archivos, PC-01 a PC-23 en Pass | Corrida del 2026-11-16 |
 | Integrales | PI-01 a PI-06 | Playwright con Postgres local | 6 pasan, 13 de 13 pruebas de la suite e2e | Corrida del 2026-11-16 |
 | Sistema | PS-01 a PS-16 | Playwright y revisión manual | 16 pasan, PS-01 a PS-07 con Playwright y PS-08 a PS-16 en vivo | Corrida del 2026-11-16 |
-| Regresión | PR-01 a PR-07 | GitHub Actions | 5 Pass, 2 Pendiente | Corrida del 2026-11-16 |
+| Regresión | PR-01 a PR-07 | GitHub Actions | 6 Pass, 1 Pendiente | Corrida del 2026-11-16 |
 | Aceptación | PA-01 a PA-06 | Guion con usuarios reales | 0 ejecutadas, 6 Pendiente | Sin corrida |
 
 La suite unitaria ya incluye las pruebas de Reportes, la calidad de la producción, la Bitácora, el correo y el menú por rol. Las guías de cada tipo guardan el detalle de la corrida.
@@ -984,7 +984,7 @@ La última corrida de CI sobre `main`, del commit f767e75, terminó en verde en 
 | Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | La aplicación respondió en las pruebas PS-08 a PS-16 del 16 de noviembre de 2026, sin medir la disponibilidad |
 | Usabilidad | Interfaz clara y navegación simple | Todo en español, avisos por acción, errores por campo sin perder lo escrito, menú filtrado por rol, menú móvil | PA-01 a PA-06 pendientes |
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
-| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción con consulta y con transacción y PC-14 sigue pendiente |
+| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción con consulta y con transacción y PC-14 pasa contra Postgres |
 
 > TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
 
@@ -1197,6 +1197,6 @@ Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que 
 - El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients`. Clientes tampoco usa `requireRole` ni `ActionState` como los demás módulos.
 - `main` en 2b30a0f fallaba `pnpm lint` en `reportes/export-button.tsx` y `pnpm build` en `/reportes`. El merge del PR #37 lo corrigió y `main` en ff92f19 pasa CI.
 - El correo se envía con Resend desde el 15 de noviembre de 2026 (PR #41). Mientras no haya un dominio verificado, producción manda todo al buzón de prueba de `EMAIL_REDIRECT_TO` (PR #45).
-- La exportación no se ha abierto en Excel ni en Power BI, y la regla que exige CI en `main` y una corrida desde un fork siguen pendientes (PR-05 a PR-07).
+- La exportación no se ha abierto en Excel ni en Power BI, y la regla que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio.
 
 > TODO (equipo): revisar este documento completo con todo el equipo antes de exportarlo a PDF (paso 10 del issue #24).
