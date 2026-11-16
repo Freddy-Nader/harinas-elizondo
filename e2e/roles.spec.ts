@@ -22,6 +22,11 @@ test.describe("RF-01 permisos por rol", () => {
     }
     await page.goto("/lotes/nuevo");
     await expect(page.getByRole("heading", { name: "Acceso restringido" })).toBeVisible();
+
+    // Clientes uses the same restricted screen as every other module
+    await page.goto("/clientes");
+    await expect(page.getByRole("heading", { name: "Acceso restringido" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Registrar cliente" })).toHaveCount(0);
   });
 
   test("PS-06 RF-01 D-14 solo el administrador abre Usuarios", async ({ page }) => {
