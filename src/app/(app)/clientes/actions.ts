@@ -1,23 +1,14 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
 import { pgError } from "@/lib/action-state";
-import { getAuth } from "@/lib/auth";
+import { requireRole } from "@/lib/session";
 import { getDb } from "@/lib/db";
 import { auditLog, clients, clientDeliveryAddresses, clientLimits, internationalLimits, parameters } from "@/lib/db/schema";
 import { clientInputSchema, limitInputSchema, isWithinInternational, optionalText } from "@/lib/domain/client-validation";
-
-/** RF-01 · RF-08 · BR-AUD-01: authorization cannot rely on hidden buttons. */
-async function requireTransactionUser() {
-  const session = await getAuth().api.getSession({ headers: await headers() });
-  if (!session?.user || session.user.active === false) redirect("/login");
-  if (session.user.role !== "transaction") throw new Error("Acceso restringido.");
-  return session.user;
-}
 
 function readClient(form: FormData) {
   return clientInputSchema.safeParse({
@@ -48,7 +39,7 @@ async function logChange(
 
 /** RF-03 · UC-02 · BR-CLI-01/02: create or update with DB-enforced unique SAP key. */
 export async function saveClient(form: FormData) {
-  const user = await requireTransactionUser();
+  const user = await requireRole();
   const parsed = readClient(form);
   if (!parsed.success) validationError(parsed.error.issues[0]?.message ?? "Datos inválidos.");
   const input = parsed.data;
@@ -106,7 +97,7 @@ export async function saveClient(form: FormData) {
 
 /** RF-03 · UC-02 · BR-CLI-03: change status, never physically delete a client. */
 export async function changeClientStatus(form: FormData) {
-  const user = await requireTransactionUser();
+  const user = await requireRole();
   const id = String(form.get("id") ?? "");
   const status = form.get("status") === "inactive" ? "inactive" : "active";
   const reason = String(form.get("reason") ?? "").trim();
@@ -123,7 +114,7 @@ export async function changeClientStatus(form: FormData) {
 
 /** RF-03 · BR-REF-01: one optional pair of limits per client and parameter. */
 export async function saveClientLimit(form: FormData) {
-  const user = await requireTransactionUser();
+  const user = await requireRole();
   const clientId = String(form.get("clientId") ?? "");
   const lower = String(form.get("lowerLimit") ?? "").trim();
   const upper = String(form.get("upperLimit") ?? "").trim();
@@ -157,7 +148,7 @@ export async function saveClientLimit(form: FormData) {
 }
 
 export async function removeClientLimit(form: FormData) {
-  const user = await requireTransactionUser();
+  const user = await requireRole();
   const clientId = String(form.get("clientId") ?? "");
   const parameterCode = String(form.get("parameterCode") ?? "");
   const db = getDb();

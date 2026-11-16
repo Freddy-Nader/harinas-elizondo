@@ -11,18 +11,9 @@ import { changedFields } from "@/lib/domain/equipment";
 import { nextSequence } from "@/lib/domain/inspection-sequence";
 import { lotCodeSchema, lotDataSchema, startInspection } from "@/lib/domain/lot";
 import { latestInspection } from "@/lib/inspection-data";
-import { ForbiddenError, requireRole } from "@/lib/session";
+import { authorizeMutation } from "@/lib/session";
 
 /** RF-04 · UC-03 server actions. Role first (RF-01), audit row with every change (BR-AUD-01). */
-
-async function authorize() {
-  try {
-    return { user: await requireRole() };
-  } catch (error) {
-    if (error instanceof ForbiddenError) return { denied: fail(error.message) };
-    throw error;
-  }
-}
 
 function readLotData(form: FormData) {
   return lotDataSchema.safeParse({
@@ -34,7 +25,7 @@ function readLotData(form: FormData) {
 
 /** UC-03. Registers a production lot with the code printed by production. */
 export async function createLot(_: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
 
   const code = lotCodeSchema.safeParse(String(form.get("id") ?? ""));
@@ -60,7 +51,7 @@ export async function createLot(_: ActionState, form: FormData): Promise<ActionS
 
 /** UC-03. Edits product and dates until a certificate uses one of its inspections. */
 export async function updateLot(id: string, _: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
 
   const db = getDb();
@@ -93,7 +84,7 @@ export async function updateLot(id: string, _: ActionState, form: FormData): Pro
  * and needs the equipment-failure reason (D-15).
  */
 export async function startLotInspection(lotId: string, _: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
 
   const db = getDb();
