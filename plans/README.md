@@ -13,7 +13,7 @@ Project rules every executor follows (from `AGENTS.md`): code and commits in Eng
 | 001 | [Security headers](001-security-headers.md) | P2 | S | none | DONE (2026-11-16, reviewed, three headers confirmed with curl on a local production build) |
 | 003 | [One shared role guard](003-shared-role-guard.md) | P2 | S | none | DONE (2026-11-16, reviewed. Scope grew by one file, the `@/lib/session` mock in `src/app/(app)/lotes/actions.test.ts`) |
 | 004 | [Login rate limit in Postgres, stronger demo password](004-login-rate-limit.md) | P2 | M | none | DONE (2026-11-16, reviewed. On a local Postgres the component and e2e suites pass and the sixth wrong sign-in in a minute answers 429. OPERATOR STEPS before this reaches production: run `pnpm db:migrate` on Neon first, because sign-in fails while the `rate_limit` table is missing. The seed does not change the password of existing users, so rotating the demo password still needs a separate step, see the runbook) |
-| 007 | [Export the course documents to PDF](007-docs-to-pdf.md) | P2 | M | 005, 006 | TODO |
+| 007 | [Export the course documents to PDF](007-docs-to-pdf.md) | P2 | M | 005, 006 | DONE (2026-11-16, reviewed. `pnpm docs:pdf` writes 11 PDFs plus `entrega-3-completa.pdf` to `docs/pdf/`, Mermaid drawn offline. Run it again after plan 006 lands so the PDFs carry the fresh results) |
 | 008 | [Shared API behind the site and a CLI (Phase 0 and 1, Clientes)](008-shared-api-and-cli.md) | P2 | L | 003 | TODO |
 | 002 | [Move the shadcn CLI to devDependencies](002-shadcn-dev-dependency.md) | P3 | S | none | DONE (2026-11-16, reviewed, shadcn stays at 4.22.1 and no other package version changed) |
 
