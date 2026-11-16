@@ -27,7 +27,7 @@ import {
 } from "@/lib/domain/certificate";
 import { changedFields } from "@/lib/domain/equipment";
 import { renderCertificatePdf } from "@/lib/services/certificate-pdf";
-import { sendEmail, warehouseEmail } from "@/lib/services/mailer";
+import { isEmailRedirected, sendEmail, warehouseEmail } from "@/lib/services/mailer";
 import { ForbiddenError, requireRole, type SessionUser } from "@/lib/session";
 
 /**
@@ -286,7 +286,12 @@ export async function sendCertificate(id: string, _: ActionState, form: FormData
   if (current.status === "cancelled") return fail("El certificado está cancelado y ya no se envía.");
 
   const sent = await deliver(id, user, current.status === "sent" ? "resend" : "send");
-  return sent.ok ? succeed(`Enviado a ${sent.recipients.join(", ")}.`) : fail(`El envío falló: ${sent.error}`);
+  if (!sent.ok) return fail(`El envío falló: ${sent.error}`);
+  return succeed(
+    isEmailRedirected()
+      ? `Enviado al buzón de prueba (dirigido a ${sent.recipients.join(", ")}).`
+      : `Enviado a ${sent.recipients.join(", ")}.`,
+  );
 }
 
 /**

@@ -12,7 +12,7 @@ import { Resend } from "resend";
  *   recipients, and the body says who it was meant for. Resend without a verified domain can
  *   only send to the account owner's address, so this keeps the demo working.
  *
- * Callers only use `sendEmail`, `isEmailSimulated` and `warehouseEmail`.
+ * Callers only use `sendEmail`, `isEmailSimulated`, `isEmailRedirected` and `warehouseEmail`.
  */
 
 export type EmailAttachment = { filename: string; content: Buffer };
@@ -38,6 +38,11 @@ function apiKey(): string | undefined {
 /** Whether emails stay on the server. True while `RESEND_API_KEY` is missing. */
 export function isEmailSimulated(): boolean {
   return apiKey() === undefined;
+}
+
+/** Whether real emails go to `EMAIL_REDIRECT_TO` instead of their recipients (demo mode). */
+export function isEmailRedirected(): boolean {
+  return !isEmailSimulated() && redirectTo() !== undefined;
 }
 
 /** The warehouse mailbox that always receives certificates (RF-05). */
