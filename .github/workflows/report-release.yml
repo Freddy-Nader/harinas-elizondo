@@ -1,0 +1,48 @@
+# Builds the project report (latex/main.tex) and publishes the PDF as a GitHub release.
+# It only runs on the fork Freddy-Nader/harinas-elizondo. The team repo skips the job.
+# The cover is the redacted one, because latex/private/ never exists in CI.
+# Uses only the built-in GITHUB_TOKEN.
+name: Report release
+
+on:
+  push:
+    paths:
+      - "latex/**"
+      - ".github/workflows/report-release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Build and release the report PDF
+    if: github.repository == 'Freddy-Nader/harinas-elizondo'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      # Full TeX Live in Docker, with latexmk and biber. Pinned to the commit of tag 4.1.0.
+      - name: Build latex/main.tex
+        uses: xu-cheng/latex-action@6549dc21effb2730855a1281407ecfcececc6c1b # 4.1.0
+        with:
+          root_file: main.tex
+          working_directory: latex
+          texlive_version: 2026
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          short="$(git rev-parse --short HEAD)"
+          cp latex/main.pdf reporte-harinas-elizondo.pdf
+          gh release create "reporte-${short}" reporte-harinas-elizondo.pdf \
+            --target "${GITHUB_SHA}" \
+            --title "Reporte $(date -u +%Y-%m-%d) (${short})" \
+            --notes "Reporte del proyecto construido desde ${GITHUB_SHA} en la rama ${GITHUB_REF_NAME}. La portada no lleva nombres a propósito." \
+            --latest
