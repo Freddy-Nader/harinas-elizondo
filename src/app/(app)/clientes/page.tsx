@@ -1,9 +1,7 @@
 import { DeliveryAddresses } from "./_components/delivery-addresses";
 import { Suspense } from "react";
-import { connection } from "next/server";
 import Link from "next/link";
-import { headers } from "next/headers";
-import { getAuth } from "@/lib/auth";
+import { ModuleGate, PageSkeleton } from "@/components/module-gate";
 import { listClients, listDeliveryAddresses, listClientLimits, listInternationalLimits, listParameters } from "./data";
 import { changeClientStatus, removeClientLimit, saveClient, saveClientLimit } from "./actions";
 
@@ -14,6 +12,16 @@ const labelClass = "flex flex-col gap-1 text-xs font-medium";
 const actionClass = "inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90";
 
 export default function ClientsPage({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <ModuleGate href="/clientes">
+        <ClientsSection searchParams={searchParams} />
+      </ModuleGate>
+    </Suspense>
+  );
+}
+
+function ClientsSection({ searchParams }: Props) {
   return (
     <section className="mx-auto flex max-w-5xl flex-col gap-6">
       <header>
@@ -30,15 +38,7 @@ export default function ClientsPage({ searchParams }: Props) {
 }
 
 async function ClientsContent({ searchParams }: Props) {
-  // RF-01: wait for an actual request before constructing DB-backed auth.
-  await connection();
-  const session = await getAuth().api.getSession({ headers: await headers() });
-  if (!session?.user || session.user.active === false) {
-    return <p>Debes <Link className="underline" href="/login">iniciar sesión</Link> para consultar clientes.</p>;
-  }
-  if (session.user.role !== "transaction") {
-    return <p className="rounded-lg border p-4">Acceso restringido. Tu perfil solo puede consultar reportes y bitácora.</p>;
-  }
+  // RF-01: ModuleGate in the page already sent other roles to the standard restricted screen.
   const query = await searchParams;
   const [allClients, allParameters, international] = await Promise.all([
     listClients(), listParameters(), listInternationalLimits(),
