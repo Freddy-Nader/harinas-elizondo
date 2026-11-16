@@ -27,8 +27,8 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 ## Still open
 
 - [ ] User acceptance tests with at least two people outside the team (PA-01 to PA-06 in `docs/testing/pruebas-aceptacion-es.md`). Never invent results.
-- [ ] Live verification on production with Neon (PS-08 to PS-14) and the system cases that wait on it.
-- [ ] Screenshots and the sample certificate PDF that the spec marks with "TODO (equipo)".
+- [ ] Live verification on production with Neon (PS-08 to PS-16) ran on 2026-11-16 against the production deploy of 2026-11-15, before the redeploy of 2026-11-16, with the demo accounts. PS-08 to PS-14 and PS-16 are Pass. PS-15 passed with the query role only, and the Bitácora screen still has to be opened with the transaction role. Evidence is in `docs/testing/pruebas-sistema-es.md` and the screenshots in `docs/img/`. Still open: the administrator screens (`/panel` as admin and `/usuarios`), a screenshot of the Calidad de la producción section (the section was deployed on 2026-11-16 after the live run, so the screenshot needs a new demo sign-in), the Excel and Power BI screenshots. Test data left in production uses the PRUEBA prefix (client PRUEBA02, lot L-PRUEBA-010, certificates CER-2026-000003 and CER-2026-000004).
+- [x] Screenshots and the sample certificate PDF are in `docs/img/` and linked from the spec. The remaining "TODO (equipo)" screenshot lines are the ones listed in the live verification item above.
 - [ ] Branch rule that makes CI required on `main` (repo owner) and a CI run from a fork (PR-05 to PR-07).
 - [ ] Team conclusions and individual lessons learned (outside the repo, they hold personal opinions).
 - [ ] Open questions Q-11 (units), Q-13 (humidity) and Q-14 (official numeric ranges) in [decisions.md](decisions.md). The seeded limits are demo values.

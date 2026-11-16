@@ -162,27 +162,101 @@ flowchart TD
 | `/bitacora` | Bitácora | Tabla de solo lectura con filtros por entidad, acción, empleado, fechas e id, 50 filas por página y detalle JSON expandible |
 | Encabezado móvil | Menú móvil | Botón de menú abajo de `md` que abre un panel lateral con los mismos módulos del rol |
 
-> TODO (equipo): captura de `/login`.
+![Pantalla de inicio de sesión](img/login.png)
 
-> TODO (equipo): captura de `/panel` con cada rol (administrador, transacción y consulta).
+La pantalla de `/login` con el formulario vacío, tomada en producción el 16 de noviembre de 2026.
 
-> TODO (equipo): captura de `/usuarios` con el formulario de alta y la lista de cuentas.
+![Panel del usuario de transacción](img/panel-transaccion.png)
 
-> TODO (equipo): captura de `/clientes` con el directorio, el formulario y los valores particulares.
+El panel del usuario de transacción muestra los siete módulos que su rol puede abrir.
 
-> TODO (equipo): captura de `/equipos`, `/equipos/nuevo` y `/equipos/[id]`.
+![Panel del usuario de consulta](img/panel-consulta.png)
 
-> TODO (equipo): captura de `/lotes` y `/lotes/[id]` con una inspección completa y una re-inspección.
+El panel del usuario de consulta muestra solo Reportes y Bitácora.
 
-> TODO (equipo): captura de `/inspecciones/[id]` con la vista previa de desviación.
+> TODO (equipo): captura de `/panel` con el administrador. Falta porque solo el operador tiene la cuenta de administrador y el panel completo no se pudo abrir con las cuentas de demostración.
 
-> TODO (equipo): captura de `/certificados/[id]` en borrador con bloqueos, emitido y cancelado.
+> TODO (equipo): captura de `/usuarios` con el formulario de alta y la lista de cuentas. Falta porque la pantalla es solo del administrador, cuya cuenta solo tiene el operador, y la lista puede mostrar datos personales de las cuentas reales.
 
-> TODO (equipo): captura de `/reportes` con filtros y gráficas.
+![Directorio de clientes y formulario de alta](img/clientes.png)
 
-> TODO (equipo): captura de `/bitacora` con filtros.
+El directorio de `/clientes` con el cliente de prueba `PRUEBA02` y el formulario de alta debajo.
 
-> TODO (equipo): captura del menú móvil a 375 px.
+![Edición de un cliente](img/cliente-editar.png)
+
+La edición del cliente `PRUEBA02` con su dirección fiscal, su destino de entrega y el estado.
+
+![Valores de referencia particulares](img/cliente-valores-particulares.png)
+
+Los valores de referencia particulares del cliente, con la tenacidad ajustada a 65 y 85 dentro del rango internacional.
+
+![Lista de equipos](img/equipos.png)
+
+La lista de `/equipos` con equipos activos y uno dado de baja.
+
+![Formulario de alta de equipo](img/equipo-nuevo.png)
+
+El formulario de `/equipos/nuevo`.
+
+![Detalle de un equipo](img/equipo-detalle.png)
+
+El detalle de un equipo con sus límites internacionales y su estado.
+
+![Lista de lotes](img/lotes.png)
+
+La lista de `/lotes` con el lote de prueba `L-PRUEBA-010`.
+
+![Detalle de un lote](img/lote-detalle.png)
+
+El lote `L-PRUEBA-010` con la inspección A completa y la re-inspección B con su motivo.
+
+![Inspección con captura parcial](img/inspeccion-parcial.png)
+
+La inspección A con cinco de diez parámetros capturados y la tenacidad marcada por encima del límite.
+
+![Inspección completa](img/inspeccion.png)
+
+La misma inspección ya completa, con la desviación calculada contra los valores internacionales.
+
+![Certificado en borrador](img/certificado-borrador.png)
+
+El certificado `CER-2026-000004` en borrador, con sus resultados. La lista de bloqueos por falta de datos de embarque queda debajo de esta captura y no se alcanzó a incluir.
+
+> TODO (equipo): captura del certificado en borrador con la lista de bloqueos visible. Falta porque la lista queda debajo del área visible de la captura y las sesiones ya estaban cerradas cuando se notó.
+
+![Certificado emitido](img/certificado-emitido.png)
+
+El certificado `CER-2026-000003` ya emitido, con su encabezado en estado Emitido y la tabla de resultados que marca la desviación de la tenacidad.
+
+![Certificado enviado](img/certificado-enviado.png)
+
+El mismo certificado después del envío, con los datos del certificado, la huella digital SHA-256, el aviso de Modo de prueba y la entrega registrada a los dos destinatarios de prueba.
+
+![Certificado cancelado](img/certificado-cancelado.png)
+
+Un certificado cancelado, con su motivo y los resultados que se conservan.
+
+![Reportes con indicadores y gráficas](img/reportes.png)
+
+La pantalla de `/reportes` con indicadores y gráficas, vista con el usuario de consulta.
+
+![Reportes filtrados por cliente](img/reportes-filtrado.png)
+
+Los reportes filtrados por el cliente `PRUEBA02`, que dejan una sola fila.
+
+> TODO (equipo): captura de la sección Calidad de la producción de Reportes. Falta porque la sección llegó a producción el 16 de noviembre de 2026 después de esta corrida de verificaciones en vivo, y tomar la captura requiere una nueva sesión de las cuentas de demostración.
+
+![Bitácora filtrada](img/bitacora.png)
+
+La Bitácora vista con el usuario de consulta y filtrada por entidad Certificado y acción Emisión.
+
+![Menú móvil del usuario de transacción](img/menu-movil.png)
+
+El menú móvil a 375 px con los siete módulos del usuario de transacción.
+
+![Menú móvil del usuario de consulta](img/menu-movil-consulta.png)
+
+El menú móvil a 375 px del usuario de consulta, que solo ofrece Panel, Reportes y Bitácora.
 
 ### Reporte impreso, el certificado en PDF
 
@@ -190,7 +264,9 @@ El PDF se genera en el servidor con `@react-pdf/renderer` (`src/lib/services/cer
 
 Cuando la casilla de firma está activa se imprime el bloque firmado con nombre, número de empleado y fecha de quien emitió (D-18). Siempre se imprime la huella digital SHA-256 del contenido emitido (D-26). Un borrador lleva la marca "BORRADOR · sin validez" y un cancelado la marca "CANCELADO · sin validez". Como las fuentes base del PDF solo cubren Latin-1, `pdfSafeText` escribe las unidades con subíndices y superíndices en texto plano.
 
-> TODO (equipo): imagen del PDF de un certificado emitido con datos de prueba (por ejemplo del cliente `PRUEBA01`), sin datos reales.
+![PDF de un certificado emitido](img/certificado-pdf.png)
+
+El PDF del certificado `CER-2026-000003`, emitido con datos de prueba. El archivo original está en [certificado-ejemplo.pdf](img/certificado-ejemplo.pdf).
 
 ### Reportes en pantalla y exportación
 
@@ -886,7 +962,7 @@ Los números de esta tabla son solo los que reportan los PR, con la corrida que 
 | Unitarias | PU-01 a PU-44 | Vitest | 133 de 133 pruebas pasan, 44 casos en Pass | PR #39 |
 | Componentes | PC-01 a PC-14 | Vitest con Postgres 16 local | 12 de 12 pasan, PC-13 y PC-14 Pendiente | PR #36, PR #39 |
 | Integrales | PI-01 a PI-06 | Playwright con Postgres local | 6 pasan | PR #38, PR #39 |
-| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 7 pasan, 9 Pendiente | PR #38, PR #39 |
+| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 15 pasan y PS-15 queda pendiente con el rol de transacción | PR #38, PR #39 |
 | Regresión | PR-01 a PR-07 | GitHub Actions | 4 Pass, 3 Pendiente | PR #29, PR #39 |
 | Aceptación | PA-01 a PA-06 | Guion con usuarios reales | 0 ejecutadas, 6 Pendiente | PR #39 |
 
@@ -903,16 +979,16 @@ Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/acti
 | Seguridad | Acceso restringido por perfil | `requireRole` en cada acción y lectura, `ModuleGate` en cada pantalla, rol desconocido tratado como consulta, cuenta inactiva sin sesión, registro público apagado, redirección solo a rutas del mismo sitio, cabeceras `X-Frame-Options`, `X-Content-Type-Options` y `Referrer-Policy` en todas las respuestas | PU de `permissions.test.ts`, PC-07, PC-11, PS-01 a PS-03, PS-05, PS-06 |
 | Confiabilidad | Datos validados antes de emitir | Zod en cada formulario, `issueBlockers`, última inspección completa obligatoria, restricciones únicas y CHECK en la base de datos, emisión atómica | PU de `certificate.test.ts`, PC-08 a PC-10, PI-06, PS-04 |
 | Integridad de la información | Bitácora y control de cambios | Fila de bitácora en cada mutación dentro del mismo lote, inspecciones bloqueadas, copia fija de líneas, hash SHA-256 verificado en pantalla | PC-01, PC-06, PC-08, PC-12 |
-| Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | Pendiente (#19) |
+| Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | La aplicación respondió en las pruebas PS-08 a PS-16 del 16 de noviembre de 2026, sin medir la disponibilidad |
 | Usabilidad | Interfaz clara y navegación simple | Todo en español, avisos por acción, errores por campo sin perder lo escrito, menú filtrado por rol, menú móvil | PA-01 a PA-06 pendientes |
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
-| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PC-14 y PS-15 pendientes |
+| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción solo con consulta y PC-14 sigue pendiente |
 
 > TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
 
 > TODO (equipo): nota de disponibilidad del deploy durante el periodo de pruebas, tomada de Vercel.
 
-> TODO (equipo): resultados de la verificación en vivo contra Neon (#19), que llenan PS-08 a PS-14.
+La verificación en vivo contra Neon se corrió el 16 de noviembre de 2026 en https://harinas-elizondo.vercel.app y llenó PS-08 a PS-16, salvo PS-15 con el rol de transacción, que quedó pendiente. El detalle de cada caso está en [Pruebas de sistema](testing/pruebas-sistema-es.md).
 
 > TODO (equipo): resultados de la UAT con al menos dos personas externas al equipo, identificadas como P1 y P2, con tareas completadas, tiempos y errores de PA-01 a PA-06.
 

@@ -11,7 +11,7 @@ Cada Resultado obtenido sale de una corrida real, con su fecha y su commit. Si u
 | [Pruebas unitarias](pruebas-unitarias-es.md) | PU-01 a PU-47 (197 pruebas en la corrida del 16 de noviembre) | Vitest | 47 | 0 |
 | [Pruebas de componentes](pruebas-componentes-es.md) | PC-01 a PC-14 | Vitest con Postgres local | 12 | 2 |
 | [Pruebas integrales](pruebas-integrales-es.md) | PI-01 a PI-06 | Playwright con Postgres local | 6 | 0 |
-| [Pruebas de sistema](pruebas-sistema-es.md) | PS-01 a PS-16 | Playwright y verificación manual en el deploy | 7 | 9 |
+| [Pruebas de sistema](pruebas-sistema-es.md) | PS-01 a PS-16 | Playwright y verificación manual en el deploy | 15 | 1 |
 | [Pruebas de regresión](pruebas-regresion-es.md) | PR-01 a PR-07 | GitHub Actions | 4 | 3 |
 | [Pruebas de aceptación](pruebas-aceptacion-es.md) | PA-01 a PA-06 | Guion con usuarios reales | 0 | 6 |
 
@@ -19,8 +19,8 @@ La guía de sistema también integra la antigua guía manual de Inspecciones, qu
 
 ## Qué falta
 
-- La verificación en vivo en https://harinas-elizondo.vercel.app con Neon (#19) espera la rotación de credenciales. Afecta PS-08 a PS-14.
-- Bitácora (#31) y la navegación móvil (#35) ya tienen merge, pero PS-15, PS-16, PC-13, PC-14 y PA-05 siguen sin correrse contra ellos.
+- La verificación en vivo en https://harinas-elizondo.vercel.app con Neon se corrió el 2026-11-16 y cubre PS-08 a PS-16. Quedan sin probar en vivo algunos pasos de la guía manual de Inspecciones, como el bloqueo de una inspección certificada y las dos sesiones a la vez.
+- Bitácora (#31) y la navegación móvil (#35) ya tienen merge y PS-16 pasó en vivo y PS-15 pasó solo con consulta, pero PC-13, PC-14 y PA-05 siguen sin correrse contra ellos.
 - La UAT con al menos dos personas externas al equipo no se ha hecho. Sus tablas están vacías y solo se llenan con sesiones reales.
 - La regla de rama que exige CI en `main` y una corrida desde un fork siguen pendientes (PR-05 a PR-07).
 
