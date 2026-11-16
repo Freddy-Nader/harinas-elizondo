@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { getClientOptions, getReportData } from "./data";
+import { getClientOptions, getProductionQualityData, getReportData } from "./data";
 import { ExportButton } from "./export-button";
 import { ReportCharts } from "./charts";
+import { QualityCharts } from "./quality-charts";
 import { CertificateStatusBadge } from "../certificados/_components/status-badge";
 import { ModuleGate, PageSkeleton } from "@/components/module-gate";
 import { Button } from "@/components/ui/button";
@@ -17,8 +18,10 @@ import {
   plantToday,
   REPORT_STATUSES,
 } from "@/lib/domain/report";
+import { PARAMETERS } from "@/lib/domain/parameters";
+import { parseFactor } from "@/lib/domain/production-quality";
 import { requireRole } from "@/lib/session";
-import { FileText, CheckCircle2, AlertTriangle, BarChart3, Ban, MailX } from "lucide-react";
+import { FileText, CheckCircle2, AlertTriangle, BarChart3, Ban, MailX, FlaskConical, Gauge, RotateCcw, Wheat } from "lucide-react";
 
 export const metadata = { title: "Reportes" };
 
@@ -53,19 +56,32 @@ async function ReportContent({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   const filters = parseReportFilters(resolvedParams, plantToday(new Date()));
   const showDeviations = resolvedParams.detalle === "desviaciones";
+  const factorCode = parseFactor(resolvedParams.factor);
+  // Links keep the chosen factor only when the URL already had one
+  const factorParam = typeof resolvedParams.factor === "string" ? factorCode : undefined;
 
-  const [report, clientOptions] = await Promise.all([getReportData(filters), getClientOptions()]);
+  const [report, clientOptions, production] = await Promise.all([
+    getReportData(filters),
+    getClientOptions(),
+    getProductionQualityData(filters),
+  ]);
+  const factor = production.factors.find((f) => f.code === factorCode)!;
   const { history, deviations, byParameter, monthly, stats } = report;
   const historyPage = paginate(history, filters.page);
   // The query role cannot open /certificados, so its link opens the PDF, which both roles can read
   const certificateHref = (id: string) =>
     currentUser.role === "transaction" ? `/certificados/${id}` : `/certificados/${id}/pdf`;
   const pageHref = (page: number) =>
-    buildHref({ ...filtersToParams(filters), page: page > 1 ? String(page) : undefined, detalle: resolvedParams.detalle as string | undefined });
+    buildHref({
+      ...filtersToParams(filters),
+      page: page > 1 ? String(page) : undefined,
+      detalle: resolvedParams.detalle as string | undefined,
+      factor: factorParam,
+    });
 
   // Opening or closing the detail keeps the active filters
   const deviationsHref = buildHref(
-    { ...filtersToParams(filters), detalle: showDeviations ? undefined : "desviaciones" },
+    { ...filtersToParams(filters), detalle: showDeviations ? undefined : "desviaciones", factor: factorParam },
     showDeviations ? "" : "#detalle-desviaciones",
   );
 
@@ -76,7 +92,11 @@ async function ReportContent({ searchParams }: PageProps) {
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Reportes y Estadísticas</h1>
           <p className="text-sm text-muted-foreground">
             Consulta el historial de certificados emitidos, tasas de cumplimiento y análisis de calidad.
-            Las estadísticas solo cuentan certificados emitidos o enviados; los cancelados se muestran aparte.
+            Las estadísticas solo cuentan certificados emitidos o enviados; los cancelados se muestran aparte.{" "}
+            <a href="#calidad-produccion" className="font-medium text-foreground underline-offset-4 hover:underline">
+              Ver la calidad de la producción
+            </a>
+            .
           </p>
         </div>
 
@@ -392,6 +412,149 @@ async function ReportContent({ searchParams }: PageProps) {
           )}
         </CardContent>
       </Card>
+
+      {/* Calidad de la producción (RF-07, UC-08) */}
+      <section id="calidad-produccion" aria-labelledby="calidad-produccion-titulo" className="scroll-mt-6 space-y-4">
+        <div>
+          <h2 id="calidad-produccion-titulo" className="flex items-center gap-2 text-xl font-semibold tracking-tight">
+            <Wheat className="h-5 w-5" />
+            Calidad de la producción
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Cómo sale la harina que producimos, se haya certificado o no. Toma la última inspección completa de cada
+            lote producido en el periodo y la compara con los límites internacionales. El filtro de cliente y el de
+            estado no aplican, porque un lote no tiene cliente hasta que se certifica.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Lotes producidos</CardTitle>
+              <Wheat className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{production.totals.lots}</div>
+              <p className="text-xs text-muted-foreground">
+                {production.totals.analysed} analizados, {production.totals.pending} sin inspección completa
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Lotes dentro de especificación</CardTitle>
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {production.totals.inSpecRate === null ? "—" : `${production.totals.inSpecRate}%`}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {production.totals.inSpec} de {production.totals.analysed} lotes con los diez factores en rango
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Reinspecciones</CardTitle>
+              <RotateCcw className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{production.totals.reinspections}</div>
+              <p className="text-xs text-muted-foreground">Inspecciones repetidas por falla de equipo</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardTitle className="text-sm font-medium">Capacidad del proceso ({factor.label})</CardTitle>
+              <Gauge className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{factor.cpk === null ? "—" : fmt(factor.cpk)}</div>
+              <p className="text-xs text-muted-foreground">Cpk. Menos de 1 sale de los límites, 1.33 o más es lo deseable</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <form method="get" action="#calidad-produccion" className="flex flex-wrap items-end gap-3">
+          {Object.entries(filtersToParams(filters)).map(([key, value]) =>
+            value && key !== "page" ? <input key={key} type="hidden" name={key} value={value} /> : null,
+          )}
+          <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
+            Factor de la gráfica de control
+            <select
+              name="factor"
+              defaultValue={factorCode}
+              className="h-9 min-w-64 rounded-md border bg-background px-3 text-sm text-foreground"
+            >
+              {PARAMETERS.map((p) => (
+                <option key={p.code} value={p.code}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Button type="submit" variant="outline">
+            Ver factor
+          </Button>
+        </form>
+
+        <QualityCharts factor={factor} trend={production.trends[factorCode] ?? []} factors={production.factors} />
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <FlaskConical className="h-5 w-5" />
+              Estadísticas por factor
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Promedio, dispersión y capacidad de cada factor sobre los lotes analizados. Un valor igual al límite se
+              considera dentro de especificación.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="border-b bg-muted/50 text-muted-foreground">
+                  <tr>
+                    <th className="p-3 font-medium">Factor</th>
+                    <th className="p-3 font-medium text-right">Rango internacional</th>
+                    <th className="p-3 font-medium text-right">Lotes</th>
+                    <th className="p-3 font-medium text-right">Promedio</th>
+                    <th className="p-3 font-medium text-right">Desv. estándar</th>
+                    <th className="p-3 font-medium text-right">Mínimo – máximo</th>
+                    <th className="p-3 font-medium text-right">Fuera de rango</th>
+                    <th className="p-3 font-medium text-right">En especificación</th>
+                    <th className="p-3 font-medium text-right">Cpk</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {production.factors.map((f) => (
+                    <tr key={f.code} className={f.code === factorCode ? "bg-muted/40" : "hover:bg-muted/50"}>
+                      <td className="p-3 font-medium">
+                        {f.label}
+                        {f.unit ? <span className="text-muted-foreground"> ({f.unit})</span> : null}
+                      </td>
+                      <td className="p-3 text-right tabular-nums">
+                        {f.lower === null || f.upper === null ? "Sin límites" : `${fmt(f.lower)} – ${fmt(f.upper)}`}
+                      </td>
+                      <td className="p-3 text-right tabular-nums">{f.samples}</td>
+                      <td className="p-3 text-right tabular-nums">{f.mean === null ? "—" : fmt(f.mean)}</td>
+                      <td className="p-3 text-right tabular-nums">{f.stdDev === null ? "—" : fmt(f.stdDev)}</td>
+                      <td className="p-3 text-right tabular-nums">
+                        {f.min === null || f.max === null ? "—" : `${fmt(f.min)} – ${fmt(f.max)}`}
+                      </td>
+                      <td className="p-3 text-right tabular-nums">{f.outOfSpec}</td>
+                      <td className="p-3 text-right tabular-nums">{f.inSpecRate === null ? "—" : `${f.inSpecRate}%`}</td>
+                      <td className="p-3 text-right tabular-nums">{f.cpk === null ? "—" : fmt(f.cpk)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
     </div>
   );
 }

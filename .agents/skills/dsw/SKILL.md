@@ -61,7 +61,7 @@ Details in `docs/llm/architecture.md`. Copy `src/app/(app)/equipos/` for a new m
 - Module pages wrap their body in `<Suspense>` with `ModuleGate`. Forms use `useFormAction`.
 - Business rules go in `src/lib/domain/` as pure functions with tests named after the BR id. Actions are tested with mocked database boundaries.
 - Duplicate-key database errors become field messages, never a 500 (`pgError` in `src/lib/action-state.ts`).
-- Verified-by-hand guides for a module live in `docs/` (for example `docs/testing-inspections-es.md`). The requirement audit is `docs/revision-requisitos-es.md`.
+- Written test guides, manual ones included, live in `docs/testing/`. Course documents (architecture, database, spec, process) are indexed in `docs/README.md`.
 
 ## Conventions
 

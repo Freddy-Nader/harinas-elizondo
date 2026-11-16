@@ -44,17 +44,18 @@ pnpm build
 
 ## Git flow
 
-- `origin` is Freddy's fork, https://github.com/Freddy-Nader/harinas-elizondo. **All current work happens here.** Branch from `main`, push the branch, open the PR against the fork's `main`, and Freddy reviews and merges it.
-- `upstream` is the team repo, https://github.com/ValleryR/harinas-elizondo, where Freddy has read access only. The first upstream PR is https://github.com/ValleryR/harinas-elizondo/pull/1 (from `feat/nextjs-scaffold`). While it is open, start new work on a branch stacked on `feat/nextjs-scaffold` so the open PR doesn't change under review. Open upstream PRs only when Freddy asks.
-- Pull teammates' changes with `git fetch upstream` and merge `upstream/main` into a branch when needed.
+- The team repo is https://github.com/ValleryR/harinas-elizondo (`upstream` in Freddy's clone). Contributors with push access create a branch there (`feat/`, `fix/`, `docs/`, `test/`, `ci/`), open a PR against `main`, and the PR merges with a merge commit once CI passes.
+- Freddy's fork https://github.com/Freddy-Nader/harinas-elizondo (`origin`) only mirrors `upstream/main` so Vercel can deploy it. Its `sync-upstream.yml` workflow runs on a schedule. Run it by hand after an upstream merge with `gh workflow run sync-upstream.yml -R Freddy-Nader/harinas-elizondo`.
+- Never force-push a shared branch. If a PR is behind `main`, merge `main` into it.
 - Never commit `docs/private/PA_IS.pdf`, `.env*` (except `.env.example`), or personal data. The repo is public.
 
 ## Deploy (Vercel)
 
-- Freddy's fork deploys to https://harinas-elizondo.vercel.app (Vercel project `harinas-elizondo`, Hobby). `vercel.json` pins the Next.js preset, so a new Vercel project needs no manual framework setting.
+- The fork's `main` deploys to https://harinas-elizondo.vercel.app (Vercel project `harinas-elizondo`, Hobby). `vercel.json` pins the Next.js preset, so a new Vercel project needs no manual framework setting.
 - Each fork owner can link their fork to their own Vercel project. Pushes to a branch create a preview, pushes to `main` deploy production.
 - Manual deploy from the CLI is `vercel` (preview) or `vercel --prod`.
 - Env vars live in Vercel project settings. `vercel env pull` brings them down.
+- Gotcha. In `pnpm dev`, `.env.development.local` wins over `.env.local`. If sign-in fails with "password authentication failed", an old `.env.development.local` still holds a rotated database password. Pull again into both files or delete the old one.
 - Gotcha. `vercel link` and `vercel env pull` append `.env*` to `.gitignore`, which would hide `.env.example`. Revert that line (`git checkout .gitignore`) before committing.
 - Preview deployments are behind Vercel Authentication, so plain `curl` gets a 401. Use `vercel curl <path> --deployment <url>` (it creates a protection bypass token) or open the preview in a browser signed in to Vercel. The production alias is public.
 - Neon was added from the Vercel Marketplace (free plan, Washington, D.C., Neon Auth off because the app uses Better Auth). It provides `DATABASE_URL` and `DATABASE_URL_UNPOOLED` to every environment.
@@ -64,11 +65,3 @@ pnpm build
 - `src/lib/services/mailer.ts` sends with Resend when `RESEND_API_KEY` is set. Without it every email is simulated and logged, so local dev and tests never send.
 - Set `RESEND_API_KEY` (and optionally `EMAIL_FROM`, `WAREHOUSE_EMAIL`, `EMAIL_REDIRECT_TO`) in Vercel for Production, then redeploy. Env changes only apply to new deployments.
 - Without a verified domain Resend sends only from `onboarding@resend.dev` and only to the Resend account owner's address. Other recipients fail with a validation error, which is stored as a failed delivery. For the demo set `EMAIL_REDIRECT_TO` to the owner's address, or verify a domain in Resend and set `EMAIL_FROM` on it.
-
-## Legacy prototype
-
-```bash
-cd legacy/prototipo-v0.1 && node server.js
-```
-
-It serves http://localhost:3000 and writes `clientes.json` next to itself (gitignored).

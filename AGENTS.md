@@ -17,7 +17,7 @@ Harinas Elizondo is a university team project (the course calls it "Control de L
 - **Keep docs current.** Update `docs/llm/status.md` (and `decisions.md` when relevant) in the same change.
 - **Checks before a PR.** `pnpm typecheck && pnpm lint && pnpm test && pnpm build` must pass.
 - **UI work.** Load the `emil-design-eng` and `apple-design` skills, and `pick-ui-library` before adding a UI dependency.
-- **Git.** Work happens in Freddy's fork. While the first upstream PR (`feat/nextjs-scaffold`) is open, new branches stack on it and their PRs stay inside the fork. Open upstream PRs only when Freddy asks (see `docs/llm/runbook.md`). Never force-push shared branches.
+- **Git.** Branch from the team repo's `main` (ValleryR/harinas-elizondo) and open the PR there. Never push to `main` or force-push shared branches. Details in `docs/llm/runbook.md`.
 
 ## Commands
 
