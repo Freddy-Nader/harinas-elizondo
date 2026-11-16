@@ -1,0 +1,148 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pkg/preamble}[Reporte del proyecto Harinas Elizondo]
+
+% --- Encoding and language --------------------------------------------------
+\RequirePackage[utf8]{inputenc}
+  \DeclareUnicodeCharacter{2060}{\nolinebreak}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[spanish, mexico, es-noshorthands, es-tabla]{babel}
+
+% --- Page -------------------------------------------------------------------
+\RequirePackage{lmodern}
+\RequirePackage[top=2.5cm, left=3cm, right=3cm, bottom=4cm]{geometry}
+\RequirePackage{parskip}
+\RequirePackage{graphicx}
+  % Screenshots are shared with the course documents, so no PNG is copied here.
+  \graphicspath{{../docs/img/}{figs/}}
+
+% --- Tables and figures -----------------------------------------------------
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{multirow}
+\RequirePackage{float}
+\RequirePackage{placeins}
+\RequirePackage{xcolor}
+\RequirePackage[compatibility=false]{caption}
+\RequirePackage{subcaption}
+\RequirePackage{csquotes}
+\renewcommand{\arraystretch}{1.15}
+\emergencystretch=3em
+\setlength{\tabcolsep}{0.5em}
+\RequirePackage[style=apa,backend=biber]{biblatex}
+  \addbibresource{bib.bib}
+\DefineBibliographyStrings{spanish}{retrieved = {Recuperado}, from = {de}, version = {versión}}
+\setcounter{biburlnumpenalty}{9000}
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+% --- Code -------------------------------------------------------------------
+\RequirePackage{listings}
+\renewcommand{\lstlistingname}{Código}
+\renewcommand{\lstlistlistingname}{Índice de códigos}
+% Colors of the VS Code "2026 Dark" theme, used on a white background
+\definecolor{vsbg}{HTML}{FFFFFF}
+\definecolor{vsfg}{HTML}{121314}
+\definecolor{vsnum}{HTML}{858889}
+\definecolor{vskey}{HTML}{FF7B72}
+\definecolor{vsfun}{HTML}{2749F5}
+\definecolor{vsstr}{HTML}{42A64E}
+\definecolor{vscom}{HTML}{8B949E}
+\lstdefinestyle{consola}{
+  backgroundcolor=\color{vsbg},
+  basicstyle=\ttfamily\footnotesize\color{vsfg},
+  keywordstyle=\color{vskey},
+  commentstyle=\color{vscom},
+  stringstyle=\color{vsstr},
+  numberstyle=\tiny\color{vsnum},
+  numbers=none,
+  frame=single, rulecolor=\color{black!15}, framesep=6pt,
+  breaklines=true, breakatwhitespace=false, columns=fullflexible, keepspaces=true,
+  showspaces=false, showstringspaces=false, showtabs=false, tabsize=2,
+  captionpos=b, aboveskip=1em, belowskip=0.6em, upquote=true,
+  extendedchars=true, inputencoding=utf8,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {¿}{{?`}}1 {¡}{{!`}}1
+}
+
+% Back links between the text and the appendix. \fref and \coref leave a mark the first
+% time something is cited (\bkmark), and \backto{label} links back to that mark.
+\definecolor{backlink}{HTML}{2F6F9F}
+\newcommand{\bkmark}[1]{\ifcsname bk@seen@#1\endcsname\else
+  \expandafter\gdef\csname bk@seen@#1\endcsname{}\hypertarget{bk:#1}{}\label{bk:#1}\fi}
+\DeclareRobustCommand{\backto}[1]{\ifcsname r@bk:#1\endcsname
+  \hyperlink{bk:#1}{\textcolor{backlink}{\textit{(p.~\pageref*{bk:#1})}}}\fi}
+\newcommand{\backline}[1]{\par\nopagebreak{\centering\footnotesize\backto{#1}\par}}
+\newcommand{\backlinecode}[1]{\par\nopagebreak\vspace{-1.1\baselineskip}{\centering\footnotesize\backto{#1}\par}}
+
+\lstnewenvironment{codigo}[1][]
+  {\let\lst@label\@empty
+   \lstset{style=consola,#1}}
+  {\ifx\lst@label\@empty\else
+     \expandafter\backlinecode\expandafter{\lst@label}%
+   \fi}
+
+% --- Drawing ----------------------------------------------------------------
+\RequirePackage{tikz}
+  \usetikzlibrary{arrows.meta, positioning, calc, fit, shapes.geometric, shapes.multipart}
+% Shared styles for the diagrams in figs/
+\definecolor{caja}{HTML}{F3F5F7}
+\definecolor{borde}{HTML}{4A5560}
+\definecolor{acento}{HTML}{2F6F9F}
+\tikzset{
+  bloque/.style  = {draw=borde, fill=caja, rounded corners=2pt, align=center, font=\small, inner sep=5pt, minimum height=0.9cm},
+  actor/.style   = {draw=borde, fill=white, rounded corners=8pt, align=center, font=\small, inner sep=5pt, minimum height=0.8cm},
+  estado/.style  = {draw=borde, fill=caja, rounded corners=10pt, align=center, font=\small, minimum width=2.2cm, minimum height=0.9cm},
+  grupo/.style   = {draw=borde!60, dashed, rounded corners=4pt, inner sep=8pt},
+  flecha/.style  = {-{Stealth[length=2.2mm]}, draw=borde, thick},
+  etiq/.style    = {font=\scriptsize, text=black!75, align=center, inner sep=2pt},
+  tabla/.style   = {rectangle split, rectangle split parts=2, draw=borde, rounded corners=2pt, align=left, font=\scriptsize, rectangle split part fill={acento!15, white}, inner sep=3pt},
+}
+
+% --- Cover ------------------------------------------------------------------
+\RequirePackage{pkg/portada}
+
+% --- Links (goes last) ------------------------------------------------------
+\RequirePackage[colorlinks=true, allcolors=black, urlcolor=acento]{hyperref}
+  \pdfstringdefDisableCommands{%
+    \let\enspace\empty
+    \let\noindent\empty
+    \let\hskip\empty
+    \let\quad\space
+  }%
+
+% --- Commands ---------------------------------------------------------------
+% Inside a .sty the @ is already a letter, so no \makeatletter is needed.
+
+\renewcommand{\tt}[1]{\texttt{#1}}
+
+\newcommand{\tref}[1]{Tabla~\ref{#1}}
+\newcommand{\fref}[1]{\hyperref[#1]{Figura~\ref*{#1}}\bkmark{#1}}
+\newcommand{\sref}[1]{\S \ref{#1}}
+\newcommand{\aref}[1]{Anexo~\ref{#1}}
+\newcommand{\coref}[1]{\hyperref[#1]{Código~\ref*{#1}}\bkmark{#1}}
+
+% Missing facts. \pend prints red text in place of something the repo cannot tell
+% (team conclusions, who did what, dates of meetings). None may remain at delivery.
+\newcommand{\pend}[1]{\textcolor{red}{\textbf{[#1]}}}
+
+% \captura[width]{file-without-extension}{caption}. The image lives in ../docs/img/file.png.
+% While it does not exist, a red box is drawn so the document still compiles.
+\newcommand{\captura}[3][0.95]{%
+  \begin{figure}[H]
+    \centering
+    \IfFileExists{../docs/img/#2.png}%
+      {\includegraphics[width=#1\linewidth,height=0.45\textheight,keepaspectratio]{#2}}%
+      {\fbox{\parbox{0.8\linewidth}{\centering\vspace{1.4cm}\textcolor{red}{\textbf{CAPTURA PENDIENTE}}\\[0.4em]\texttt{#2.png}\vspace{1.4cm}}}}%
+    \caption{#3}\label{fig:#2}
+    \backline{fig:#2}
+  \end{figure}}
+
+% Links used in the prose. Kept as macros so the paragraphs carry no colon.
+\newcommand{\urlprod}{\url{https://harinas-elizondo.vercel.app}}
+\newcommand{\urlrepo}{\url{https://github.com/ValleryR/harinas-elizondo}}
+\newcommand{\urlfork}{\url{https://github.com/Freddy-Nader/harinas-elizondo}}
+\newcommand{\urlreleases}{\url{https://github.com/Freddy-Nader/harinas-elizondo/releases}}
+
+\setcounter{tocdepth}{2}
+
+\endinput

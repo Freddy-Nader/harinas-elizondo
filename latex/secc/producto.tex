@@ -1,0 +1,36 @@
+\FloatBarrier
+\section{Qué hace el sistema}\label{sec:producto}
+
+\subsection{Quién usa el sistema}\label{sec:roles}
+
+El sistema tiene tres roles. Un rol es el tipo de cuenta, y decide qué puede hacer cada persona. El usuario de transacción es el personal del laboratorio y de Control de Calidad, y es el único que registra datos y emite certificados. El usuario de consulta es la gerencia y la dirección, y solo ve reportes, el histórico y la bitácora. El administrador crea las cuentas de los otros dos roles. Nadie puede crear su propia cuenta.
+
+Fuera del sistema hay otros tres actores. El cliente recibe el certificado por correo. El almacén también lo recibe, lo imprime y lo pone junto con la factura. Excel y Power BI abren el histórico que la gerencia descarga. La \fref{fig:contexto} muestra a todos los actores y lo que entra y sale del sistema.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{\linewidth}{!}{\input{figs/contexto}}
+  \caption{Quién usa el sistema y qué entra y sale de él}\label{fig:contexto}
+  \backline{fig:contexto}
+\end{figure}
+
+\subsection{Del lote al certificado}\label{sec:flujo}
+
+El trabajo del laboratorio sigue siempre el mismo orden. Hay dos momentos separados. El análisis ocurre cuando termina la producción. El certificado ocurre cuando llega un pedido, que puede ser días después. La \fref{fig:panel-transaccion} muestra la pantalla de inicio del usuario de transacción, con un acceso a cada paso.
+
+\begin{enumerate}
+  \item Cuando termina la producción, el usuario de transacción da de alta el lote.
+  \item El usuario inicia una inspección del lote. El sistema le asigna una letra de secuencia (A, B, C y así). La persona no escribe la letra.
+  \item El usuario captura los diez factores de la harina, cinco del alveógrafo y cinco del farinógrafo. Mientras escribe, la pantalla ya muestra si algún valor queda fuera de los límites.
+  \item Cuando llega un pedido, el usuario crea un borrador de certificado con el cliente, el lote, la orden de compra y el destino de entrega. El sistema toma la última inspección del lote.
+  \item Si falta algo, el sistema no deja emitir y dice qué falta. La \fref{fig:certificado-borrador-bloqueos} muestra esa lista.
+  \item Cuando todo está completo, el usuario emite el certificado. El sistema copia cada valor con su límite, calcula la desviación y bloquea la inspección para que ya nadie la cambie.
+  \item El sistema envía el PDF al cliente y al almacén, y guarda cada intento de envío. La \fref{fig:certificado-pdf} muestra un PDF de prueba.
+  \item La gerencia consulta el histórico, las gráficas y la bitácora, y puede descargar el histórico para Excel o Power BI.
+\end{enumerate}
+
+El anexo tiene más capturas, una por módulo. Todas usan cuentas de demostración y datos de prueba.
+
+\captura[0.9]{panel-transaccion}{Pantalla de inicio del usuario de transacción}
+\captura[0.9]{certificado-borrador-bloqueos}{Borrador de certificado con la lista de lo que falta para emitirlo}
+\captura[0.6]{certificado-pdf}{PDF de un certificado emitido con datos de prueba}

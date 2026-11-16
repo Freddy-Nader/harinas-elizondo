@@ -17,4 +17,6 @@ La carpeta `private/` está en `.gitignore` y solo existe en las computadoras de
 
 Para subir los documentos a Teams corre `pnpm docs:pdf`. Genera un PDF por documento y `entrega-3-completa.pdf` en `docs/pdf/` (ignorada por Git), con los diagramas Mermaid dibujados. Los documentos nuevos se agregan a la lista al inicio de `scripts/docs-to-pdf.ts`.
 
+El reporte del proyecto en LaTeX (decisiones de diseño y cómo trabajamos) está en [`latex/`](../latex/README-es.md), y su PDF se publica en la página de Releases del fork, https://github.com/Freddy-Nader/harinas-elizondo/releases.
+
 Cómo correr la aplicación está en el [README](../README-es.md) de la raíz.

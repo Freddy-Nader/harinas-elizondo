@@ -1,0 +1,22 @@
+% System context. Who uses the system and what goes in and out.
+% Redrawn from the use case and physical view diagrams in docs/diseno-arquitectonico-es.md.
+\begin{tikzpicture}
+  \tikzset{a/.style={actor, text width=3.0cm}}
+  \node[bloque, text width=3.0cm, minimum height=3.2cm, fill=acento!12, font=\normalsize] (app) at (0,0) {\textbf{Sistema}\\\textbf{Harinas Elizondo}\\[2pt]\footnotesize aplicación web};
+
+  \node[a] (trans) at (-5.6,1.8)  {Usuario de transacción\\\scriptsize laboratorio y Control de Calidad};
+  \node[a] (cons)  at (-5.6,0)    {Usuario de consulta\\\scriptsize gerencia y dirección};
+  \node[a] (admin) at (-5.6,-1.8) {Administrador};
+
+  \node[a] (cliente) at (5.6,1.8)  {Cliente};
+  \node[a] (almacen) at (5.6,0)    {Almacén\\\scriptsize imprime el PDF};
+  \node[a] (bi)      at (5.6,-1.8) {Excel y Power BI};
+
+  \draw[flecha] (trans.east) -- node[etiq, above] {lotes, resultados,\\certificados} (trans.east -| app.west);
+  \draw[flecha] (app.west) -- node[etiq, above] {reportes y\\bitácora} (cons.east);
+  \draw[flecha] (admin.east) -- node[etiq, above] {crea cuentas} (admin.east -| app.west);
+
+  \draw[flecha] (cliente.west -| app.east) -- node[etiq, above] {PDF por correo} (cliente.west);
+  \draw[flecha] (app.east) -- node[etiq, above] {PDF por correo} (almacen.west);
+  \draw[flecha] (bi.west -| app.east) -- node[etiq, above] {histórico en\\.xlsx o .csv} (bi.west);
+\end{tikzpicture}

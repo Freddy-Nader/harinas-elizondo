@@ -1,0 +1,12 @@
+\FloatBarrier
+\section{Introducción}\label{sec:intro}
+
+Harinas Elizondo es un molino ficticio que produce harina de trigo. El caso viene del curso, que lo llama Control de Laboratorio. Cuando termina un lote de producción, el laboratorio del molino analiza una muestra con dos máquinas, el alveógrafo y el farinógrafo. Más tarde, cuando un cliente compra harina de ese lote, el laboratorio le da un certificado de calidad. El certificado es un PDF que muestra los resultados del análisis y los compara con los límites que pide el cliente.
+
+En el caso del curso, el laboratorio hace este trabajo con hojas de cálculo y un editor de PDF. Así el trabajo es lento. También es fácil cambiar una inspección vieja para que los números le queden bien a un cliente. Nuestro sistema existe para quitar ese riesgo.
+
+Para el curso Desarrollo de Software construimos una aplicación web que hace todo el proceso. La aplicación registra clientes, equipos, lotes e inspecciones. Después emite el certificado en PDF, lo envía por correo y guarda en una bitácora quién hizo cada acción. La aplicación funciona en \urlprod{} y su código está en \urlrepo{}.
+
+Los documentos completos del curso están en la carpeta \tt{docs/} del repositorio. Este reporte no los repite. Explica por qué el sistema quedó así y cómo lo construimos. En la \sref{sec:producto} mostramos qué hace el sistema. En la \sref{sec:diseno} explicamos las decisiones de diseño más importantes. En la \sref{sec:proceso} contamos cómo trabajamos con GitHub, y en la \sref{sec:agentes} cómo usamos agentes de inteligencia artificial. En la \sref{sec:calidad} decimos cómo comprobamos que el sistema funciona. Al final están las conclusiones, la declaración de uso de IA y un anexo con más capturas de pantalla.
+
+Las palabras de ingeniería de software que usamos, como requisito, caso de uso o prueba de aceptación, tienen el sentido de los libros de consulta del curso \parencite{sommerville,pressman}. %CHECK that both books are the course references, docs/llm/context.md lists them as sources

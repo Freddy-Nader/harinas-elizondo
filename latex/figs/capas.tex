@@ -1,0 +1,21 @@
+% Layers of the app. A request goes down one layer at a time.
+% Redrawn from the development view in docs/diseno-arquitectonico-es.md.
+\begin{tikzpicture}[node distance=0.55cm]
+  \tikzset{capa/.style={bloque, minimum width=6.4cm, text width=6.0cm}}
+  \node[capa] (pant) {\textbf{Pantalla}\\\scriptsize lo que ve el usuario, en español (\tt{page.tsx})};
+  \node[capa, below=of pant] (acc) {\textbf{Server action o ruta de la API}\\\scriptsize revisa el rol y lee el formulario (\tt{actions.ts}, \tt{/api/v1})};
+  \node[capa, below=of acc] (uc) {\textbf{Caso de uso y reglas del negocio}\\\scriptsize funciones puras con pruebas (\tt{src/lib/domain}, \tt{src/lib/api})};
+  \node[capa, below=of uc] (dat) {\textbf{Acceso a datos}\\\scriptsize consultas con Drizzle (\tt{data.ts}, \tt{schema.ts})};
+  \node[bloque, below=of dat, minimum width=6.4cm, text width=6.0cm, fill=acento!12] (db) {\textbf{Base de datos}\\\scriptsize PostgreSQL en Neon};
+
+  \node[bloque, right=1.3cm of uc, text width=3.0cm] (srv) {\textbf{Servicios}\\\scriptsize PDF, correo con Resend, exportación a Excel};
+
+  \draw[flecha] (pant) -- (acc);
+  \draw[flecha] (acc) -- (uc);
+  \draw[flecha] (uc) -- (dat);
+  \draw[flecha] (dat) -- (db);
+  \draw[flecha] (uc) -- (srv);
+
+  \node[etiq, left=0.4cm of acc, text width=2.6cm, align=right] {si el rol no tiene permiso, aquí se detiene};
+  \node[etiq, left=0.4cm of dat, text width=2.6cm, align=right] {el cambio y su fila de bitácora se guardan juntos};
+\end{tikzpicture}

@@ -1,0 +1,62 @@
+\FloatBarrier
+\section{Cómo usamos agentes de IA}\label{sec:agentes}
+
+Un agente de IA es un programa con un modelo de lenguaje que lee archivos, corre comandos y escribe código. Usamos agentes para escribir código, pruebas y documentos. Esta sección explica cómo les dimos reglas, cómo les dimos trabajo y qué revisamos nosotros.
+
+\subsection{Las reglas para los agentes}\label{sec:agentsmd}
+
+Un agente empieza cada sesión sin memoria del proyecto. Por eso el repositorio tiene un archivo \tt{AGENTS.md} en la raíz, que el agente lee primero. Ese archivo da las reglas que no se pueden romper, por ejemplo estas.
+
+\begin{itemize}
+  \item El código y los commits van en inglés, y todo lo que ve el usuario va en español.
+  \item El repositorio es público, así que nunca se suben nombres de alumnos ni otros datos personales.
+  \item Cada comentario y cada prueba citan su requisito (RF, UC o BR).
+  \item Una pregunta abierta de \tt{decisions.md} no se resuelve en silencio. Se pregunta al equipo.
+  \item Antes de abrir un PR se corren las cuatro revisiones de \tt{pnpm}, que son tipos, estilo, pruebas y construcción.
+\end{itemize}
+
+La carpeta \tt{docs/llm/} tiene el resto del contexto, en inglés. Tiene el caso del curso, los requisitos con sus números, la arquitectura, las decisiones, el estado del proyecto y los pasos para correrlo. La regla es que cada PR que avanza el trabajo actualiza también \tt{status.md}. Así el siguiente agente sabe qué falta.
+
+\subsection{Planes escritos por un modelo y ejecutados por otro}\label{sec:planes}
+
+Después de la entrega 3, para la revisión final, usamos un método con planes. La \fref{fig:agentes} lo resume. Un modelo hace el papel de asesor. Revisa el código y escribe un plan para cada mejora en la carpeta \tt{plans/}. Cada plan tiene el porqué, el alcance, los pasos, un comando para verificar cada paso y una lista de motivos para parar y avisar. El plan está escrito para un agente que no sabe nada del proyecto.
+
+Otro modelo hace el papel de ejecutor. Sigue un plan en su propia copia del repositorio. Esa copia es un \textit{worktree} de Git, es decir, una segunda carpeta con su propia rama. Así varios ejecutores trabajan al mismo tiempo sin pisarse. Al terminar, el ejecutor entrega un reporte.
+
+El asesor no confía en el reporte. Vuelve a correr las verificaciones en la copia del ejecutor y lee todo el cambio. Si algo está mal, devuelve el trabajo, como máximo dos veces. Los cambios aprobados se juntan en una sola rama, que llega al equipo como un solo PR. Una persona del equipo decide si ese PR se une a \tt{main}.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{\linewidth}{!}{\input{figs/agentes}}
+  \caption{El método de planes, del asesor al pull request}\label{fig:agentes}
+  \backline{fig:agentes}
+\end{figure}
+
+La carpeta \tt{plans/} tiene 13 archivos. Once son planes ejecutados, de la seguridad de las cabeceras a las pruebas de Reportes y Bitácora. Uno es el plan de este reporte, y el último es solo una guía para planear la siguiente fase. %CHECK status of each plan as written in plans/README.md on 2026-11-16
+
+\subsection{Lo que la revisión encontró}\label{sec:errores}
+
+La revisión sí encontró errores. Estos ejemplos están en \tt{plans/README.md} y en el historial de Git.
+
+\begin{itemize}
+  \item El script nuevo para cambiar contraseñas guardaba cambios aunque la cuenta no tuviera contraseña. La revisión lo devolvió una vez, y ahora no guarda nada en ese caso.
+  \item Las pruebas nuevas de Reportes y Bitácora tenían un texto mal escrito en la guía de pruebas. La revisión lo devolvió una vez.
+  \item Un plan que corregía un texto de la pantalla encontró que otro texto, el de Reportes, también estaba mal, y lo corrigió.
+  \item Un plan cambió un archivo más de los que tenía en su alcance. La revisión lo aceptó y lo anotó.
+  \item El plan de este reporte decía que había 47 pull requests. En realidad hay 25. El 47 es el número del último PR, porque en GitHub los issues y los PR comparten la numeración.
+\end{itemize}
+
+La herramienta también falló una vez. Su opción para crear copias aisladas no funciona en este repositorio, así que creamos cada copia a mano con \tt{git worktree}.
+
+\subsection{Lo que siguió siendo trabajo de personas}\label{sec:humano}
+
+Algunas tareas no se pueden dar a un agente, porque necesitan a una persona real, una credencial privada o una opinión.
+
+\begin{itemize}
+  \item Las pruebas de aceptación necesitan al menos dos personas de fuera del equipo. Un agente solo puede preparar la sesión.
+  \item Las conclusiones del equipo y la lección de cada integrante son opiniones personales.
+  \item La regla de GitHub que exige CI en \tt{main} solo la puede activar la dueña del repositorio.
+  \item Aplicar la última migración en la base de producción y cambiar la contraseña de demostración necesitan las credenciales de producción.
+  \item Las preguntas abiertas sobre unidades y rangos oficiales de los factores necesitan al equipo o al profesor.
+  \item Unir un PR al repositorio del equipo siempre es decisión de una persona.
+\end{itemize}

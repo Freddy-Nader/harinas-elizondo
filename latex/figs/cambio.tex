@@ -1,0 +1,23 @@
+% Path of one change, from a branch to production.
+% Redrawn from the Git flow in docs/proceso-desarrollo-es.md and docs/llm/runbook.md.
+\begin{tikzpicture}[node distance=0.9cm and 0.75cm]
+  \tikzset{paso/.style={bloque, text width=2.2cm, minimum height=1.3cm}}
+  \node[paso] (rama) {\textbf{Rama}\\\scriptsize \tt{feat/}, \tt{fix/}, \tt{docs/}};
+  \node[paso, right=of rama] (pr) {\textbf{Pull request}\\\scriptsize contra \tt{main}};
+  \node[paso, right=of pr] (ci) {\textbf{CI}\\\scriptsize typecheck, lint, pruebas y build};
+  \node[paso, right=of ci] (rev) {\textbf{Revisión}\\\scriptsize se lee el cambio y su vista previa};
+
+  \node[paso, below=of rev] (merge) {\textbf{Merge}\\\scriptsize con merge commit};
+  \node[paso, left=of merge] (sync) {\textbf{Copia en el fork}\\\scriptsize \tt{sync-upstream.yml}};
+  \node[paso, left=of sync, fill=acento!12] (prod) {\textbf{Producción}\\\scriptsize Vercel};
+  \node[paso, left=of prod, fill=white] (prev) {\textbf{Vista previa}\\\scriptsize una URL por rama};
+
+  \draw[flecha] (rama) -- (pr);
+  \draw[flecha] (pr) -- (ci);
+  \draw[flecha] (ci) -- (rev);
+  \draw[flecha] (rev) -- (merge);
+  \draw[flecha] (merge) -- (sync);
+  \draw[flecha] (sync) -- (prod);
+  \draw[flecha] (rama) -- node[etiq, left] {cada push} (prev);
+  \draw[flecha, dashed] (ci.north) -- ++(0,0.45) -| node[etiq, pos=0.25, above] {si algo falla, se corrige en la misma rama} (rama.north);
+\end{tikzpicture}

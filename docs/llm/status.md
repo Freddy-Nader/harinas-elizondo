@@ -22,7 +22,8 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 | Bitácora (RF-08) | `/bitacora` | Read-only for both roles, filters in the URL |
 | Mobile navigation | `src/components/mobile-nav.tsx` | Drawer below `md` |
 | API and CLI (D-29) | `src/lib/api/`, `/api/v1`, `cli/he.ts`, `docs/llm/api-cli.md` | Phase 1 of plan 008. Clientes create, update and list work from the site, `/api/v1` and `pnpm he`. Other modules are only mapped in `api-cli.md` |
-| Tests | `docs/testing/` | Unit (220 tests, PU-01 to PU-64), component (33 tests, PC-01 to PC-23 all Pass), integration and system (13 e2e) and regression suites, all re-run on 2026-11-16, CI on every PR |
+| Tests | `docs/testing/` | Unit (225 tests in 27 files on 2026-11-16, PU-01 to PU-64), component (33 tests, PC-01 to PC-23 all Pass), integration and system (13 e2e) and regression suites, all re-run on 2026-11-16, CI on every PR |
+| Project report | `latex/`, `.github/workflows/report-release.yml` | LaTeX report with TikZ diagrams (plan 012, draft). `latex/build.sh` adds names to the cover only on the local machine. The fork releases the redacted PDF on every push that touches `latex/`. Team conclusions, lessons and who did what are still `\pend` |
 | Production | https://harinas-elizondo.vercel.app | Neon Postgres, Resend with `EMAIL_REDIRECT_TO` to a test inbox |
 
 ## Still open

@@ -52,6 +52,17 @@ pnpm build
 
 `pnpm docs:pdf` writes one PDF per course document plus `entrega-3-completa.pdf` to `docs/pdf/` (gitignored, uploaded to Teams by hand). It needs Playwright Chromium (`pnpm exec playwright install chromium`) and works offline because Mermaid is loaded from `node_modules`. Add new documents to the `DOCS` list in `scripts/docs-to-pdf.ts`.
 
+## Project report (LaTeX)
+
+The report lives in `latex/` (details in `latex/README.md`). It needs a TeX distribution with `latexmk` and `biber` (MacTeX on macOS).
+
+```bash
+./latex/build.sh                                   # redacted cover, writes latex/main.pdf
+./latex/build.sh --name "Nombre Apellido" --id "00000000" --professor "Nombre"   # real cover, local only
+```
+
+The names go to `latex/private/portada.tex`, which Git ignores. Never put names, ids, the logo or the professor in a tracked file. The workflow `.github/workflows/report-release.yml` builds the redacted PDF and creates a release on the fork (`Freddy-Nader/harinas-elizondo`) on every push that touches `latex/`. The team repo skips it. If `biber` fails on macOS with a `lipo` error, the Xcode license is not accepted on that machine.
+
 ## Git flow
 
 - The team repo is https://github.com/ValleryR/harinas-elizondo (`upstream` in Freddy's clone). Contributors with push access create a branch there (`feat/`, `fix/`, `docs/`, `test/`, `ci/`), open a PR against `main`, and the PR merges with a merge commit once CI passes.
