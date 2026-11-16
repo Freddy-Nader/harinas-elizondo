@@ -8,14 +8,14 @@ Project rules every executor follows (from `AGENTS.md`): code and commits in Eng
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 | --- | --- | --- | --- | --- | --- |
-| 005 | [Live checks on production and screenshots](005-live-check-and-screenshots.md) | P1 | M | none | TODO |
+| 005 | [Live checks on production and screenshots](005-live-check-and-screenshots.md) | P1 | M | none | DONE (2026-11-16, PS-08 to PS-16 all Pass on production, 26 images and the sample PDF in `docs/img/`. Left for the team on purpose: the admin `/panel` and `/usuarios` screenshots and the Excel and Power BI screenshot, which stay as TODO lines in the spec) |
 | 006 | [Re-run every suite and refresh the test guides](006-refresh-test-guides.md) | P1 | M | 005 (soft) | TODO |
-| 001 | [Security headers](001-security-headers.md) | P2 | S | none | TODO |
-| 003 | [One shared role guard](003-shared-role-guard.md) | P2 | S | none | TODO |
-| 004 | [Login rate limit in Postgres, stronger demo password](004-login-rate-limit.md) | P2 | M | none | TODO |
+| 001 | [Security headers](001-security-headers.md) | P2 | S | none | DONE (2026-11-16, reviewed, three headers confirmed with curl on a local production build) |
+| 003 | [One shared role guard](003-shared-role-guard.md) | P2 | S | none | DONE (2026-11-16, reviewed. Scope grew by one file, the `@/lib/session` mock in `src/app/(app)/lotes/actions.test.ts`) |
+| 004 | [Login rate limit in Postgres, stronger demo password](004-login-rate-limit.md) | P2 | M | none | IN PROGRESS (code on branch `fix/login-rate-limit`, not in the PR yet, being verified against a local Postgres. After merge the operator must run `pnpm db:migrate` on Neon BEFORE the deploy and rotate the demo password, see the runbook) |
 | 007 | [Export the course documents to PDF](007-docs-to-pdf.md) | P2 | M | 005, 006 | TODO |
 | 008 | [Shared API behind the site and a CLI (Phase 0 and 1, Clientes)](008-shared-api-and-cli.md) | P2 | L | 003 | TODO |
-| 002 | [Move the shadcn CLI to devDependencies](002-shadcn-dev-dependency.md) | P3 | S | none | TODO |
+| 002 | [Move the shadcn CLI to devDependencies](002-shadcn-dev-dependency.md) | P3 | S | none | DONE (2026-11-16, reviewed, shadcn stays at 4.22.1 and no other package version changed) |
 
 Status values are TODO, IN PROGRESS, DONE, BLOCKED (with a one-line reason) and REJECTED (with a one-line rationale).
 
