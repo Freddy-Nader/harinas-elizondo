@@ -421,8 +421,8 @@ async function ReportContent({ searchParams }: PageProps) {
             Calidad de la producción
           </h2>
           <p className="text-sm text-muted-foreground">
-            Cómo sale la harina que producimos, se haya certificado o no. Toma la última inspección completa de cada
-            lote producido en el periodo y la compara con los límites internacionales. El filtro de cliente y el de
+            Cómo sale la harina que producimos, se haya certificado o no. Toma la última inspección de cada lote
+            producido en el periodo, cuenta solo las completas y las compara con los límites internacionales. El filtro de cliente y el de
             estado no aplican, porque un lote no tiene cliente hasta que se certifica.
           </p>
         </div>

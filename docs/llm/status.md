@@ -41,3 +41,4 @@ Handoff plans for agents that pick up the open items live in `plans/`.
 
 - The Clientes module writes the entity code `clients` and the actions `update_limit` and `remove_limit`, which are outside `AuditEntity` and `AuditAction`. The Bitácora screen labels them and its client filter matches both `client` and `clients`.
 - Database suites only accept a local database whose name ends in `_test`. They never touch Neon.
+- Screen texts follow D-27 (2026-11-16). Lotes, the panel card and Reportes say a certificate uses the lot's latest inspection, and it has to be complete. In Clientes, a parameter with its own limit shows that range next to the international one. The screenshots in `docs/img/` still show the old wording.

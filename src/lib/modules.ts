@@ -53,7 +53,7 @@ export const MODULES: readonly AppModule[] = [
     href: "/inspecciones",
     title: "Inspecciones",
     summary:
-      "Captura de resultados por lote. La secuencia (A, B, … Z, AA) la asigna el sistema y la última inspección completa se usa para certificar.",
+      "Captura de resultados por lote. La secuencia (A, B, … Z, AA) la asigna el sistema y para certificar se usa la última inspección del lote, que tiene que estar completa.",
     requirement: "RF-04",
     useCase: "UC-03 · UC-04",
     roles: ["transaction"],

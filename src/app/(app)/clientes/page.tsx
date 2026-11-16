@@ -149,7 +149,9 @@ async function ClientsContent({ searchParams }: Props) {
                     <div className="text-sm">
                       <strong>{parameter.label}</strong>
                       <p className="text-xs text-muted-foreground">
-                        {own ? "Límite particular" : "Límite internacional"} · {fallback ? fallback.lowerLimit + " a " + fallback.upperLimit : "Sin referencia internacional"}
+                        {own
+                          ? `Límite particular · ${own.lowerLimit} a ${own.upperLimit} · Internacional ${fallback ? `${fallback.lowerLimit} a ${fallback.upperLimit}` : "sin referencia"}`
+                          : `Límite internacional · ${fallback ? `${fallback.lowerLimit} a ${fallback.upperLimit}` : "Sin referencia internacional"}`}
                       </p>
                     </div>
                     <label className={labelClass}>Mínimo
