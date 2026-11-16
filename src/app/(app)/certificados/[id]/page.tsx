@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { countDeviations, deliveryRecipients, isCertificateId } from "@/lib/domain/certificate";
 import { PARAMETERS } from "@/lib/domain/parameters";
 import { formatDate, formatDateTime, formatNumber } from "@/lib/format";
-import { isEmailSimulated, warehouseEmail } from "@/lib/services/mailer";
+import { isEmailRedirected, isEmailSimulated, warehouseEmail } from "@/lib/services/mailer";
 import { cancelCertificate, issueCertificate, sendCertificate, updateCertificate } from "../actions";
 import { CancelPanel } from "../_components/cancel-panel";
 import { CertificateForm } from "../_components/certificate-form";
@@ -155,6 +155,12 @@ async function CertificateDetail({ params }: Pick<PageProps<"/certificados/[id]"
             {!isCancelled && isEmailSimulated() && (
               <p className="rounded-lg border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
                 Modo simulado: el correo se registra como enviado, pero todavía no sale del servidor.
+              </p>
+            )}
+            {!isCancelled && isEmailRedirected() && (
+              <p className="rounded-lg border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+                Modo de prueba: el correo sí se envía, pero llega a un buzón de prueba en lugar de estos destinatarios. El
+                correo indica a quién iba dirigido.
               </p>
             )}
             {!isCancelled && (

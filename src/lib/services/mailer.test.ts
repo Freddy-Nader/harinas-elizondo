@@ -9,7 +9,7 @@ vi.mock("resend", () => ({
   }),
 }));
 
-const { DEFAULT_EMAIL_FROM, isEmailSimulated, sendEmail } = await import("./mailer");
+const { DEFAULT_EMAIL_FROM, isEmailRedirected, isEmailSimulated, sendEmail } = await import("./mailer");
 
 const email = {
   to: ["cliente@example.com", "almacen@example.com"],
@@ -79,6 +79,7 @@ describe("RF-06 D-13 mailer with RESEND_API_KEY", () => {
 
     await sendEmail(email);
 
+    expect(isEmailRedirected()).toBe(true);
     const sent = send.mock.calls[0][0];
     expect(sent.to).toEqual(["demo@example.com"]);
     expect(sent.text).toContain("cliente@example.com, almacen@example.com");
