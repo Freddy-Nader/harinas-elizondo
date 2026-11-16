@@ -20,7 +20,7 @@ La guía de sistema también integra la antigua guía manual de Inspecciones, qu
 ## Qué falta
 
 - La verificación en vivo en https://harinas-elizondo.vercel.app con Neon se corrió el 2026-11-16 y cubre PS-08 a PS-16. Quedan sin probar en vivo algunos pasos de la guía manual de Inspecciones, como el bloqueo de una inspección certificada y las dos sesiones a la vez.
-- Reportes y Bitácora ya están en `main` y PS-07, PS-15 y PS-16 pasaron, pero PC-13 y PC-14 ya pasan con pruebas de componente contra Postgres, y PA-05 espera la UAT con personas reales.
+- Reportes y Bitácora ya pasan sus pruebas de componente (PC-13 y PC-14) y de sistema (PS-07, PS-15 y PS-16). Solo PA-05 espera la UAT con personas reales.
 - La UAT con al menos dos personas externas al equipo no se ha hecho. Sus tablas están vacías y solo se llenan con sesiones reales.
 - La regla de rama que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio. PR-06 ya pasó con la corrida del PR #47 desde un fork y PR-07 pasó porque CI corre en verde sobre `main`.
 
