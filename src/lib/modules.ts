@@ -1,7 +1,7 @@
 import type { Role } from "@/lib/auth";
 
 /**
- * Single source for navigation and module placeholders.
+ * Single source for navigation, the panel cards and module access by role.
  * `href` and the text fields are user-facing, so they are in Spanish.
  * `requirement` / `useCase` point to docs/llm/requirements.md.
  */

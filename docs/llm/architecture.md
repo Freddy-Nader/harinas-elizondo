@@ -39,7 +39,6 @@ src/
     ├── auth-client.ts    ← browser auth client
     ├── modules.ts        ← nav + module metadata (single source)
     └── utils.ts          ← cn()
-legacy/prototipo-v0.1/    ← old prototype, reference only, excluded from lint
 drizzle/                  ← generated migrations (after the first db:generate)
 src/proxy.ts              ← optimistic redirect to /login when there is no session cookie
 ```
