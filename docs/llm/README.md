@@ -5,13 +5,18 @@ Start here. These files tell an agent what the project is, what to build next an
 | File | Read it when |
 | --- | --- |
 | [context.md](context.md) | Always, first. Course, deliverables, deadline, team workflow, sources |
-| [status.md](status.md) | Before picking work. What is done, what is next, who decides what |
+| [status.md](status.md) | Before picking work. What is done, what is still open, who can do each item (agent or human), and how to pick it up |
 | [requirements.md](requirements.md) | Before touching any module. RF, UC and BR ids used across the code |
 | [domain.md](domain.md) | When you meet a Spanish domain word, a parameter or a table |
 | [architecture.md](architecture.md) | Before writing code. Folders, layers, Next.js 16 rules, UI stack, language rules |
 | [decisions.md](decisions.md) | Before changing anything that looks "wrong". Decisions taken and questions still open |
 | [runbook.md](runbook.md) | To install, run, migrate, deploy or open a PR |
 | [testing.md](testing.md) | When writing tests or the test guides the course requires |
+| [api-cli.md](api-cli.md) | Before touching `src/lib/api/`, `/api/v1` or the `he` CLI. What Phase 1 built and what each module still needs |
+
+## Continuing the work
+
+The open work is the "Still open" section of [status.md](status.md). The same list for humans is https://github.com/ValleryR/harinas-elizondo/issues/49. Executed handoff plans and the method to write and run new ones are in `plans/README.md`.
 
 ## Rules of thumb
 

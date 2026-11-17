@@ -66,7 +66,7 @@ The names go to `latex/private/portada.tex`, which Git ignores. Never put names,
 ## Git flow
 
 - The team repo is https://github.com/ValleryR/harinas-elizondo (`origin` in Freddy's clone). Contributors with push access create a branch there (`feat/`, `fix/`, `docs/`, `test/`, `ci/`), open a PR against `main`, and the PR merges with a merge commit once CI passes.
-- Freddy's fork https://github.com/Freddy-Nader/harinas-elizondo (`fork`) only mirrors `origin/main` so Vercel can deploy it. Its `sync-upstream.yml` workflow runs on a schedule. Run it by hand after an upstream merge with `gh workflow run sync-upstream.yml -R Freddy-Nader/harinas-elizondo`.
+- Freddy's fork https://github.com/Freddy-Nader/harinas-elizondo (`fork` in that clone) only mirrors the team repo's `main` so Vercel can deploy it. Its `sync-upstream.yml` workflow runs on a schedule. Run it by hand after an upstream merge with `gh workflow run sync-upstream.yml -R Freddy-Nader/harinas-elizondo`.
 - Never force-push a shared branch. If a PR is behind `main`, merge `main` into it.
 - Never commit `docs/private/PA_IS.pdf`, `.env*` (except `.env.example`), or personal data. The repo is public.
 
