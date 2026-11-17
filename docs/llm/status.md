@@ -1,6 +1,6 @@
 # Status
 
-Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was presented in class. Work since then answers the professor's notes from the progress presentation of 2026-11-11. Update this file in every PR that moves something.
+Last updated 2026-11-17. Delivery 3 was due **2026-11-13 23:59** and was presented in class. Work since then answers the professor's notes from the progress presentation of 2026-11-11. Update this file in every PR that moves something.
 
 ## Done
 
@@ -24,6 +24,7 @@ Last updated 2026-11-16. Delivery 3 was due **2026-11-13 23:59** and was present
 | API and CLI (D-29) | `src/lib/api/`, `/api/v1`, `cli/he.ts`, `docs/llm/api-cli.md` | Phase 1 of plan 008. Clientes create, update and list work from the site, `/api/v1` and `pnpm he`. Other modules are only mapped in `api-cli.md` |
 | Tests | `docs/testing/` | Unit (225 tests in 27 files on 2026-11-16, PU-01 to PU-64), component (33 tests, PC-01 to PC-23 all Pass), integration and system (13 e2e) and regression suites, all re-run on 2026-11-16, CI on every PR |
 | Project report | `latex/`, `.github/workflows/report-release.yml` | LaTeX report with TikZ diagrams (plan 012, draft). `latex/build.sh` adds names to the cover only on the local machine. The fork releases the redacted PDF on every push that touches `latex/`. Team conclusions, lessons and who did what are still `\pend` |
+| Next.js version | `package.json` | 16.4.6 since 2026-11-17. 16.4.2 is in the range of advisory GHSA-mfr8-8qww-v76h (16.3.0 to 16.4.4), and Next stopped the first `pnpm build` of a fresh checkout to say so. Keep `next` and `eslint-config-next` on the same version |
 | Production | https://harinas-elizondo.vercel.app | Neon Postgres, Resend with `EMAIL_REDIRECT_TO` to a test inbox |
 
 ## Still open
