@@ -8,21 +8,21 @@ Cada Resultado obtenido sale de una corrida real, con su fecha y su commit. Si u
 
 | Guía | Ids | Herramienta | Pass | Pendiente |
 | --- | --- | --- | --- | --- |
-| [Pruebas unitarias](pruebas-unitarias-es.md) | PU-01 a PU-47 (197 pruebas en la corrida del 16 de noviembre) | Vitest | 47 | 0 |
-| [Pruebas de componentes](pruebas-componentes-es.md) | PC-01 a PC-14 | Vitest con Postgres local | 12 | 2 |
+| [Pruebas unitarias](pruebas-unitarias-es.md) | PU-01 a PU-64 (220 pruebas en la corrida del 16 de noviembre) | Vitest | 64 | 0 |
+| [Pruebas de componentes](pruebas-componentes-es.md) | PC-01 a PC-23 | Vitest con Postgres local | 23 | 0 |
 | [Pruebas integrales](pruebas-integrales-es.md) | PI-01 a PI-06 | Playwright con Postgres local | 6 | 0 |
-| [Pruebas de sistema](pruebas-sistema-es.md) | PS-01 a PS-16 | Playwright y verificación manual en el deploy | 7 | 9 |
-| [Pruebas de regresión](pruebas-regresion-es.md) | PR-01 a PR-07 | GitHub Actions | 4 | 3 |
+| [Pruebas de sistema](pruebas-sistema-es.md) | PS-01 a PS-16 | Playwright y verificación manual en el deploy | 16 | 0 |
+| [Pruebas de regresión](pruebas-regresion-es.md) | PR-01 a PR-07 | GitHub Actions | 6 | 1 |
 | [Pruebas de aceptación](pruebas-aceptacion-es.md) | PA-01 a PA-06 | Guion con usuarios reales | 0 | 6 |
 
 La guía de sistema también integra la antigua guía manual de Inspecciones, que antes estaba en `docs/testing-inspections-es.md`.
 
 ## Qué falta
 
-- La verificación en vivo en https://harinas-elizondo.vercel.app con Neon (#19) espera la rotación de credenciales. Afecta PS-08 a PS-14.
-- Bitácora (#31) y la navegación móvil (#35) ya tienen merge, pero PS-15, PS-16, PC-13, PC-14 y PA-05 siguen sin correrse contra ellos.
+- La verificación en vivo en https://harinas-elizondo.vercel.app con Neon se corrió el 2026-11-16 y cubre PS-08 a PS-16. Quedan sin probar en vivo algunos pasos de la guía manual de Inspecciones, como el bloqueo de una inspección certificada y las dos sesiones a la vez.
+- Reportes y Bitácora ya pasan sus pruebas de componente (PC-13 y PC-14) y de sistema (PS-07, PS-15 y PS-16). Solo PA-05 espera la UAT con personas reales.
 - La UAT con al menos dos personas externas al equipo no se ha hecho. Sus tablas están vacías y solo se llenan con sesiones reales.
-- La regla de rama que exige CI en `main` y una corrida desde un fork siguen pendientes (PR-05 a PR-07).
+- La regla de rama que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio. PR-06 ya pasó con la corrida del PR #47 desde un fork y PR-07 pasó porque CI corre en verde sobre `main`.
 
 ## Cómo correr las suites
 
@@ -37,6 +37,8 @@ TEST_DATABASE_URL=postgresql://test:test@localhost:54329/harinas_test pnpm test:
 
 Las suites con base de datos solo aceptan una base local cuyo nombre termina en `_test`. Nunca se apuntan a Neon.
 
+Las corridas registradas el 16 de noviembre de 2026 (la de componentes en el commit 473324b y las demás en el 23d9967) usaron un PostgreSQL 14.24 de Homebrew en lugar de Docker, con `createdb harinas_plan006_test` y `TEST_DATABASE_URL=postgresql://localhost:5432/harinas_plan006_test` (la de componentes usó la base `harinas_plan009_test`). Los pasos con Docker de arriba siguen siendo válidos y CI usa `postgres:16`.
+
 ## Exportar a PDF
 
-Las guías son Markdown normal sin extensiones, así que se pueden abrir en GitHub e imprimir a PDF desde el navegador, o convertir con una herramienta como Pandoc. La exportación todavía no se ha probado.
+Para subir las guías a Teams corre `pnpm docs:pdf`, que genera un PDF por documento y `entrega-3-completa.pdf` en `docs/pdf/`. Los diagramas Mermaid salen dibujados y la carpeta no se sube a Git.

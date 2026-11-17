@@ -1,9 +1,9 @@
 /**
  * Better Auth core tables (user, session, account, verification) plus our
- * additional user fields `role` and `employeeId` (see src/lib/auth.ts).
+ * additional user fields `role` and `employeeId` (see src/lib/auth.ts), and `rateLimit` for sign-in rate limits stored in Postgres (RF-01).
  * Regenerate with `pnpm dlx @better-auth/cli generate` after upgrading better-auth.
  */
-import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { bigint, boolean, index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text().primaryKey(),
@@ -79,3 +79,11 @@ export const verification = pgTable(
   },
   (t) => [index("verification_identifier_idx").on(t.identifier)],
 );
+
+/** Counters for Better Auth's rate limiter (storage: "database"). One row per key, reused every window. */
+export const rateLimit = pgTable("rate_limit", {
+  id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
+  key: text().notNull().unique(),
+  count: integer().notNull(),
+  lastRequest: bigint({ mode: "number" }).notNull(),
+});

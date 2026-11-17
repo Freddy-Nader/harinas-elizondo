@@ -8,13 +8,13 @@ Cada fila de la tabla agrupa las pruebas de un mismo bloque `describe`. El anexo
 
 | Dato | Valor |
 | --- | --- |
-| Fecha | 2026-11-11 |
-| Commit | 331ef38 (rama `test/e2e`, PR #38) |
+| Fecha | 2026-11-16 |
+| Commit | 23d9967 (rama `chore/improve-plans`, que ya incluye las API y la CLI de Clientes, D-28 y D-29) |
 | Comando | `pnpm test` (equivale a `vitest run`) |
 | Entorno | macOS arm64, Node 22.22.0, Vitest 5.0.5 |
-| Resultado | 16 archivos, 133 pruebas, 133 pasan, 0 fallan |
+| Resultado | 26 archivos, 220 pruebas, 220 pasan, 0 fallan |
 
-La misma suite corre en CI en cada PR. La corrida verde del commit 331ef38 es https://github.com/ValleryR/harinas-elizondo/actions/runs/43161348610 y se describe en la guía de regresión.
+La misma suite corre en CI en cada PR. La última corrida verde de CI en `main` es https://github.com/ValleryR/harinas-elizondo/actions/runs/43849955128 y se describe en la guía de regresión.
 
 ## Cómo repetirla
 
@@ -73,29 +73,39 @@ No necesita base de datos ni variables de entorno. Las pruebas de acciones del s
 | PU-42 | BR-INS-02, BR-INS-04 | Sesión y base simuladas | Iniciar una inspección en paralelo | Conflicto de secuencia e inspección incompleta existente | No salta a una segunda inspección y pide terminar la incompleta | 2 de 2 pasan | Pass |
 | PU-43 | RF-01, D-14 | Sesión y base simuladas | Crear una cuenta | Sin rol de administrador, rol administrador como asignable | Exige administrador antes de tocar la base y no permite asignar el rol administrador | 4 de 4 pasan | Pass |
 | PU-44 | Seguridad de las pruebas | Ninguna | Validar la URL de la base de pruebas | URL faltante, mal formada, remota, que solo parece local, local sin `_test`, local con `_test` | Solo acepta una base local cuyo nombre termina en `_test` | 4 de 4 pasan | Pass |
+| PU-45 | RF-07, UC-08 | Ninguna | Calcular desviación estándar muestral y Cpk | Un valor, ocho valores, media centrada y cargada al límite, dispersión cero | Desviación con n − 1, Cpk igual a la distancia al límite más cercano entre tres sigma, nulo sin dispersión | 2 de 2 pasan | Pass |
+| PU-46 | RF-07, D-27, BR-INS-03, BR-CER-04 | Ninguna | Resumir la calidad de la producción | Lotes con reinspección, secuencias después de Z, última inspección incompleta, un factor fuera de rango, valor igual al límite, factor sin límites, inspecciones de lotes fuera del periodo | Cada lote cuenta una vez por su última inspección, solo cuentan inspecciones completas, un factor fuera de rango saca al lote de especificación, el límite cuenta como dentro, y un factor sin límites no tiene tasa ni Cpk | 8 de 8 pasan | Pass |
+| PU-47 | RF-07 | Ninguna | Leer el factor de la gráfica de control desde la URL | Código válido, arreglo, texto arbitrario, vacío | Acepta solo códigos de los diez factores y si no usa el primero | 1 de 1 pasa | Pass |
+| PU-48 | RF-01 | Cada rol | Calcular los enlaces del menú lateral y del menú móvil | Administrador, transacción y consulta | El administrador ve Panel y Usuarios, transacción ve Panel y todos los módulos operativos sin Usuarios, consulta ve Panel, Reportes y Bitácora, la lista coincide con la de `canAccess` y solo trae enlace y título en español | 5 de 5 pasan | Pass |
+| PU-49 | RF-06, D-13 | Sin la variable `RESEND_API_KEY` | Enviar un correo con el servicio de envío | Correo con destinatarios y correo sin destinatarios | El envío queda simulado sin llamar a Resend y un correo sin destinatarios se rechaza | 2 de 2 pasan | Pass |
+| PU-50 | RF-06, D-13 | Con `RESEND_API_KEY` y Resend simulado | Enviar un correo con el PDF | Remitente por defecto y con `EMAIL_FROM`, `EMAIL_REDIRECT_TO`, error del proveedor y falla de red | Envía con el PDF adjunto, usa `EMAIL_FROM` cuando existe, redirige a una sola dirección y nombra a los destinatarios reales, y reporta como entrega fallida en español tanto el error del proveedor como la falla de red | 5 de 5 pasan | Pass |
+| PU-51 | RF-08 | Ninguna | Leer los filtros de la Bitácora desde la URL | Claves en español, sin consulta, valores inválidos, códigos desconocidos, clave repetida | Lee cada filtro, sin consulta muestra todo desde la página 1, descarta los valores inválidos, conserva una entidad o acción desconocida y toma el primer valor de una clave repetida | 5 de 5 pasan | Pass |
+| PU-52 | RF-08 | Ninguna | Calcular los límites de fecha del filtro | Rango con ambos días y rango abierto | Cubre los dos días completos en hora de Ciudad de México y deja sin límite el lado abierto | 2 de 2 pasan | Pass |
+| PU-53 | RF-08 | Ninguna | Armar el patrón de búsqueda del empleado | Texto con comodines de SQL | El texto se busca de forma literal | 1 de 1 pasa | Pass |
+| PU-54 | RF-08 | Ninguna | Armar los enlaces de paginación | Filtros activos y cantidad de filas | Conserva los filtros al cambiar de página y cada página tiene 50 filas | 2 de 2 pasan | Pass |
+| PU-55 | RF-08 | Ninguna | Mostrar entidades y acciones en la Bitácora | Códigos conocidos, de Clientes, desconocidos y en plural | Muestra las etiquetas en español, incluidos los certificados, vuelve al código original si no lo conoce, el filtro de cliente encuentra también el código en plural y ofrece todas las entidades y acciones conocidas | 5 de 5 pasan | Pass |
+| PU-56 | RF-08 | Ninguna | Calcular el enlace de una fila de la Bitácora | Entidades con y sin página propia, límite internacional | Enlaza al detalle de las entidades que lo tienen, no enlaza las demás y nombra el parámetro de un límite internacional | 3 de 3 pasan | Pass |
+| PU-57 | RF-07, D-25 | Ninguna | Leer los filtros del reporte desde la URL | Periodos predefinidos, fechas escritas, valores inválidos, rango invertido, cliente, estado y página | Los periodos cubren mes, trimestre y año, el periodo predefinido gana a las fechas, se descartan los valores inválidos, se invierte el rango y se conservan cliente, estado y página, los filtros sobreviven a un viaje por la URL, el rango usa la hora de planta y los borradores nunca se leen | 7 de 7 pasan | Pass |
+| PU-58 | RF-07, RF-06, D-25, BR-CER-04 | Ninguna | Calcular las estadísticas del reporte | Certificados con valores en el límite, desviaciones, cancelados, meses de emisión y entregas fallidas | Un valor igual al límite está dentro, cuenta desviaciones, incidencias y el Pareto por parámetro, los cancelados quedan en el historial pero no cuentan como válidos, agrupa por mes de emisión en hora de planta, suma los intentos fallidos por certificado y pagina el historial sin pasar de la última página | 6 de 6 pasan | Pass |
+| PU-59 | RF-01, RF-07, BR-AUD-01, D-19 | Sesión y base simuladas | Exportar el reporte | Sin sesión, rol sin acceso, filtros alterados, CSV, xlsx y resultado vacío | Pide los dos roles de reporte y conserva la redirección a /login, un rol sin acceso recibe un error legible y ningún archivo, vuelve a validar los filtros, cada exportación escribe una fila de auditoría con el formato y los filtros, el CSV vuelve como texto con BOM y el xlsx como zip en base64, y un resultado vacío se avisa y no se audita | 6 de 6 pasan | Pass |
+| PU-60 | D-19 | Ninguna | Generar el CSV del reporte | Textos con comillas y con fórmulas, certificados de ejemplo | Cita cada celda de texto y duplica las comillas internas, neutraliza el texto que una hoja de cálculo ejecutaría como fórmula y escribe BOM UTF-8, saltos CRLF y una línea por certificado | 3 de 3 pasan | Pass |
+| PU-61 | D-19 | Ninguna | Generar el xlsx del reporte | Certificados con fechas, números y acentos | Conserva fechas reales en hora de planta, números con tipo y acentos | 1 de 1 pasa | Pass |
+| PU-62 | RF-01 | Sesión simulada | Autorizar una modificación | Usuario de consulta y usuario de transacción | Consulta recibe un estado de acceso denegado con el mensaje exacto y transacción recibe al usuario | 2 de 2 pasan | Pass |
+| PU-63 | RF-03, UC-02, BR-AUD-01, BR-CLI-01, BR-CLI-02 | Base simulada | Crear y editar un cliente con el caso de uso compartido por el sitio, `/api/v1` y la CLI | Alta válida, RFC repetido, clave SAP repetida, id desconocido, violación única simultánea, formularios con errores | Crea cliente, destinos y auditoría en un solo lote, rechaza el RFC y la clave SAP repetidos con su mensaje en español sin escribir, responde no encontrado si el id no existe, convierte una violación única simultánea en el mismo conflicto y conserva los mensajes de validación del formulario | 6 de 6 pasan | Pass |
+| PU-64 | RF-01 | Ninguna | Revisar el patrón del proxy de sesión | Rutas protegidas como /, /panel, /clientes, /api y /apiv1, y rutas libres como /login, /api/auth, /api/v1 y archivos estáticos | El proxy sigue protegiendo las rutas de la aplicación y /api/otro, y deja libres el login, la API de autenticación, /api/v1 y los archivos estáticos | 15 de 15 pasan | Pass |
 
 ## Resumen
 
 | Estado | Filas | Pruebas |
 | --- | --- | --- |
-| Pass | 44 | 133 |
+| Pass | 64 | 220 |
 | Pendiente | 0 | 0 |
 
-Ningún caso unitario queda pendiente. Los módulos de Reportes (#33 y #37) y Bitácora (#31) todavía no están integrados en esta rama, así que sus pruebas no forman parte de esta corrida.
-
-## Casos agregados después de la corrida registrada
-
-La sección Calidad de la producción de Reportes se agregó el 16 de noviembre de 2026. Sus pruebas viven en `src/lib/domain/production-quality.test.ts` y se corrieron ese día con `pnpm test` sobre la rama `chore/final-review`, junto con toda la suite (23 archivos, 197 pruebas, todas pasan).
-
-| Id | Requisito | Precondición | Pasos | Datos de entrada | Resultado esperado | Resultado obtenido | Estado |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| PU-45 | RF-07, UC-08 | Ninguna | Calcular desviación estándar muestral y Cpk | Un valor, ocho valores, media centrada y cargada al límite, dispersión cero | Desviación con n − 1, Cpk igual a la distancia al límite más cercano entre tres sigma, nulo sin dispersión | 2 de 2 pasan | Pass |
-| PU-46 | RF-07, D-27, BR-INS-03, BR-CER-04 | Ninguna | Resumir la calidad de la producción | Lotes con reinspección, secuencias después de Z, última inspección incompleta, un factor fuera de rango, valor igual al límite, factor sin límites, inspecciones de lotes fuera del periodo | Cada lote cuenta una vez por su última inspección, solo cuentan inspecciones completas, un factor fuera de rango saca al lote de especificación, el límite cuenta como dentro, y un factor sin límites no tiene tasa ni Cpk | 8 de 8 pasan | Pass |
-| PU-47 | RF-07 | Ninguna | Leer el factor de la gráfica de control desde la URL | Código válido, arreglo, texto arbitrario, vacío | Acepta solo códigos de los diez factores y si no usa el primero | 1 de 1 pasa | Pass |
+Ningún caso unitario queda pendiente. Reportes, la calidad de la producción, la Bitácora, el correo y el menú por rol ya están integrados y sus pruebas forman parte de esta corrida.
 
 ## Anexo de pruebas por nombre
 
-Lista generada desde la salida de `vitest run --reporter=verbose` del commit 331ef38. Los nombres están en inglés porque son identificadores del código.
+Lista generada desde la salida de `vitest run --reporter=verbose` del commit 23d9967. Los nombres están en inglés porque son identificadores del código.
 
 | Fila | Archivo | Bloque | Prueba |
 | --- | --- | --- | --- |
@@ -232,5 +242,92 @@ Lista generada desde la salida de `vitest run --reporter=verbose` del commit 331
 | PU-44 | `src/test/int/guard.test.ts` | assertSafeTestDatabaseUrl (integration suite safety guard) | throws when the URL is missing or malformed |
 | PU-44 | `src/test/int/guard.test.ts` | assertSafeTestDatabaseUrl (integration suite safety guard) | refuses any remote host, including hosts that only look local |
 | PU-44 | `src/test/int/guard.test.ts` | assertSafeTestDatabaseUrl (integration suite safety guard) | refuses a local database that is not named *_test |
+| PU-45 | `src/lib/domain/production-quality.test.ts` | sampleStdDev and processCapability | uses n − 1 and needs two values |
+| PU-45 | `src/lib/domain/production-quality.test.ts` | sampleStdDev and processCapability | Cpk is the distance to the nearest limit over three sigma |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | D-27 counts each lot once through its latest inspection and the rest as re-inspections |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | orders sequences past Z correctly (AA is after Z) |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | BR-INS-03 leaves out lots whose latest inspection is incomplete, even with an older complete one |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | a lot with one factor out of range is not in spec, and the factor counts it |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | BR-CER-04 a value equal to a limit is within spec |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | computes mean, spread and Cpk per factor, sorted by production date |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | a factor without international limits has no rate or Cpk and never fails a lot |
+| PU-46 | `src/lib/domain/production-quality.test.ts` | RF-07 buildProductionQuality | ignores inspections of lots outside the period |
+| PU-47 | `src/lib/domain/production-quality.test.ts` | parseFactor | accepts a known code and falls back to the first factor |
+| PU-48 | `src/lib/permissions.test.ts` | navItemsFor | RF-01 gives administrators the panel and Usuarios only |
+| PU-48 | `src/lib/permissions.test.ts` | navItemsFor | RF-01 gives transaction users the panel and every operational module, without Usuarios |
+| PU-48 | `src/lib/permissions.test.ts` | navItemsFor | RF-01 gives query users the panel, Reportes and Bitácora only |
+| PU-48 | `src/lib/permissions.test.ts` | navItemsFor | RF-01 lists exactly the modules canAccess allows, so sidebar and mobile menu match the guards |
+| PU-48 | `src/lib/permissions.test.ts` | navItemsFor | returns only href and title, in Spanish, for the links |
+| PU-49 | `src/lib/services/mailer.test.ts` | RF-06 D-13 mailer without RESEND_API_KEY | RF-06 stays simulated and never calls Resend |
+| PU-49 | `src/lib/services/mailer.test.ts` | RF-06 D-13 mailer without RESEND_API_KEY | RF-06 rejects an email with no recipients |
+| PU-50 | `src/lib/services/mailer.test.ts` | RF-06 D-13 mailer with RESEND_API_KEY | RF-06 sends through Resend with the PDF attached |
+| PU-50 | `src/lib/services/mailer.test.ts` | RF-06 D-13 mailer with RESEND_API_KEY | RF-06 uses EMAIL_FROM when set |
+| PU-50 | `src/lib/services/mailer.test.ts` | RF-06 D-13 mailer with RESEND_API_KEY | RF-06 EMAIL_REDIRECT_TO sends to one address and names the real recipients |
+| PU-50 | `src/lib/services/mailer.test.ts` | RF-06 D-13 mailer with RESEND_API_KEY | RF-06 reports a provider error as a failed delivery in Spanish |
+| PU-50 | `src/lib/services/mailer.test.ts` | RF-06 D-13 mailer with RESEND_API_KEY | RF-06 reports a network failure as a failed delivery |
+| PU-51 | `src/app/(app)/bitacora/filters.test.ts` | parseAuditFilters | RF-08 reads every filter from the Spanish query keys |
+| PU-51 | `src/app/(app)/bitacora/filters.test.ts` | parseAuditFilters | RF-08 with no query shows the whole log from page 1 |
+| PU-51 | `src/app/(app)/bitacora/filters.test.ts` | parseAuditFilters | RF-08 drops invalid values instead of failing on a hand-edited URL |
+| PU-51 | `src/app/(app)/bitacora/filters.test.ts` | parseAuditFilters | RF-08 keeps an entity or action code it does not know, such as one added by a later module |
+| PU-51 | `src/app/(app)/bitacora/filters.test.ts` | parseAuditFilters | RF-08 takes the first value when a key is repeated |
+| PU-52 | `src/app/(app)/bitacora/filters.test.ts` | dateBounds | RF-08 covers both days in full, in Mexico City time |
+| PU-52 | `src/app/(app)/bitacora/filters.test.ts` | dateBounds | RF-08 leaves an open side unbounded |
+| PU-53 | `src/app/(app)/bitacora/filters.test.ts` | likePattern | RF-08 matches the employee text literally |
+| PU-54 | `src/app/(app)/bitacora/filters.test.ts` | auditHref and pageCount | RF-08 keeps the filters when moving between pages |
+| PU-54 | `src/app/(app)/bitacora/filters.test.ts` | auditHref and pageCount | RF-08 pages hold 50 rows |
+| PU-55 | `src/app/(app)/bitacora/labels.test.ts` | audit labels | RF-08 shows entities and actions in Spanish, certificates included |
+| PU-55 | `src/app/(app)/bitacora/labels.test.ts` | audit labels | RF-08 labels the codes the Clientes module writes |
+| PU-55 | `src/app/(app)/bitacora/labels.test.ts` | audit labels | RF-08 falls back to the raw code for unknown entities and actions |
+| PU-55 | `src/app/(app)/bitacora/labels.test.ts` | audit labels | RF-08 the client filter also finds rows stored with the plural code |
+| PU-55 | `src/app/(app)/bitacora/labels.test.ts` | audit labels | RF-08 offers every known entity and action as a filter option |
+| PU-56 | `src/app/(app)/bitacora/labels.test.ts` | entityHref | RF-08 links to the detail page of entities that have one |
+| PU-56 | `src/app/(app)/bitacora/labels.test.ts` | entityHref | RF-08 has no link for entities without a page of their own |
+| PU-56 | `src/app/(app)/bitacora/labels.test.ts` | entityHref | RF-08 names the parameter of an international limit |
+| PU-57 | `src/lib/domain/report.test.ts` | RF-07 report filters from the URL | RF-07 period presets cover the current month, quarter and year |
+| PU-57 | `src/lib/domain/report.test.ts` | RF-07 report filters from the URL | RF-07 a preset wins over typed dates |
+| PU-57 | `src/lib/domain/report.test.ts` | RF-07 report filters from the URL | RF-07 drops invalid values before they reach the database |
+| PU-57 | `src/lib/domain/report.test.ts` | RF-07 report filters from the URL | RF-07 swaps a reversed range and keeps client, status and page |
+| PU-57 | `src/lib/domain/report.test.ts` | RF-07 report filters from the URL | RF-07 filters survive a round trip through the URL |
+| PU-57 | `src/lib/domain/report.test.ts` | RF-07 report filters from the URL | RF-07 the range applies to issuedAt in plant time (UTC-6), end day included |
+| PU-57 | `src/lib/domain/report.test.ts` | RF-07 report filters from the URL | D-25 drafts are never read, the status filter narrows to one state |
+| PU-58 | `src/lib/domain/report.test.ts` | RF-07 report statistics | BR-CER-04 a value equal to a limit is within range |
+| PU-58 | `src/lib/domain/report.test.ts` | RF-07 report statistics | RF-07 counts deviations, incidences and the Pareto per parameter |
+| PU-58 | `src/lib/domain/report.test.ts` | RF-07 report statistics | D-25 cancelled certificates stay in the history but never count as valid |
+| PU-58 | `src/lib/domain/report.test.ts` | RF-07 report statistics | RF-07 groups certificates by month of issue in plant time |
+| PU-58 | `src/lib/domain/report.test.ts` | RF-07 report statistics | RF-06 sums failed delivery attempts per certificate |
+| PU-58 | `src/lib/domain/report.test.ts` | RF-07 report statistics | RF-07 paginates the history and clamps a page past the end |
+| PU-59 | `src/app/(app)/reportes/actions.test.ts` | RF-01 / RF-07 report export authorization and audit | RF-01 asks for both report roles and keeps the /login redirect without a session |
+| PU-59 | `src/app/(app)/reportes/actions.test.ts` | RF-01 / RF-07 report export authorization and audit | RF-01 a role without access gets a readable error and no file |
+| PU-59 | `src/app/(app)/reportes/actions.test.ts` | RF-01 / RF-07 report export authorization and audit | RF-07 validates the filters sent by the browser again |
+| PU-59 | `src/app/(app)/reportes/actions.test.ts` | RF-01 / RF-07 report export authorization and audit | BR-AUD-01 every export writes an audit row with the format and the filters |
+| PU-59 | `src/app/(app)/reportes/actions.test.ts` | RF-01 / RF-07 report export authorization and audit | D-19 CSV comes back as text with a BOM, xlsx as a zip in base64 |
+| PU-59 | `src/app/(app)/reportes/actions.test.ts` | RF-01 / RF-07 report export authorization and audit | RF-07 an empty result is reported and not audited |
+| PU-60 | `src/lib/services/report-export.test.ts` | D-19 CSV export | D-19 quotes every text cell and doubles inner quotes |
+| PU-60 | `src/lib/services/report-export.test.ts` | D-19 CSV export | D-19 neutralizes text a spreadsheet would run as a formula |
+| PU-60 | `src/lib/services/report-export.test.ts` | D-19 CSV export | D-19 writes a UTF-8 BOM, CRLF line ends and one line per certificate |
+| PU-61 | `src/lib/services/report-export.test.ts` | D-19 xlsx export | D-19 keeps real dates in plant time, typed numbers and accents |
+| PU-62 | `src/lib/session.test.ts` | RF-01: authorizeMutation | returns a denied ActionState with the exact message for a query user |
+| PU-62 | `src/lib/session.test.ts` | RF-01: authorizeMutation | returns the user for a transaction user |
+| PU-63 | `src/lib/api/clients/use-cases.test.ts` | RF-03 / UC-02: clients use case | BR-AUD-01 creates the client, destinations and audit row in one batch |
+| PU-63 | `src/lib/api/clients/use-cases.test.ts` | RF-03 / UC-02: clients use case | BR-CLI-02 refuses a duplicate RFC with the Spanish message and writes nothing |
+| PU-63 | `src/lib/api/clients/use-cases.test.ts` | RF-03 / UC-02: clients use case | BR-CLI-01 refuses a duplicate SAP key with the Spanish message and writes nothing |
+| PU-63 | `src/lib/api/clients/use-cases.test.ts` | RF-03 / UC-02: clients use case | RF-03 answers not found for an unknown id on update |
+| PU-63 | `src/lib/api/clients/use-cases.test.ts` | RF-03 / UC-02: clients use case | BR-CLI-01 turns a concurrent unique violation into the same friendly conflict |
+| PU-63 | `src/lib/api/clients/use-cases.test.ts` | RF-03 / UC-02: clients use case | RF-03 contracts keep the validation messages of the form |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards / |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /panel |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /clientes |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /clientes/x |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /certificados/CER-2026-000001/pdf |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /api |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /api/other |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /api/v10/clients/list |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | still guards /apiv1 |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | leaves /login alone |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | leaves /api/auth/sign-in/email alone |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | leaves /api/v1/clients/list alone |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | leaves /api/v1 alone |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | leaves /_next/static/a.js alone |
+| PU-64 | `src/proxy.test.ts` | RF-01: the proxy matcher | leaves /favicon.ico alone |
 
-Total 133 pruebas.
+Total 220 pruebas.

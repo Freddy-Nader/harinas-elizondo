@@ -27,6 +27,7 @@ Add a row when something is decided. Move a question to the decisions table once
 | D-20 | 2026-10-22 | Both roles can read the audit log | Managers audit, and it supports the Traceability characteristic |
 | D-21 | 2026-10-22 | A lot's product is free text, with suggestions from earlier lots | No catalog needed while limits are per client (D-12) |
 | D-11 | 2026-10-22 | Work happens in Freddy's fork with PRs against the fork's own `main`. One PR upstream later, when Freddy is ready, together with a request to be added as collaborator. Superseded once Freddy got push access upstream (November 2026). Branches now go straight to the team repo, see runbook.md | Freddy has read-only access upstream, and the scaffold should mature before the team reviews it. Vercel previews run from the fork |
+| D-29 | 2026-11-16 | One API behind the site and a CLI. Each operation has a contract (zod input, roles, Spanish field labels) and a use case in `src/lib/api/`. Server actions and the route handler `POST/GET /api/v1/<module>/<operation>` (one catch-all) are thin adapters, and `pnpm he` calls the route over HTTP with the normal session cookie. `/api/v1` is outside the proxy matcher and answers 401 itself. Clientes is the first module. Map and details in `api-cli.md` | An agent can run every backend action from a terminal against a real database and see the same Spanish messages as the screen, and a backend change is tested once for both. The CLI needs no key other than the session cookie |
 
 ## Professor review (2026-11-04)
 
@@ -42,6 +43,7 @@ The local PDF data dictionary also marks client RFC (unique), contact name and c
 | D-25 | 2026-11-10 | Issued or sent certificates are cancelled with a reason (`cancelled_at`, `cancelled_by`, `cancellation_reason`, status `cancelled`), never deleted. The snapshot, hash and inspection lock stay. A draft is not cancelled, it is just never issued | The PDF dictionary asks for a cancellation status. Keeps history and traceability |
 | D-26 | 2026-11-10 | The "signature hash" is a SHA-256 of the issued content (`signature_hash`), computed at issue time, printed on the PDF and re-checked on screen against the stored data. It complements D-18 (printed signature block), it does not replace it | Gives the dictionary's hash and tamper evidence without key management |
 | D-27 | 2026-11-10 | BR-CER-01 uses the lot's LATEST inspection. If it is incomplete the certificate is blocked; an older complete inspection is never picked silently | Professor review (`docs/revision-requisitos-es.md`) |
+| D-28 | 2026-11-16 | Sign-in rate limits are stored in Postgres (`rate_limit` table, Better Auth `storage: "database"`). Sign-in allows 5 tries per minute per IP, other auth routes 100. The seed password must have 16 or more characters | Better Auth keeps counters in memory by default, and every Vercel serverless instance has its own memory, so a guessing script spread over instances was barely slowed. The two demo accounts share one seed password (RF-01) |
 
 Migration `0003_certificate_shipping_cancel` adds those columns and the enum value. Additive only, applied to the shared Neon database on 2026-11-10.
 

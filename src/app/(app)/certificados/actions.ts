@@ -28,7 +28,7 @@ import {
 import { changedFields } from "@/lib/domain/equipment";
 import { renderCertificatePdf } from "@/lib/services/certificate-pdf";
 import { isEmailRedirected, sendEmail, warehouseEmail } from "@/lib/services/mailer";
-import { ForbiddenError, requireRole, type SessionUser } from "@/lib/session";
+import { authorizeMutation, type SessionUser } from "@/lib/session";
 
 /**
  * RF-05 · RF-06 · UC-05 / UC-06 server actions. Every one checks the role first (RF-01) and
@@ -36,15 +36,6 @@ import { ForbiddenError, requireRole, type SessionUser } from "@/lib/session";
  * (D-26) and locks the inspection (BR-AUD-03), so the "conforme ficticia" edit of the old
  * process is impossible. Issued certificates are cancelled with a reason, never deleted (D-25).
  */
-
-async function authorize() {
-  try {
-    return { user: await requireRole() };
-  } catch (error) {
-    if (error instanceof ForbiddenError) return { denied: fail(error.message) };
-    throw error;
-  }
-}
 
 function readForm(form: FormData) {
   const text = (name: string) => String(form.get(name) ?? "");
@@ -110,7 +101,7 @@ function mexicoYear(now = new Date()) {
 
 /** UC-05. Creates the draft with the next CER-YYYY-NNNNNN id (D-17), then opens it. */
 export async function createCertificate(_: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
 
   const parsed = readForm(form);
@@ -152,7 +143,7 @@ export async function createCertificate(_: ActionState, form: FormData): Promise
 
 /** UC-05. Edits a draft. Issued certificates are read-only. */
 export async function updateCertificate(id: string, _: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
   if (!isCertificateId(id)) return fail("Certificado no encontrado.");
 
@@ -188,7 +179,7 @@ export async function updateCertificate(id: string, _: ActionState, form: FormDa
  * inspection and, by default, sends it (RF-06).
  */
 export async function issueCertificate(id: string, _: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
   if (!isCertificateId(id)) return fail("Certificado no encontrado.");
 
@@ -273,7 +264,7 @@ export async function issueCertificate(id: string, _: ActionState, form: FormDat
 /** RF-06 · UC-06. Sends (or re-sends) an issued certificate and stores the evidence. */
 export async function sendCertificate(id: string, _: ActionState, form: FormData): Promise<ActionState> {
   void form;
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
   if (!isCertificateId(id)) return fail("Certificado no encontrado.");
 
@@ -299,7 +290,7 @@ export async function sendCertificate(id: string, _: ActionState, form: FormData
  * the inspection lock stay, so the history and the evidence are kept.
  */
 export async function cancelCertificate(id: string, _: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
   if (!isCertificateId(id)) return fail("Certificado no encontrado.");
 

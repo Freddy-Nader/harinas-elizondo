@@ -162,27 +162,105 @@ flowchart TD
 | `/bitacora` | Bitácora | Tabla de solo lectura con filtros por entidad, acción, empleado, fechas e id, 50 filas por página y detalle JSON expandible |
 | Encabezado móvil | Menú móvil | Botón de menú abajo de `md` que abre un panel lateral con los mismos módulos del rol |
 
-> TODO (equipo): captura de `/login`.
+![Pantalla de inicio de sesión](img/login.png)
 
-> TODO (equipo): captura de `/panel` con cada rol (administrador, transacción y consulta).
+La pantalla de `/login` con el formulario vacío, tomada en producción el 16 de noviembre de 2026.
 
-> TODO (equipo): captura de `/usuarios` con el formulario de alta y la lista de cuentas.
+![Panel del usuario de transacción](img/panel-transaccion.png)
 
-> TODO (equipo): captura de `/clientes` con el directorio, el formulario y los valores particulares.
+El panel del usuario de transacción muestra los siete módulos que su rol puede abrir.
 
-> TODO (equipo): captura de `/equipos`, `/equipos/nuevo` y `/equipos/[id]`.
+![Panel del usuario de consulta](img/panel-consulta.png)
 
-> TODO (equipo): captura de `/lotes` y `/lotes/[id]` con una inspección completa y una re-inspección.
+El panel del usuario de consulta muestra solo Reportes y Bitácora.
 
-> TODO (equipo): captura de `/inspecciones/[id]` con la vista previa de desviación.
+> TODO (equipo): captura de `/panel` con el administrador. Falta porque solo el operador tiene la cuenta de administrador y el panel completo no se pudo abrir con las cuentas de demostración.
 
-> TODO (equipo): captura de `/certificados/[id]` en borrador con bloqueos, emitido y cancelado.
+> TODO (equipo): captura de `/usuarios` con el formulario de alta y la lista de cuentas. Falta porque la pantalla es solo del administrador, cuya cuenta solo tiene el operador, y la lista puede mostrar datos personales de las cuentas reales.
 
-> TODO (equipo): captura de `/reportes` con filtros y gráficas.
+![Directorio de clientes y formulario de alta](img/clientes.png)
 
-> TODO (equipo): captura de `/bitacora` con filtros.
+El directorio de `/clientes` con el cliente de prueba `PRUEBA02` y el formulario de alta debajo.
 
-> TODO (equipo): captura del menú móvil a 375 px.
+![Edición de un cliente](img/cliente-editar.png)
+
+La edición del cliente `PRUEBA02` con su dirección fiscal, su destino de entrega y el estado.
+
+![Valores de referencia particulares](img/cliente-valores-particulares.png)
+
+Los valores de referencia particulares del cliente, con la tenacidad ajustada a 65 y 85 dentro del rango internacional.
+
+![Lista de equipos](img/equipos.png)
+
+La lista de `/equipos` con equipos activos y uno dado de baja.
+
+![Formulario de alta de equipo](img/equipo-nuevo.png)
+
+El formulario de `/equipos/nuevo`.
+
+![Detalle de un equipo](img/equipo-detalle.png)
+
+El detalle de un equipo con sus límites internacionales y su estado.
+
+![Lista de lotes](img/lotes.png)
+
+La lista de `/lotes` con el lote de prueba `L-PRUEBA-010`.
+
+![Detalle de un lote](img/lote-detalle.png)
+
+El lote `L-PRUEBA-010` con la inspección A completa y la re-inspección B con su motivo.
+
+![Inspección con captura parcial](img/inspeccion-parcial.png)
+
+La inspección A con cinco de diez parámetros capturados y la tenacidad marcada por encima del límite.
+
+![Inspección completa](img/inspeccion.png)
+
+La misma inspección ya completa, con la desviación calculada contra los valores internacionales.
+
+![Certificado en borrador](img/certificado-borrador.png)
+
+El certificado `CER-2026-000004` en borrador, con sus resultados. La lista de bloqueos queda más abajo en la página, y se muestra en la captura siguiente.
+
+![Bloqueos para emitir el certificado en borrador](img/certificado-borrador-bloqueos.png)
+
+La sección Emitir del mismo borrador `CER-2026-000004`, con la lista de bloqueos en rojo que impide emitirlo mientras falten el número de factura, la cantidad entregada, la fecha de envío y el transportista, y con el botón Emitir certificado deshabilitado.
+
+![Certificado emitido](img/certificado-emitido.png)
+
+El certificado `CER-2026-000003` ya emitido, con su encabezado en estado Emitido y la tabla de resultados que marca la desviación de la tenacidad.
+
+![Certificado enviado](img/certificado-enviado.png)
+
+El mismo certificado después del envío, con los datos del certificado, la huella digital SHA-256, el aviso de Modo de prueba y la entrega registrada a los dos destinatarios de prueba.
+
+![Certificado cancelado](img/certificado-cancelado.png)
+
+Un certificado cancelado, con su motivo y los resultados que se conservan.
+
+![Reportes con indicadores y gráficas](img/reportes.png)
+
+La pantalla de `/reportes` con indicadores y gráficas, vista con el usuario de consulta.
+
+![Reportes filtrados por cliente](img/reportes-filtrado.png)
+
+Los reportes filtrados por el cliente `PRUEBA02`, que dejan una sola fila.
+
+![Calidad de la producción en Reportes](img/reportes-calidad.png)
+
+La sección Calidad de la producción de `/reportes`, con los indicadores de lotes producidos, lotes dentro de especificación, reinspecciones y capacidad del proceso, la gráfica de control de Tenacidad (P) y el porcentaje de lotes dentro de especificación por factor, vista con el usuario de transacción y datos de prueba.
+
+![Bitácora filtrada](img/bitacora.png)
+
+La Bitácora vista con el usuario de consulta y filtrada por entidad Certificado y acción Emisión.
+
+![Menú móvil del usuario de transacción](img/menu-movil.png)
+
+El menú móvil a 375 px con los siete módulos del usuario de transacción.
+
+![Menú móvil del usuario de consulta](img/menu-movil-consulta.png)
+
+El menú móvil a 375 px del usuario de consulta, que solo ofrece Panel, Reportes y Bitácora.
 
 ### Reporte impreso, el certificado en PDF
 
@@ -190,7 +268,9 @@ El PDF se genera en el servidor con `@react-pdf/renderer` (`src/lib/services/cer
 
 Cuando la casilla de firma está activa se imprime el bloque firmado con nombre, número de empleado y fecha de quien emitió (D-18). Siempre se imprime la huella digital SHA-256 del contenido emitido (D-26). Un borrador lleva la marca "BORRADOR · sin validez" y un cancelado la marca "CANCELADO · sin validez". Como las fuentes base del PDF solo cubren Latin-1, `pdfSafeText` escribe las unidades con subíndices y superíndices en texto plano.
 
-> TODO (equipo): imagen del PDF de un certificado emitido con datos de prueba (por ejemplo del cliente `PRUEBA01`), sin datos reales.
+![PDF de un certificado emitido](img/certificado-pdf.png)
+
+El PDF del certificado `CER-2026-000003`, emitido con datos de prueba. El archivo original está en [certificado-ejemplo.pdf](img/certificado-ejemplo.pdf).
 
 ### Reportes en pantalla y exportación
 
@@ -877,42 +957,40 @@ Las guías de prueba escritas están en `docs/testing/`, con un índice en `docs
 
 En GitHub se ven en https://github.com/ValleryR/harinas-elizondo/tree/main/docs/testing.
 
-### Resultados de pruebas reportados en los PR
+### Resultados de pruebas
 
-Los números de esta tabla son solo los que reportan los PR, con la corrida que cada uno cita. Las guías del PR #39 se corrieron el 2026-11-11 en el commit 331ef38, que es la punta de la rama del PR #38, y nunca contra Neon.
+Los números de esta tabla salen de las corridas del 2026-11-16 en el commit 23d9967 de `chore/improve-plans`. Las suites con base de datos corrieron contra un PostgreSQL 14.24 local de Homebrew, sin Docker y nunca contra Neon. Las filas de sistema PS-08 a PS-16 vienen de la verificación en vivo del mismo día.
 
 | Tipo | Ids | Herramienta | Resultado reportado | Fuente |
 | --- | --- | --- | --- | --- |
-| Unitarias | PU-01 a PU-44 | Vitest | 133 de 133 pruebas pasan, 44 casos en Pass | PR #39 |
-| Componentes | PC-01 a PC-14 | Vitest con Postgres 16 local | 12 de 12 pasan, PC-13 y PC-14 Pendiente | PR #36, PR #39 |
-| Integrales | PI-01 a PI-06 | Playwright con Postgres local | 6 pasan | PR #38, PR #39 |
-| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 7 pasan, 9 Pendiente | PR #38, PR #39 |
-| Regresión | PR-01 a PR-07 | GitHub Actions | 4 Pass, 3 Pendiente | PR #29, PR #39 |
-| Aceptación | PA-01 a PA-06 | Guion con usuarios reales | 0 ejecutadas, 6 Pendiente | PR #39 |
+| Unitarias | PU-01 a PU-64 | Vitest | 220 de 220 pruebas en 26 archivos pasan, 64 casos en Pass | Corrida del 2026-11-16 |
+| Componentes | PC-01 a PC-23 | Vitest con Postgres 14 local | 33 de 33 pasan en 7 archivos, PC-01 a PC-23 en Pass | Corrida del 2026-11-16 |
+| Integrales | PI-01 a PI-06 | Playwright con Postgres local | 6 pasan, 13 de 13 pruebas de la suite e2e | Corrida del 2026-11-16 |
+| Sistema | PS-01 a PS-16 | Playwright y revisión manual | 16 pasan, PS-01 a PS-07 con Playwright y PS-08 a PS-16 en vivo | Corrida del 2026-11-16 |
+| Regresión | PR-01 a PR-07 | GitHub Actions | 6 Pass, 1 Pendiente | Corrida del 2026-11-16 |
+| Aceptación | PA-01 a PA-06 | Guion con usuarios reales | 0 ejecutadas, 6 Pendiente | Sin corrida |
 
-Los PR de funciones agregan pruebas que todavía no están en esa corrida. El PR #31 reporta 143 pruebas en 16 archivos con 24 nuevas de Bitácora. El PR #35 reporta 134 pruebas con 5 nuevas de la navegación. El PR #37 reporta 152 pruebas en 18 archivos con 23 nuevas de Reportes. Cada número se midió en su propia rama, así que no se suman.
+La suite unitaria ya incluye las pruebas de Reportes, la calidad de la producción, la Bitácora, el correo y el menú por rol. Las guías de cada tipo guardan el detalle de la corrida.
 
-El 16 de noviembre de 2026, con todos los PR integrados y la sección de calidad de la producción, la suite unitaria corre 197 pruebas en 23 archivos y todas pasan.
-
-Las corridas de CI citadas son https://github.com/ValleryR/harinas-elizondo/actions/runs/43103295253, https://github.com/ValleryR/harinas-elizondo/actions/runs/43159071569 y https://github.com/ValleryR/harinas-elizondo/actions/runs/43161348610.
+La última corrida de CI sobre `main`, del commit f767e75, terminó en verde en sus tres jobs y está en https://github.com/ValleryR/harinas-elizondo/actions/runs/43849955128.
 
 ### Atributos de calidad
 
 | Atributo | Indicador | Cómo lo cumple el diseño | Evidencia |
 | --- | --- | --- | --- |
-| Seguridad | Acceso restringido por perfil | `requireRole` en cada acción y lectura, `ModuleGate` en cada pantalla, rol desconocido tratado como consulta, cuenta inactiva sin sesión, registro público apagado, redirección solo a rutas del mismo sitio | PU de `permissions.test.ts`, PC-07, PC-11, PS-01 a PS-03, PS-05, PS-06 |
+| Seguridad | Acceso restringido por perfil | `requireRole` en cada acción y lectura, `ModuleGate` en cada pantalla, rol desconocido tratado como consulta, cuenta inactiva sin sesión, registro público apagado, redirección solo a rutas del mismo sitio, cabeceras `X-Frame-Options`, `X-Content-Type-Options` y `Referrer-Policy` en todas las respuestas | PU de `permissions.test.ts`, PC-07, PC-11, PS-01 a PS-03, PS-05, PS-06 |
 | Confiabilidad | Datos validados antes de emitir | Zod en cada formulario, `issueBlockers`, última inspección completa obligatoria, restricciones únicas y CHECK en la base de datos, emisión atómica | PU de `certificate.test.ts`, PC-08 a PC-10, PI-06, PS-04 |
 | Integridad de la información | Bitácora y control de cambios | Fila de bitácora en cada mutación dentro del mismo lote, inspecciones bloqueadas, copia fija de líneas, hash SHA-256 verificado en pantalla | PC-01, PC-06, PC-08, PC-12 |
-| Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | Pendiente (#19) |
+| Disponibilidad | Acceso en horario laboral | Deploy en Vercel y base de datos administrada en Neon | La aplicación respondió en las pruebas PS-08 a PS-16 del 16 de noviembre de 2026, sin medir la disponibilidad |
 | Usabilidad | Interfaz clara y navegación simple | Todo en español, avisos por acción, errores por campo sin perder lo escrito, menú filtrado por rol, menú móvil | PA-01 a PA-06 pendientes |
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
-| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PC-14 y PS-15 pendientes |
+| Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción con consulta y con transacción y PC-14 pasa contra Postgres |
 
 > TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
 
 > TODO (equipo): nota de disponibilidad del deploy durante el periodo de pruebas, tomada de Vercel.
 
-> TODO (equipo): resultados de la verificación en vivo contra Neon (#19), que llenan PS-08 a PS-14.
+La verificación en vivo contra Neon se corrió el 16 de noviembre de 2026 en https://harinas-elizondo.vercel.app y llenó PS-08 a PS-16, todos en Pass. El detalle de cada caso está en [Pruebas de sistema](testing/pruebas-sistema-es.md).
 
 > TODO (equipo): resultados de la UAT con al menos dos personas externas al equipo, identificadas como P1 y P2, con tareas completadas, tiempos y errores de PA-01 a PA-06.
 
@@ -1119,6 +1197,6 @@ Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que 
 - El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients`. Clientes tampoco usa `requireRole` ni `ActionState` como los demás módulos.
 - `main` en 2b30a0f fallaba `pnpm lint` en `reportes/export-button.tsx` y `pnpm build` en `/reportes`. El merge del PR #37 lo corrigió y `main` en ff92f19 pasa CI.
 - El correo se envía con Resend desde el 15 de noviembre de 2026 (PR #41). Mientras no haya un dominio verificado, producción manda todo al buzón de prueba de `EMAIL_REDIRECT_TO` (PR #45).
-- La exportación no se ha abierto en Excel ni en Power BI, y la regla que exige CI en `main` y una corrida desde un fork siguen pendientes (PR-05 a PR-07).
+- La exportación no se ha abierto en Excel ni en Power BI, y la regla que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio.
 
 > TODO (equipo): revisar este documento completo con todo el equipo antes de exportarlo a PDF (paso 10 del issue #24).

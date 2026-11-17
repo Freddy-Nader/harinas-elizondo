@@ -1,0 +1,16 @@
+% Agent workflow for the plans in plans/. Taken from "How to execute the open plans"
+% in plans/README.md.
+\begin{tikzpicture}[node distance=0.9cm and 0.8cm]
+  \tikzset{paso/.style={bloque, text width=2.6cm, minimum height=1.5cm}}
+  \node[paso] (plan) {\textbf{Asesor}\\\scriptsize revisa el código y escribe un plan en \tt{plans/}};
+  \node[paso, right=of plan] (exec) {\textbf{Ejecutor}\\\scriptsize sigue el plan en su propia copia del repositorio};
+  \node[paso, right=of exec] (rev) {\textbf{Revisión}\\\scriptsize se repiten las pruebas y se lee todo el cambio};
+  \node[paso, below=of rev] (pr) {\textbf{Un pull request}\\\scriptsize junta los planes aprobados};
+  \node[paso, left=of pr, fill=acento!12] (human) {\textbf{Persona del equipo}\\\scriptsize lee el PR y decide el merge};
+
+  \draw[flecha] (plan) -- (exec);
+  \draw[flecha] (exec) -- node[etiq, above] {reporte} (rev);
+  \draw[flecha] (rev) -- node[etiq, right] {aprobado} (pr);
+  \draw[flecha] (pr) -- (human);
+  \draw[flecha, dashed] (rev.north) -- ++(0,0.45) -| node[etiq, pos=0.25, above] {se devuelve, como máximo dos veces} (exec.north);
+\end{tikzpicture}

@@ -25,7 +25,7 @@ import {
   type StatusChange,
 } from "@/lib/domain/equipment";
 import { PARAMETERS } from "@/lib/domain/parameters";
-import { ForbiddenError, requireRole } from "@/lib/session";
+import { authorizeMutation } from "@/lib/session";
 
 /**
  * RF-02 · UC-01 server actions. Every one checks the role first (RF-01) and writes the
@@ -50,18 +50,9 @@ function readForm(form: FormData) {
   });
 }
 
-async function authorize() {
-  try {
-    return { user: await requireRole() };
-  } catch (error) {
-    if (error instanceof ForbiddenError) return { denied: fail(error.message) };
-    throw error;
-  }
-}
-
 /** RF-02 · BR-EQP-01. Creates equipment with a generated key, then opens its detail page. */
 export async function createEquipment(_: ActionState, form: FormData): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
 
   const type = equipmentTypeSchema.safeParse(form.get("type"));
@@ -108,7 +99,7 @@ export async function updateEquipment(
   _: ActionState,
   form: FormData,
 ): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
   if (!isEquipmentKey(id)) return fail("Equipo no encontrado.");
 
@@ -154,7 +145,7 @@ export async function changeEquipmentStatus(
   _: ActionState,
   form: FormData,
 ): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
 
   const change = String(form.get("change") ?? "");
@@ -195,7 +186,7 @@ export async function saveInternationalLimit(
   _: ActionState,
   form: FormData,
 ): Promise<ActionState> {
-  const { user, denied } = await authorize();
+  const { user, denied } = await authorizeMutation();
   if (denied) return denied;
   if (!PARAMETERS.some((p) => p.code === parameterCode)) return fail("Parámetro no válido.");
 

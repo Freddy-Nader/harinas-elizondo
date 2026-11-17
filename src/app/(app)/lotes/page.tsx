@@ -18,7 +18,7 @@ export default function LotesPage({ searchParams }: PageProps<"/lotes">) {
             <div className="flex flex-col gap-1">
               <h1 className="text-2xl font-semibold tracking-tight">Lotes de producción</h1>
               <p className="text-pretty text-muted-foreground">
-                Cada lote guarda sus inspecciones. La última inspección completa es la que se certifica.
+                Cada lote guarda sus inspecciones. Para certificar se usa la última inspección del lote, y tiene que estar completa.
               </p>
             </div>
             <Link href="/lotes/nuevo" className={buttonVariants()}>

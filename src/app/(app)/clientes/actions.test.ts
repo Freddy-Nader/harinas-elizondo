@@ -13,6 +13,7 @@ vi.mock("next/navigation", () => ({
     throw new Error(`REDIRECT:${path}`);
   },
 }));
+vi.mock("server-only", () => ({}));
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
@@ -51,7 +52,7 @@ describe("RF-01 / UC-02: clients server-side role authorization", () => {
       mocked.getSession.mockResolvedValue({
         user: { id: "user-query", name: "Consulta", role: "query", employeeId: "E002" },
       });
-      await expect(action(new FormData())).rejects.toThrow("Acceso restringido.");
+      await expect(action(new FormData())).rejects.toThrow("No tienes permiso para realizar esta acción.");
       expect(mocked.getDb).not.toHaveBeenCalled();
     });
   }

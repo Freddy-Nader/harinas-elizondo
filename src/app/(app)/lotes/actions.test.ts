@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocked = vi.hoisted(() => ({ getDb: vi.fn(), latestInspection: vi.fn(), recordAudit: vi.fn() }));
-vi.mock("@/lib/session", () => ({ requireRole: async () => ({ id: "u1", role: "transaction" }), ForbiddenError: class extends Error {} }));
+vi.mock("@/lib/session", () => {
+  const requireRole = async () => ({ id: "u1", role: "transaction" });
+  return { requireRole, authorizeMutation: async () => ({ user: await requireRole() }), ForbiddenError: class extends Error {} };
+});
 vi.mock("@/lib/db", () => ({ getDb: mocked.getDb }));
 vi.mock("@/lib/inspection-data", () => ({ latestInspection: mocked.latestInspection }));
 vi.mock("@/lib/audit", () => ({ recordAudit: mocked.recordAudit, auditInsert: vi.fn() }));

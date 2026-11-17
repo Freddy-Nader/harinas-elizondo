@@ -1,0 +1,20 @@
+% Certificate life cycle. Redrawn from the certificate state diagram in
+% docs/especificacion-tecnica-es.md (draft, issued, sent, cancelled).
+\begin{tikzpicture}[node distance=1.2cm and 2.4cm]
+  \node[estado] (draft) {Borrador};
+  \node[estado, right=of draft] (issued) {Emitido};
+  \node[estado, right=of issued] (sent) {Enviado};
+  \node[estado, below=1.8cm of $(issued)!0.5!(sent)$, fill=white] (canc) {Cancelado};
+
+  \draw[flecha] ($(draft.west)+(-1.0,0)$) -- node[etiq, above] {crear} (draft);
+  \draw[flecha] (draft) -- node[etiq, above] {emitir sin\\bloqueos} (issued);
+  \draw[flecha] (issued) -- node[etiq, above] {envío\\exitoso} (sent);
+  \draw[flecha] (issued) -- node[etiq, left] {cancelar\\con motivo} (canc);
+  \draw[flecha] (sent) -- node[etiq, right] {cancelar\\con motivo} (canc);
+
+  \draw[flecha] (draft) to[out=60, in=120, looseness=4] node[etiq, above] {editar} (draft);
+  \draw[flecha] (issued) to[out=60, in=120, looseness=4] node[etiq, above] {envío fallido, queda la evidencia} (issued);
+  \draw[flecha] (sent) to[out=60, in=120, looseness=4] node[etiq, above] {reenviar} (sent);
+
+  \node[etiq, below=0.35cm of draft, text width=3.2cm] {un borrador no se cancela, solo no se emite};
+\end{tikzpicture}

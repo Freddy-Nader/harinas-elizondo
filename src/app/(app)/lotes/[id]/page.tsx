@@ -43,7 +43,7 @@ async function LotDetail({ params }: Pick<PageProps<"/lotes/[id]">, "params">) {
         </p>
       </header>
 
-      <Section title="Inspecciones" description="La secuencia la asigna el sistema (A, B, … Z, AA). Para certificar se usa la última inspección completa.">
+      <Section title="Inspecciones" description="La secuencia la asigna el sistema (A, B, … Z, AA). Para certificar se usa la última inspección del lote, y tiene que estar completa.">
         <div className="overflow-x-auto rounded-xl border">
           <table className="w-full text-left text-sm">
             <thead className="border-b bg-muted/40 text-xs text-muted-foreground">

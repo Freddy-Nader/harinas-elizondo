@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import type { Role } from "@/lib/auth";
 import { getAuth } from "@/lib/auth";
+import { fail, type ActionState } from "@/lib/action-state";
 import { canMutate, isRole } from "@/lib/permissions";
 
 /**
@@ -65,4 +66,16 @@ export async function requireRole(...roles: Role[]): Promise<SessionUser> {
   const allowed = roles.length > 0 ? roles.includes(user.role) : canMutate(user.role);
   if (!allowed) throw new ForbiddenError();
   return user;
+}
+
+/** RF-01. `requireRole` for form actions: a wrong role becomes a failed ActionState, not a throw. */
+export async function authorizeMutation(
+  ...roles: Role[]
+): Promise<{ user: SessionUser; denied?: undefined } | { user?: undefined; denied: ActionState }> {
+  try {
+    return { user: await requireRole(...roles) };
+  } catch (error) {
+    if (error instanceof ForbiddenError) return { denied: fail(error.message) };
+    throw error;
+  }
 }

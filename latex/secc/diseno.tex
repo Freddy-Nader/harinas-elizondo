@@ -1,0 +1,74 @@
+\FloatBarrier
+\section{Decisiones de diseño}\label{sec:diseno}
+
+Cada vez que el equipo tomó una decisión, la anotamos con un número en \tt{docs/llm/decisions.md}. Hay 29 decisiones, de la D-01 a la D-29. Cuando una duda no tenía respuesta, la anotamos como pregunta abierta y no la resolvimos en silencio. Esta sección explica las decisiones que más cambiaron el sistema. Cada una tiene el problema, las opciones, lo que elegimos y por qué.
+
+\subsection{Las herramientas}\label{sec:pila}
+
+\textbf{El problema.} Necesitábamos pantallas, un servidor y una base de datos, y el equipo no tiene un servidor propio. \textbf{Las opciones.} La entrega 1 suponía un servidor y una base de datos dentro de la red de la empresa. También existía un prototipo pequeño en Node, la versión 0.1. \textbf{Lo que elegimos.} Next.js para las pantallas y el servidor en un solo proyecto \parencite{nextjs}, publicado en Vercel, con PostgreSQL en Neon como base de datos y Drizzle para escribir el esquema de la base en TypeScript \parencite{drizzle} (D-01, D-02). El prototipo quedó solo como referencia (D-05). \textbf{Por qué.} Un solo proyecto es más fácil de entender para todo el equipo. Vercel y Neon tienen un plan gratuito, y Vercel crea una vista previa de la aplicación para cada cambio. Los usuarios entran desde un navegador, como pedía la entrega 1, aunque el servidor ya no vive en la red de la planta.
+
+\subsection{Las capas}\label{sec:capas}
+
+\textbf{El problema.} La entrega 1 pedía que el sistema no fuera un monolito difícil de mantener. Un monolito es un programa donde todo depende de todo. \textbf{Lo que elegimos.} Las mismas cuatro capas de la entrega 1, cada una en su propia carpeta. La \fref{fig:capas} muestra el camino de una petición. Las reglas del negocio son funciones puras en \tt{src/lib/domain/}. Una función pura no usa la base de datos ni la red, así que se prueba en milisegundos. \textbf{Por qué.} Una capa solo llama a la capa de abajo. Una pantalla nunca consulta la base de datos directamente. Así un cambio en una capa casi no afecta a las demás. Todo se publica como una sola aplicación, pero el código está separado por módulo y por capa.
+
+\begin{figure}[H]
+  \centering
+  \input{figs/capas}
+  \caption{Las capas de la aplicación y el camino de una petición}\label{fig:capas}
+  \backline{fig:capas}
+\end{figure}
+
+\subsection{El modelo de datos}\label{sec:datos}
+
+\textbf{El problema.} Los límites de calidad pueden ser internacionales o propios de un cliente. \textbf{Las opciones.} La entrega 1 guardaba los límites internacionales como si fueran de un cliente especial con la clave 999. \textbf{Lo que elegimos.} Dos tablas, una para los límites internacionales y otra para los límites de cada cliente (D-07). Un cliente sin límites propios usa los internacionales. \textbf{Por qué.} Con un cliente falso, cada lista, cada reporte y cada conteo tendría que excluirlo, y una clave real de SAP podría chocar con el 999.
+
+Otras dos decisiones protegen la historia. Una inspección guarda los resultados de las dos máquinas, porque el certificado necesita ambas (D-09). Y el certificado guarda una copia de cada valor con su límite y su desviación (D-10). Si los límites cambian después, un certificado viejo sigue diciendo lo mismo. La \fref{fig:datos} muestra las tablas principales. El diagrama completo está en \tt{docs/diseno-base-datos-es.md}.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{\linewidth}{!}{\input{figs/datos}}
+  \caption{Las tablas principales de la base de datos y sus relaciones}\label{fig:datos}
+  \backline{fig:datos}
+\end{figure}
+
+\subsection{Roles y permisos}\label{sec:permisos}
+
+\textbf{El problema.} Solo el personal autorizado puede registrar datos o emitir certificados. \textbf{Las opciones.} Esconder los botones en la pantalla, o revisar el rol en el servidor. \textbf{Lo que elegimos.} Cada acción y cada lectura revisan el rol en el servidor antes de tocar datos, con la función \tt{requireRole}. Las cuentas vienen de un script inicial y de una pantalla de usuarios para el administrador, y el registro público está apagado (D-14). Los dos roles pueden leer la bitácora (D-20). \textbf{Por qué.} Esconder un botón no protege nada si alguien escribe la dirección de la página a mano. La revisión en el servidor sí protege. Después agregamos un límite de cinco intentos de inicio de sesión por minuto, guardado en la base de datos para que funcione en todos los servidores de Vercel (D-28).
+
+\subsection{Las reglas del certificado}\label{sec:reglas}
+
+\textbf{El problema.} Un certificado no debe mentir sobre la calidad del lote. \textbf{Lo que elegimos.} Estas reglas.
+
+\begin{itemize}
+  \item El certificado usa siempre la última inspección del lote. Si está incompleta, el certificado se bloquea, aunque exista otra inspección anterior completa (D-27). Esta regla vino de una revisión del profesor.
+  \item Un valor fuera de rango no bloquea el certificado. Aparece en la columna de desviación (BR-CER-04).
+  \item Antes de emitir se piden la factura, la cantidad entregada, la fecha de envío, el destino y el transportista (BR-CER-05, D-24).
+  \item Al emitir, el sistema calcula una huella digital SHA-256 del contenido (D-26). Una huella digital es un código que cambia si cambia un solo dato. El PDF la imprime y la pantalla la vuelve a comparar con los datos guardados.
+  \item Un certificado emitido nunca se borra. Si tiene un error, se cancela con un motivo y se emite uno nuevo (D-25).
+  \item Una nueva inspección de un lote ya completo solo se permite por una falla del equipo, con el motivo escrito (D-15).
+\end{itemize}
+
+\textbf{Por qué.} Estas reglas quitan el riesgo de \enquote{ajustar} una inspección para un cliente. La \fref{fig:certificado} muestra los estados de un certificado.
+
+\begin{figure}[H]
+  \centering
+  \input{figs/certificado}
+  \caption{Los estados de un certificado}\label{fig:certificado}
+  \backline{fig:certificado}
+\end{figure}
+
+\subsection{La bitácora}\label{sec:bitacora}
+
+\textbf{El problema.} El curso pide saber quién hizo cada acción, con su número de empleado y su nombre (RF-01, BR-AUD-01). \textbf{Lo que elegimos.} El cambio y su fila de bitácora se guardan juntos en una sola operación, con \tt{db.batch}. Usamos esa función porque la conexión de Neon que usamos no permite transacciones interactivas. Una transacción es un grupo de cambios que se guardan todos juntos o ninguno. La bitácora solo recibe filas nuevas. Nunca se cambia ni se borra una fila. \textbf{Por qué.} Si se guardan por separado, una falla a la mitad deja un cambio sin rastro. Juntos, o se guardan los dos o no se guarda ninguno.
+
+\subsection{Lo que decidimos no construir}\label{sec:fuera}
+
+Algunas ideas quedaron fuera a propósito, porque no cabían en el plazo o porque el riesgo era mayor que el beneficio.
+
+\begin{itemize}
+  \item Límites por cliente y por producto. Los límites son solo por cliente, y la otra opción quedó para una versión 2 (D-12).
+  \item Firma con criptografía. La firma es una casilla que imprime el nombre, el número de empleado y la fecha de quien emite (D-18).
+  \item Sincronización con SAP. Los clientes se capturan a mano en la versión 1 (RF-03).
+  \item Un catálogo de productos. El producto de un lote es texto libre con sugerencias (D-21).
+  \item Una política completa de seguridad de contenido para el navegador. Podía romper la aplicación y daba poca ganancia, así que solo agregamos tres cabeceras de seguridad.
+\end{itemize}

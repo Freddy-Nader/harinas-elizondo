@@ -33,6 +33,12 @@ pnpm db:seed
 
 `pnpm db:studio` opens Drizzle Studio to browse the data.
 
+`SEED_PASSWORD` must have 16 or more characters, and the seed refuses a shorter one. It lives in `.env` on each machine, so never write its value in a file or a chat.
+
+Sign-in rate limits (D-28) are stored in the `rate_limit` table, created by migration `0005`. Run `pnpm db:migrate` against Neon before the new code reaches production, because sign-in fails while that table is missing.
+
+To rotate the demo password, remember that the seed leaves existing users alone, so running `pnpm db:seed` again does not change the stored hash of `laboratorio@demo.test` or `consulta@demo.test`. Use `pnpm db:set-password` instead. Set `PASSWORD_EMAIL` and `NEW_PASSWORD` (16 to 128 characters) in the shell for that one command, with `DATABASE_URL` pointing at the target database, and run it once per demo account. The command signs the account out everywhere and writes an audit row. Then update `SEED_PASSWORD` in `.env` (never write its value in a doc) so a future seed matches. The script works on any account, so only whoever holds the production `DATABASE_URL` can run it.
+
 ## Checks (run before every PR)
 
 ```bash
@@ -41,6 +47,21 @@ pnpm lint
 pnpm test
 pnpm build
 ```
+
+## Export docs to PDF
+
+`pnpm docs:pdf` writes one PDF per course document plus `entrega-3-completa.pdf` to `docs/pdf/` (gitignored, uploaded to Teams by hand). It needs Playwright Chromium (`pnpm exec playwright install chromium`) and works offline because Mermaid is loaded from `node_modules`. Add new documents to the `DOCS` list in `scripts/docs-to-pdf.ts`.
+
+## Project report (LaTeX)
+
+The report lives in `latex/` (details in `latex/README.md`). It needs a TeX distribution with `latexmk` and `biber` (MacTeX on macOS).
+
+```bash
+./latex/build.sh                                   # redacted cover, writes latex/main.pdf
+./latex/build.sh --name "Nombre Apellido" --id "00000000" --professor "Nombre"   # real cover, local only
+```
+
+The names go to `latex/private/portada.tex`, which Git ignores. Never put names, ids, the logo or the professor in a tracked file. The workflow `.github/workflows/report-release.yml` builds the redacted PDF and creates a release on the fork (`Freddy-Nader/harinas-elizondo`) on every push that touches `latex/`. The team repo skips it. If `biber` fails on macOS with a `lipo` error, the Xcode license is not accepted on that machine.
 
 ## Git flow
 

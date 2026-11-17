@@ -1,0 +1,20 @@
+# Names, ids, logo and professor of the cover. Written by build.sh, never committed.
+private/
+
+# LaTeX build files (latexmk + biber + SyncTeX)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.synctex(busy)
+# compiled output (rebuild with latexmk or build.sh)
+main.pdf

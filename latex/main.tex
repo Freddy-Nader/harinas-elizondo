@@ -1,0 +1,47 @@
+% ============================================================================
+%  Desarrollo de Software
+%  Proyecto Control de Laboratorio: Harinas Elizondo
+%
+%  Build:  ./build.sh                (or latexmk -pdf main.tex from this folder)
+%  Cover:  names and ids come from private/portada.tex, which is ignored by Git.
+%          build.sh --name ... --id ... writes it. See README.md.
+%
+%  Layout:
+%    pkg/preamble.sty ..... packages, the codigo listing, helpers (\pend, \captura, \fref)
+%    pkg/portada.sty ...... \portada
+%    secc/*.tex ........... one file per section
+%    figs/*.tex ........... TikZ diagrams, one per file
+%    ../docs/img/*.png .... app screenshots (shared with the course documents)
+%    bib.bib .............. references (APA, biber)
+% ============================================================================
+
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage{pkg/preamble}
+
+\begin{document}
+
+\portada
+
+\thispagestyle{empty}
+\tableofcontents
+\listoftables
+\listoffigures
+\newpage
+
+\input{secc/intro}
+\input{secc/producto}
+\input{secc/diseno}
+\input{secc/proceso}
+\input{secc/agentes}
+\input{secc/calidad}
+\input{secc/conclusiones}
+\input{secc/ia}
+
+\FloatBarrier
+\printbibliography[title={Referencias}]
+
+\appendix
+\input{secc/anexo}
+
+\end{document}

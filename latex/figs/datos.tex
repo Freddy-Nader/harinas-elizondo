@@ -1,0 +1,33 @@
+% Data model reduced to the main tables and their relations.
+% Redrawn from the conceptual model in docs/diseno-base-datos-es.md. Column lists are cut.
+% Each arrow goes from the "one" side to the "many" side of the relation.
+\begin{tikzpicture}
+  \tikzset{t/.style={tabla, text width=3.2cm}}
+  \node[t] (clients)  at (0,0)      {\textbf{clients}\nodepart{two}clave SAP, RFC único,\\contacto, estatus};
+  \node[t] (climits)  at (5.4,0)    {\textbf{client\_limits}\nodepart{two}límite propio de un\\cliente por parámetro};
+  \node[t] (ilimits)  at (10.8,0)    {\textbf{international\_limits}\nodepart{two}un límite por\\parámetro};
+
+  \node[t] (certs)    at (0,-3)     {\textbf{certificates}\nodepart{two}folio, estatus, envío,\\hash, cancelación};
+  \node[t] (lots)     at (5.4,-3)   {\textbf{lots}\nodepart{two}producto, fechas de\\producción y caducidad};
+  \node[t] (params)   at (10.8,-3)   {\textbf{parameters}\nodepart{two}los diez factores\\que se miden};
+
+  \node[t] (lines)    at (0,-6)     {\textbf{certificate\_lines}\nodepart{two}copia del valor, del\\límite y la desviación};
+  \node[t] (insp)     at (5.4,-6)   {\textbf{inspections}\nodepart{two}secuencia A, B, C,\\motivo de reinspección};
+  \node[t] (res)      at (10.8,-6)   {\textbf{inspection\_results}\nodepart{two}un valor por\\parámetro};
+
+  \node[t] (deliv)    at (0,-9)     {\textbf{deliveries}\nodepart{two}cada intento de\\envío por correo};
+  \node[t] (equip)    at (10.8,-9)   {\textbf{equipment}\nodepart{two}clave generada,\\tipo, estatus};
+
+  \draw[flecha] (clients) -- node[etiq, above] {tiene} (climits);
+  \draw[flecha] (params) -- node[etiq, above, sloped] {acota} (climits);
+  \draw[flecha] (params) -- node[etiq, right] {uno a uno} (ilimits);
+  \draw[flecha] (clients) -- node[etiq, left] {recibe} (certs);
+  \draw[flecha] (lots) -- node[etiq, above] {se certifica en} (certs);
+  \draw[flecha] (lots) -- node[etiq, right] {tiene} (insp);
+  \draw[flecha] (insp) -- node[etiq, above] {contiene} (res);
+  \draw[flecha] (params) -- node[etiq, right] {es de} (res);
+  \draw[flecha] (equip) -- node[etiq, right] {mide} (res);
+  \draw[flecha] (insp) -- node[etiq, below, sloped] {respalda} (certs);
+  \draw[flecha] (certs) -- node[etiq, left] {imprime 10} (lines);
+  \draw[flecha] (certs.west) -- ++(-0.5,0) |- node[etiq, pos=0.25, left] {se envía en} (deliv.west);
+\end{tikzpicture}

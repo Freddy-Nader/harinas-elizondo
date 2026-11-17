@@ -1,0 +1,42 @@
+\FloatBarrier
+\section{Cómo comprobamos que funciona}\label{sec:calidad}
+
+\subsection{La pirámide de pruebas}\label{sec:piramide}
+
+Seguimos la pirámide de pruebas. Abajo hay muchas pruebas pequeñas y rápidas. Arriba hay pocas pruebas grandes y lentas, que usan la aplicación completa. Cada tipo de prueba tiene su guía escrita en \tt{docs/testing/}, con un número por caso, los pasos, el resultado esperado y el resultado obtenido. La \tref{tab:pruebas} resume los seis tipos.
+
+\begin{table}[H]
+  \centering
+  \caption{Los tipos de prueba y sus resultados}\label{tab:pruebas}
+  \small
+  \begin{tabularx}{\linewidth}{@{}p{2.1cm}Xp{2.2cm}p{4.2cm}@{}}
+    \toprule
+    Tipo & Qué prueba & Herramienta & Resultado \\
+    \midrule
+    Unitarias & Una regla del negocio sola, sin base de datos & Vitest & 225 de 225 pruebas pasan, en 27 archivos (casos PU-01 a PU-64) \\
+    Componentes & Las acciones del servidor contra un PostgreSQL real & Vitest & 33 de 33 pruebas pasan, en 7 archivos (PC-01 a PC-23) \\
+    Integrales & Un flujo que cruza varias pantallas & Playwright & 6 de 6 casos pasan (PI-01 a PI-06) \\ %CHECK PI and PS results come from docs/testing, the e2e suite was not re-run for this report
+    Sistema & La aplicación completa, por rol, también en producción & Playwright y revisión a mano & 16 de 16 casos pasan (PS-01 a PS-16) \\
+    Regresión & Toda la suite en cada PR & GitHub Actions & 6 de 7 casos pasan, falta PR-05 \\
+    Aceptación & Tareas reales con personas de fuera del equipo & Guion con moderador & 0 de 6, todavía no se hacen \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Corrimos las pruebas unitarias y las de componentes el 16 de noviembre de 2026 para este reporte. Las de componentes usaron una base PostgreSQL local de prueba, nunca la de producción. Las pruebas que usan base de datos solo aceptan una base cuyo nombre termina en \tt{\_test}, así que una prueba no puede tocar los datos reales. Las pruebas integrales y de sistema con Playwright son 13 en total \parencite{playwright}, y su resultado viene de la corrida registrada en las guías el mismo día.
+
+Las pruebas unitarias corren en menos de un segundo, porque prueban funciones puras \parencite{vitest}. Cada prueba lleva en su nombre la regla que prueba. Por ejemplo, \tt{certificate.test.ts} prueba las reglas BR-CER-01 a BR-CER-05.
+
+\subsection{Pruebas en producción}\label{sec:vivo}
+
+El 16 de noviembre de 2026 probamos la aplicación publicada, con su base de datos real en Neon. Son los casos PS-08 a PS-16, y todos pasaron. Usamos solo las cuentas de demostración, y cada dato de prueba que quedó en producción empieza con la palabra PRUEBA. Las capturas del anexo salen de esa prueba. %CHECK plan 005 took the screenshots during the live check, confirm for login.png and the mobile menu ones
+
+\subsection{Lo que falta y por qué}\label{sec:falta}
+
+\begin{itemize}
+  \item Las pruebas de aceptación (PA-01 a PA-06). Necesitan al menos dos personas de fuera del equipo, y sus resultados nunca se inventan.
+  \item La regla que exige CI en \tt{main} (PR-05). Solo la dueña del repositorio la puede activar.
+  \item Los tiempos de respuesta en producción. Ningún PR los midió.
+  \item Las capturas de las pantallas del administrador y de un archivo abierto en Excel y Power BI.
+  \item Los rangos oficiales y las unidades de los diez factores. Los límites cargados son valores de demostración, y siguen como preguntas abiertas (Q-11, Q-13 y Q-14).
+\end{itemize}
