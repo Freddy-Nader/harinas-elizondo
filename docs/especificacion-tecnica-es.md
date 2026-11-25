@@ -285,7 +285,7 @@ La pantalla de Reportes parte del trabajo del PR #33 y lo completa el PR #37. Mu
 
 Los borradores nunca aparecen porque no se emitieron. Los cancelados se ven en el histórico con su insignia, pero no cuentan en indicadores, desviaciones ni gráficas (D-25).
 
-> TODO (equipo): captura de un archivo exportado abierto en Excel y en Power BI, porque ningún PR lo abrió en esas herramientas.
+> TODO (equipo): incorporar la captura de Excel obtenida el 25 de noviembre de 2026 y la captura pendiente del mismo archivo en Power BI Desktop. Se exportó `reporte-certificados-2026-11-25.xlsx` con Laboratorio Demo: tres certificados de prueba (dos enviados y uno cancelado), clientes PRUEBA01 y PRUEBA02 y 15 columnas. Se verificó visualmente su apertura en Excel. Power BI Desktop queda pendiente de una computadora Windows.
 
 ## Diseño de datos (Data Design)
 
@@ -986,7 +986,15 @@ La última corrida de CI sobre `main`, del commit f767e75, terminó en verde en 
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
 | Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción con consulta y con transacción y PC-14 pasa contra Postgres |
 
-> TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
+El 25 de noviembre de 2026 se registraron tres mediciones individuales en producción (Vercel y Neon), con Safari, el inspector Red y la cuenta Laboratorio Demo. Se utilizó el certificado de prueba `CER-2026-000005`, cliente `PRUEBA01`, lote `L-PRUEBA-001`.
+
+| Operación | Tiempo observado | Condiciones |
+| --- | ---: | --- |
+| Solicitud del documento `/certificados` | 1.73 s | Caché desactivada |
+| Solicitud observada al emitir el certificado | 1.56 s | Caché desactivada; estado posterior Enviado |
+| Solicitud del documento PDF | 2.00 s | Caché no desactivada; transferencia de 7.71 KB |
+
+Los valores son duraciones de solicitudes de red, no tiempos totales de renderizado ni promedios. El estado Enviado confirma la emisión en la aplicación, pero la medición no aísla el tiempo de envío de correo ni el procesamiento interno del PDF. No se verificó la entrega a destinatarios externos. El folio de prueba queda registrado en producción.
 
 > TODO (equipo): nota de disponibilidad del deploy durante el periodo de pruebas, tomada de Vercel.
 
