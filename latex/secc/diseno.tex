@@ -1,7 +1,7 @@
 \FloatBarrier
 \section{Decisiones de diseño}\label{sec:diseno}
 
-Cada vez que el equipo tomó una decisión, la anotamos con un número en \tt{docs/llm/decisions.md}. Hay 29 decisiones, de la D-01 a la D-29. Cuando una duda no tenía respuesta, la anotamos como pregunta abierta y no la resolvimos en silencio. Esta sección explica las decisiones que más cambiaron el sistema. Cada una tiene el problema, las opciones, lo que elegimos y por qué.
+Cada vez que el equipo tomó una decisión, la anotamos con un número en \tt{docs/llm/decisions.md}. Las decisiones llegan hasta D-33, incluidas las cuatro decisiones de alcance aprobadas para la entrega del 25 de noviembre. Cuando una duda no tenía respuesta, la anotamos como pregunta abierta y no la resolvimos en silencio. Esta sección explica las decisiones que más cambiaron el sistema. Cada una tiene el problema, las opciones, lo que elegimos y por qué.
 
 \subsection{Las herramientas}\label{sec:pila}
 
@@ -69,6 +69,7 @@ Algunas ideas quedaron fuera a propósito, porque no cabían en el plazo o porqu
   \item Límites por cliente y por producto. Los límites son solo por cliente, y la otra opción quedó para una versión 2 (D-12).
   \item Firma con criptografía. La firma es una casilla que imprime el nombre, el número de empleado y la fecha de quien emite (D-18).
   \item Sincronización con SAP. Los clientes se capturan a mano en la versión 1 (RF-03).
+  \item Incorporar humedad como undécimo factor. Se conservan los diez parámetros actuales, con unidades aprobadas para la entrega y rangos exclusivamente demostrativos (D-30 a D-32). La política de destinatarios se conserva para esta versión (D-33).
   \item Un catálogo de productos. El producto de un lote es texto libre con sugerencias (D-21).
   \item Una política completa de seguridad de contenido para el navegador. Podía romper la aplicación y daba poca ganancia, así que solo agregamos tres cabeceras de seguridad.
 \end{itemize}
