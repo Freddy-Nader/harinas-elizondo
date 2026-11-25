@@ -174,9 +174,13 @@ El panel del usuario de transacción muestra los siete módulos que su rol puede
 
 El panel del usuario de consulta muestra solo Reportes y Bitácora.
 
-> TODO (equipo): captura de `/panel` con el administrador. Falta porque solo el operador tiene la cuenta de administrador y el panel completo no se pudo abrir con las cuentas de demostración.
+![Panel de Administrador](img/panel-admin.png)
 
-> TODO (equipo): captura de `/usuarios` con el formulario de alta y la lista de cuentas. Falta porque la pantalla es solo del administrador, cuya cuenta solo tiene el operador, y la lista puede mostrar datos personales de las cuentas reales.
+El panel de Administrador en Vercel muestra el acceso al módulo de Usuarios.
+
+![Formulario de alta y cuentas de demostración en Usuarios](img/usuarios-admin.png)
+
+La pantalla de Usuarios muestra el formulario de alta y las cuentas de demostración de Consulta y Laboratorio.
 
 ![Directorio de clientes y formulario de alta](img/clientes.png)
 
