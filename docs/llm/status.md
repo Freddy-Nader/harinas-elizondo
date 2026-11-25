@@ -1,6 +1,6 @@
 # Status
 
-Last updated 2026-11-17. Delivery 3 was due **2026-11-13 23:59** and was presented in class. Work since then answers the professor's notes from the progress presentation of 2026-11-11. Update this file in every PR that moves something.
+Last updated 2026-11-25. Delivery 3 was due **2026-11-13 23:59** and was presented in class. Work since then answers the professor's notes from the progress presentation of 2026-11-11. Update this file in every PR that moves something.
 
 ## Done
 
@@ -40,6 +40,8 @@ Each item says who can do it. "Agent" means an agent can finish it alone. "Human
 - [ ] Rotate the password of both demo accounts with `pnpm db:set-password` (plan 010). This is the first run of that command against a real database, so confirm that the new password signs in and the old one fails.
 
 ### Course deliverables (human)
+
+- 2026-11-25: Laboratorio Demo exported the test report and opened it in Excel (three test certificates, 15 columns); screenshot captured, repository upload and Power BI Desktop evidence pending. Production network observations: `/certificados` 1.73 s, request observed on issue 1.56 s (subsequent state Enviado), PDF request 2.00 s. Test certificate `CER-2026-000005` remains in production. Vercel availability still requires operator access. Team conclusions proposed and one individual lesson approved; other lessons and team approval remain pending. See issue #49 and PR #51 for parallel work.
 
 - [ ] User acceptance tests with at least two people outside the team (PA-01 to PA-06 in `docs/testing/pruebas-aceptacion-es.md`), then the UAT line in the spec. An agent can prepare the session script and nothing else.
 - [ ] Branch rule that makes CI required on `main` (PR-05). Only the repo owner can add it. After that, PR-05 in `docs/testing/pruebas-regresion-es.md` becomes Pass and the counts in `docs/testing/README.md` change (agent).
