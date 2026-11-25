@@ -356,7 +356,7 @@ Los tipos son los de Postgres. "No" en la columna Nulo significa `NOT NULL`.
 | client_limits | client_id, parameter_code | uuid, varchar(10) | PK compuesta, FK | De cero a diez filas por cliente |
 | client_limits | lower_limit, upper_limit | numeric(10,3) | CHECK inferior <= superior | Rango particular, que solo puede estrechar el internacional (D-23) |
 
-Los diez parámetros obligatorios salen de `src/lib/domain/parameters.ts`. Las unidades son una primera propuesta y siguen abiertas (Q-11).
+Los diez parámetros obligatorios salen de `src/lib/domain/parameters.ts`. La revisión documental del 25 de noviembre de 2026 propone conservar sus unidades, pendientes de confirmación del protocolo de los equipos (Q-11). Los rangos cargados son demostrativos, no especificaciones oficiales (Q-14).
 
 | Código | Máquina | Etiqueta | Unidad |
 | --- | --- | --- | --- |
@@ -1190,11 +1190,13 @@ Las decisiones están registradas en `docs/llm/decisions.md`.
 
 | Id | Pregunta | Propuesta | Responsable |
 | --- | --- | --- | --- |
-| Q-11 | Unidades de cada parámetro, porque las actuales son una propuesta tomada de los anexos de los equipos (issue #9) | El equipo decide, posiblemente con el profesor | Equipo |
+| Q-11 | Confirmar las unidades de los diez parámetros (issue #9) | Conservar provisionalmente las unidades actuales con referencia a ISO 27971:2023 e ISO 5530-1; confirmar protocolo y convenciones de reporte con el laboratorio | Equipo |
 | Q-12 | Quién construye cada módulo antes del 2026-11-13 | Un módulo por PR | Equipo |
-| Q-13 | La humedad que mencionó el profesor no es uno de los diez factores de RF-02. Falta saber con qué método o equipo se captura y si es un factor adicional (issue #9) | Esperar la aclaración y no usar la absorción de agua como humedad | Equipo |
-| Q-14 | Qué especificación oficial da los rangos numéricos y las unidades confirmadas de los diez factores (issue #9) | Los valores del seed son solo de demostración | Equipo |
-| Q-16 | Si el certificado se envía solo a clientes especiales. Aparece en un comentario de `src/lib/domain/certificate.ts` y no está en la tabla de `decisions.md` | Por ahora todo cliente con correo lo recibe | Equipo |
+| Q-13 | Confirmar si la humedad es un factor adicional a RF-02 y el equipo empleado (issue #9) | ISO 712-1:2024 y NOM-247-SSA1-2008 respaldan métodos de humedad distintos de la absorción de agua. No incorporar un factor adicional sin aprobación | Equipo |
+| Q-14 | Confirmar especificación oficial de rangos y unidades (issue #9) | Conservar los valores del seed únicamente como demostrativos; solicitar fichas técnicas aprobadas por producto y cliente. Las normas de ensayo no acreditan esos intervalos como oficiales | Equipo |
+| Q-16 | Confirmar si el certificado se envía únicamente a ciertos clientes | Mantener provisionalmente la regla actual: correo de contacto si existe y almacén; producción redirige al buzón de prueba. No se verificó entrega externa | Equipo |
+
+La [revisión técnica provisional del 25 de noviembre de 2026](llm/decisions.md#revisión-técnica-provisional-25-de-noviembre-de-2026) contiene la tabla de unidades, rangos de demostración y referencias metodológicas. Las cuatro preguntas siguen abiertas: no se ha recibido confirmación oficial de la empresa ni del profesor.
 
 ### Decisiones sin confirmar de Reportes (PR #32 y PR #37)
 
