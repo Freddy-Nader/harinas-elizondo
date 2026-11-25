@@ -285,7 +285,11 @@ La pantalla de Reportes parte del trabajo del PR #33 y lo completa el PR #37. Mu
 
 Los borradores nunca aparecen porque no se emitieron. Los cancelados se ven en el histórico con su insignia, pero no cuentan en indicadores, desviaciones ni gráficas (D-25).
 
-> TODO (equipo): incorporar la captura de Excel obtenida el 25 de noviembre de 2026 y la captura pendiente del mismo archivo en Power BI Desktop. Se exportó `reporte-certificados-2026-11-25.xlsx` con Laboratorio Demo: tres certificados de prueba (dos enviados y uno cancelado), clientes PRUEBA01 y PRUEBA02 y 15 columnas. Se verificó visualmente su apertura en Excel. Power BI Desktop queda pendiente de una computadora Windows.
+Se exportó `reporte-certificados-2026-11-25.xlsx` el 25 de noviembre de 2026 con Laboratorio Demo: tres certificados de prueba (dos enviados y uno cancelado), clientes PRUEBA01 y PRUEBA02 y 15 columnas. Se verificó visualmente su apertura en Excel.
+
+![Reporte exportado abierto en Microsoft Excel](img/reportes-excel.png)
+
+> TODO (equipo): cargar el mismo archivo en Power BI Desktop y agregar su captura. La evidencia de Excel ya está incorporada.
 
 ## Diseño de datos (Data Design)
 
@@ -996,6 +1000,13 @@ El 25 de noviembre de 2026 se registraron tres mediciones individuales en produc
 
 Los valores son duraciones de solicitudes de red, no tiempos totales de renderizado ni promedios. El estado Enviado confirma la emisión en la aplicación, pero la medición no aísla el tiempo de envío de correo ni el procesamiento interno del PDF. No se verificó la entrega a destinatarios externos. El folio de prueba queda registrado en producción.
 
+Evidencias de las solicitudes de red y del estado posterior del certificado:
+
+- [Carga de Certificados (1.73 s)](img/tiempo-carga-certificados.png).
+- [Solicitud observada durante la emisión (1.56 s)](img/tiempo-emision-certificado.png).
+- [Solicitud del PDF (2.00 s)](img/tiempo-generacion-pdf.png).
+- [Certificado de prueba con estado Enviado](img/certificado-prueba-enviado.png).
+
 > TODO (equipo): nota de disponibilidad del deploy durante el periodo de pruebas, tomada de Vercel.
 
 La verificación en vivo contra Neon se corrió el 16 de noviembre de 2026 en https://harinas-elizondo.vercel.app y llenó PS-08 a PS-16, todos en Pass. El detalle de cada caso está en [Pruebas de sistema](testing/pruebas-sistema-es.md).
@@ -1205,6 +1216,6 @@ Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que 
 - El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients`. Las acciones de Clientes sí llaman a `requireRole()` (rol de transacción por omisión), pero usan redirecciones en lugar de `ActionState`.
 - `main` en 2b30a0f fallaba `pnpm lint` en `reportes/export-button.tsx` y `pnpm build` en `/reportes`. El merge del PR #37 lo corrigió y `main` en ff92f19 pasa CI.
 - El correo se envía con Resend desde el 15 de noviembre de 2026 (PR #41). Mientras no haya un dominio verificado, producción manda todo al buzón de prueba de `EMAIL_REDIRECT_TO` (PR #45).
-- La exportación se abrió en Excel el 25 de noviembre de 2026; quedan pendientes la incorporación de la captura y la validación en Power BI Desktop. La regla que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio.
+- La exportación se abrió en Excel el 25 de noviembre de 2026; la captura está incorporada y queda pendiente la validación en Power BI Desktop. La regla que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio.
 
 > TODO (equipo): revisar este documento completo con todo el equipo antes de exportarlo a PDF (paso 10 del issue #24).
