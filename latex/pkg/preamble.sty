@@ -2,9 +2,12 @@
 \ProvidesPackage{pkg/preamble}[Reporte del proyecto Harinas Elizondo]
 
 % --- Encoding and language --------------------------------------------------
-\RequirePackage[utf8]{inputenc}
+\RequirePackage{iftex}
+\ifPDFTeX
+  \RequirePackage[utf8]{inputenc}
   \DeclareUnicodeCharacter{2060}{\nolinebreak}
-\RequirePackage[T1]{fontenc}
+  \RequirePackage[T1]{fontenc}
+\fi
 \RequirePackage[spanish, mexico, es-noshorthands, es-tabla]{babel}
 
 % --- Page -------------------------------------------------------------------
