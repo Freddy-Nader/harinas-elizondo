@@ -57,3 +57,34 @@ Migration `0003_certificate_shipping_cancel` adds those columns and the enum val
 | Q-13 | Humidity mentioned in professor review is not one of the ten factors in RF-02; which method/equipment captures it and is it an additional factor? | Await direct clarification; do not substitute water absorption for moisture | Team |
 | Q-14 | Which authoritative specification supplies numerical reference ranges and confirmed units for the ten rheological factors? | Current seed values are demo-only | Team |
 | Q-16 | Is the certificate emailed only to some ("special") clients? | Today every client with a contact email gets it, plus the warehouse (`deliveryRecipients` in `src/lib/domain/certificate.ts`) | Team |
+
+
+## Revisión técnica provisional (25 de noviembre de 2026)
+
+Relacionado con Q-11, Q-13, Q-14 y Q-16 (issues #9 y #49). Investigación documental, no aprobación de Harinas Elizondo ni del profesor.
+
+| Parámetro | Unidad actual | Rango de demostración | Referencia metodológica |
+| --- | --- | --- | --- |
+| Tenacidad (P) | mm H₂O | 60–90 | ISO 27971:2023 |
+| Extensibilidad (L) | mm | 80–120 | ISO 27971:2023 |
+| Fuerza panadera (W) | 10⁻⁴ J | 250–350 | ISO 27971:2023 |
+| Relación P/L | Adimensional | 0.5–1 | ISO 27971:2023 |
+| Índice de elasticidad (I.E.) | % | 45–60 | ISO 27971:2023 |
+| Absorción de agua | % | 58–64 | ISO 5530-1 |
+| Tiempo de desarrollo | min | 2–6 | ISO 5530-1 |
+| Estabilidad | min | 8–15 | ISO 5530-1 |
+| Grado de ablandamiento | UF (FU) | 30–80 | ISO 5530-1 |
+| Tiempo de llegada | min | 1–2.5 | Lectura temporal del farinograma; confirmar protocolo del equipo |
+
+- **Q-11:** conservar provisionalmente las unidades implementadas; verificar el modelo y protocolo de los equipos y la convención de reporte de P y absorción con el laboratorio.
+- **Q-13:** la humedad mide el agua presente en la harina, no la absorción durante el amasado. ISO 712-1:2024 y NOM-247-SSA1-2008 describen métodos de determinación de humedad; el método gravimétrico por secado requiere estufa y balanza. No se agrega un undécimo factor sin confirmación del alcance y método utilizado.
+- **Q-14:** los intervalos anteriores son los observados en la demostración, no límites oficiales ni universales. Las normas citadas describen métodos de ensayo; se necesita ficha técnica aprobada por producto/cliente para establecer límites de aceptación. La etiqueta actual «internacional» del sistema no acredita el origen normativo de estos valores.
+- **Q-16:** deliveryRecipients en src/lib/domain/certificate.ts incluye el correo de contacto si existe y el del almacén, sin duplicados. Producción redirige a un buzón de prueba mediante EMAIL_REDIRECT_TO. Conservar la regla provisional; confirmar si solo ciertos clientes reciben el certificado. No se comprobó entrega externa.
+
+Fuentes consultadas:
+- ISO 27971:2023: https://www.iso.org/standard/82591.html
+- ISO 5530-1 (texto de consulta): https://www.iso.org/obp/ui?_escaped_fragment_=iso%3Astd%3Aiso%3A5530%3A-1%3Aed-5%3Av1%3Aen
+- ISO 712-1:2024: https://www.iso.org/standard/85395.html
+- NOM-247-SSA1-2008, método de humedad en harina: https://sidof.segob.gob.mx/notas/docFuente/5100356
+
+No se dispone de la ficha técnica oficial de Harinas Elizondo ni se pudo recuperar docs/revision-requisitos-es.md de main. Las cuatro preguntas siguen abiertas hasta que el equipo o el profesor confirme las propuestas; no se alteran parámetros, seed, certificados ni código de producción.
