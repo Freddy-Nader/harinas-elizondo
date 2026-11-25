@@ -174,9 +174,13 @@ El panel del usuario de transacción muestra los siete módulos que su rol puede
 
 El panel del usuario de consulta muestra solo Reportes y Bitácora.
 
-> TODO (equipo): captura de `/panel` con el administrador. Falta porque solo el operador tiene la cuenta de administrador y el panel completo no se pudo abrir con las cuentas de demostración.
+![Panel de Administrador](img/panel-admin.png)
 
-> TODO (equipo): captura de `/usuarios` con el formulario de alta y la lista de cuentas. Falta porque la pantalla es solo del administrador, cuya cuenta solo tiene el operador, y la lista puede mostrar datos personales de las cuentas reales.
+El panel de Administrador en Vercel muestra el acceso al módulo de Usuarios.
+
+![Formulario de alta y cuentas de demostración en Usuarios](img/usuarios-admin.png)
+
+La pantalla de Usuarios muestra el formulario de alta y las cuentas de demostración de Consulta y Laboratorio.
 
 ![Directorio de clientes y formulario de alta](img/clientes.png)
 
@@ -285,7 +289,7 @@ La pantalla de Reportes parte del trabajo del PR #33 y lo completa el PR #37. Mu
 
 Los borradores nunca aparecen porque no se emitieron. Los cancelados se ven en el histórico con su insignia, pero no cuentan en indicadores, desviaciones ni gráficas (D-25).
 
-> TODO (equipo): captura de un archivo exportado abierto en Excel y en Power BI, porque ningún PR lo abrió en esas herramientas.
+> TODO (equipo): exportar un archivo con datos de prueba desde Reportes usando una cuenta de Consulta o Laboratorio. Abrir el mismo archivo en Excel y Power BI Desktop y guardar ambas capturas en `docs/img/`. En la revisión del 25 de noviembre de 2026, Vercel mostró «Acceso restringido» al abrir Reportes con la cuenta de Administrador.
 
 ## Diseño de datos (Data Design)
 
@@ -1171,11 +1175,11 @@ Las decisiones están registradas en `docs/llm/decisions.md`.
 
 | Id | Pregunta | Propuesta | Responsable |
 | --- | --- | --- | --- |
-| Q-11 | Unidades de cada parámetro, porque las actuales son una propuesta tomada de los anexos de los equipos (issue #9) | El equipo decide, posiblemente con el profesor | Equipo |
+| Q-11 | Unidades de cada parámetro, porque las actuales son una propuesta tomada de los anexos de los equipos (issue #9) | Unidades actuales: P en mm H₂O, L en mm, W en 10⁻⁴ J, P/L sin unidad e I.E. en %. Absorción en %, desarrollo, estabilidad y llegada en minutos, y ablandamiento en UF. Pendiente validar con los anexos oficiales o el profesor. | Equipo |
 | Q-12 | Quién construye cada módulo antes del 2026-11-13 | Un módulo por PR | Equipo |
 | Q-13 | La humedad que mencionó el profesor no es uno de los diez factores de RF-02. Falta saber con qué método o equipo se captura y si es un factor adicional (issue #9) | Esperar la aclaración y no usar la absorción de agua como humedad | Equipo |
 | Q-14 | Qué especificación oficial da los rangos numéricos y las unidades confirmadas de los diez factores (issue #9) | Los valores del seed son solo de demostración | Equipo |
-| Q-16 | Si el certificado se envía solo a clientes especiales. Aparece en un comentario de `src/lib/domain/certificate.ts` y no está en la tabla de `decisions.md` | Por ahora todo cliente con correo lo recibe | Equipo |
+| Q-16 | Si el certificado se envía solo a ciertos clientes. La pregunta está registrada en `docs/llm/decisions.md` | La regla actual incluye al cliente si tiene correo de contacto y al almacén. En producción, `EMAIL_REDIRECT_TO` redirige el envío a un buzón de prueba. El equipo debe confirmar la regla final. | Equipo |
 
 ### Decisiones sin confirmar de Reportes (PR #32 y PR #37)
 
