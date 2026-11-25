@@ -32,7 +32,7 @@ El asesor no confía en el reporte. Vuelve a correr las verificaciones en la cop
   \backline{fig:agentes}
 \end{figure}
 
-La carpeta \tt{plans/} tiene 13 archivos. Once son planes ejecutados, de la seguridad de las cabeceras a las pruebas de Reportes y Bitácora. Uno es el plan de este reporte, y el último es solo una guía para planear la siguiente fase. %CHECK status of each plan as written in plans/README.md on 2026-11-16
+El índice de \tt{plans/} registra doce planes ejecutados (001 a 012), incluido el borrador de este reporte. El documento 013 es una guía para planear la siguiente fase, no un plan ejecutado.
 
 \subsection{Lo que la revisión encontró}\label{sec:errores}
 
@@ -43,7 +43,7 @@ La revisión sí encontró errores. Estos ejemplos están en \tt{plans/README.md
   \item Las pruebas nuevas de Reportes y Bitácora tenían un texto mal escrito en la guía de pruebas. La revisión lo devolvió una vez.
   \item Un plan que corregía un texto de la pantalla encontró que otro texto, el de Reportes, también estaba mal, y lo corrigió.
   \item Un plan cambió un archivo más de los que tenía en su alcance. La revisión lo aceptó y lo anotó.
-  \item El plan de este reporte decía que había 47 pull requests. En realidad hay 25. El 47 es el número del último PR, porque en GitHub los issues y los PR comparten la numeración.
+  \item El plan de este reporte decía que había 47 pull requests. En el corte del 16 de noviembre se contaron 25. El 47 es el número del último PR, porque en GitHub los issues y los PR comparten la numeración.
 \end{itemize}
 
 La herramienta también falló una vez. Su opción para crear copias aisladas no funciona en este repositorio, así que creamos cada copia a mano con \tt{git worktree}.
@@ -57,6 +57,6 @@ Algunas tareas no se pueden dar a un agente, porque necesitan a una persona real
   \item Las conclusiones del equipo y la lección de cada integrante son opiniones personales.
   \item La regla de GitHub que exige CI en \tt{main} solo la puede activar la dueña del repositorio.
   \item Aplicar la última migración en la base de producción y cambiar la contraseña de demostración necesitan las credenciales de producción.
-  \item Las preguntas abiertas sobre unidades y rangos oficiales de los factores necesitan al equipo o al profesor.
+  \item El equipo aprobó las decisiones de alcance D-30 a D-33 para la entrega; los protocolos y rangos oficiales requieren confirmación antes de un uso operativo.
   \item Unir un PR al repositorio del equipo siempre es decisión de una persona.
 \end{itemize}
