@@ -356,7 +356,7 @@ Los tipos son los de Postgres. "No" en la columna Nulo significa `NOT NULL`.
 | client_limits | client_id, parameter_code | uuid, varchar(10) | PK compuesta, FK | De cero a diez filas por cliente |
 | client_limits | lower_limit, upper_limit | numeric(10,3) | CHECK inferior <= superior | Rango particular, que solo puede estrechar el internacional (D-23) |
 
-Los diez parámetros obligatorios salen de `src/lib/domain/parameters.ts`. La revisión documental del 25 de noviembre de 2026 propone conservar sus unidades, pendientes de confirmación del protocolo de los equipos (Q-11). Los rangos cargados son demostrativos, no especificaciones oficiales (Q-14).
+Los diez parámetros obligatorios salen de `src/lib/domain/parameters.ts`. El equipo aprobó conservar las unidades actuales para la entrega (D-30), sin que ello sustituya la confirmación del protocolo de los equipos antes de uso operativo. Los rangos cargados son demostrativos, no especificaciones oficiales (D-32).
 
 | Código | Máquina | Etiqueta | Unidad |
 | --- | --- | --- | --- |
@@ -1055,7 +1055,7 @@ Neon por HTTP no ofrece transacciones interactivas, así que el diseño usa dos 
 
 ### Datos iniciales
 
-`pnpm db:seed` es idempotente y crea los diez parámetros, límites internacionales de demostración y dos usuarios de demostración, `laboratorio@demo.test` (transacción) y `consulta@demo.test` (consulta). Los límites de demostración no son oficiales (Q-14). El administrador inicial se crea aparte con `pnpm db:create-admin`.
+`pnpm db:seed` es idempotente y crea los diez parámetros, límites internacionales de demostración y dos usuarios de demostración, `laboratorio@demo.test` (transacción) y `consulta@demo.test` (consulta). Los límites de demostración no son oficiales (D-32). El administrador inicial se crea aparte con `pnpm db:create-admin`.
 
 ## Instalación (Installation)
 
@@ -1186,17 +1186,24 @@ Las decisiones están registradas en `docs/llm/decisions.md`.
 | D-27 | 2026-11-10 | BR-CER-01 usa la última inspección del lote y bloquea si está incompleta |
 | Q-15 | 2026-11-10 | Firma con hash, transportista y cancelación. Resuelta por D-24 a D-27. El issue #8 sigue abierto en GitHub aunque la decisión ya está registrada |
 
+### Decisiones de alcance aprobadas por el equipo (25 de noviembre de 2026)
+
+| Id | Pregunta resuelta | Decisión para la entrega |
+| --- | --- | --- |
+| D-30 | Q-11 | Conservar las diez unidades actuales; verificar protocolo del laboratorio antes del uso operativo. |
+| D-31 | Q-13 | No incorporar humedad como undécimo parámetro en esta versión; no confundirla con absorción de agua. |
+| D-32 | Q-14 | Mantener los rangos como valores demostrativos, no límites oficiales. |
+| D-33 | Q-16 | Mantener destinatarios actuales (contacto con correo y almacén), con redirección a buzón de prueba en producción. |
+
+La ficha técnica oficial, el método real de medición de humedad y la política comercial de la empresa no fueron confirmados. No se requieren cambios de código ni de datos para estas decisiones de alcance.
+
 ### Asuntos abiertos
 
 | Id | Pregunta | Propuesta | Responsable |
 | --- | --- | --- | --- |
-| Q-11 | Confirmar las unidades de los diez parámetros (issue #9) | Conservar provisionalmente las unidades actuales con referencia a ISO 27971:2023 e ISO 5530-1; confirmar protocolo y convenciones de reporte con el laboratorio | Equipo |
 | Q-12 | Quién construye cada módulo antes del 2026-11-13 | Un módulo por PR | Equipo |
-| Q-13 | Confirmar si la humedad es un factor adicional a RF-02 y el equipo empleado (issue #9) | ISO 712-1:2024 y NOM-247-SSA1-2008 respaldan métodos de humedad distintos de la absorción de agua. No incorporar un factor adicional sin aprobación | Equipo |
-| Q-14 | Confirmar especificación oficial de rangos y unidades (issue #9) | Conservar los valores del seed únicamente como demostrativos; solicitar fichas técnicas aprobadas por producto y cliente. Las normas de ensayo no acreditan esos intervalos como oficiales | Equipo |
-| Q-16 | Confirmar si el certificado se envía únicamente a ciertos clientes | Mantener provisionalmente la regla actual: correo de contacto si existe y almacén; producción redirige al buzón de prueba. No se verificó entrega externa | Equipo |
 
-La [revisión técnica provisional del 25 de noviembre de 2026](llm/decisions.md#revisión-técnica-provisional-25-de-noviembre-de-2026) contiene la tabla de unidades, rangos de demostración y referencias metodológicas. Las cuatro preguntas siguen abiertas: no se ha recibido confirmación oficial de la empresa ni del profesor.
+La [revisión técnica provisional del 25 de noviembre de 2026](llm/decisions.md#revisión-técnica-provisional-25-de-noviembre-de-2026) contiene la tabla de unidades, rangos de demostración y referencias metodológicas. El equipo aprobó las cuatro propuestas para el alcance de esta entrega el 25 de noviembre de 2026, según confirmación comunicada por una integrante. Se registran como D-30 a D-33; no constituyen aprobación oficial de la empresa o del profesor.
 
 ### Decisiones sin confirmar de Reportes (PR #32 y PR #37)
 
