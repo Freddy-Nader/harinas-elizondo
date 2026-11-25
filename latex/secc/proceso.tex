@@ -3,7 +3,7 @@
 
 \subsection{Un módulo a la vez}\label{sec:incremental}
 
-Construimos el sistema por partes, en el orden en que se necesitan los datos. Primero la base técnica, que es el proyecto, la base de datos, la sesión y los roles. Después los catálogos de clientes y equipos. Luego los lotes y las inspecciones, después el certificado, que usa todo lo anterior, y al final los reportes, la bitácora, las pruebas y los documentos. La \tref{tab:cronologia} resume las fechas.
+Construimos el sistema por partes, en el orden en que se necesitan los datos. Primero la base técnica, que es el proyecto, la base de datos, la sesión y los roles. Después los catálogos de clientes y equipos. Luego los lotes y las inspecciones, después el certificado, que usa todo lo anterior, y al final los reportes, la bitácora, las pruebas y los documentos. La \tref{tab:cronologia} resume las fechas. La fecha límite de la entrega 1 indicada en el contexto del curso es el 1 de marzo; el documento de arquitectura se fecha el 17 de abril en el registro del proceso. No se equiparan ambas fechas.
 
 \begin{table}[H]
   \centering
@@ -12,7 +12,7 @@ Construimos el sistema por partes, en el orden en que se necesitan los datos. Pr
     \toprule
     Fecha & Qué pasó \\
     \midrule
-    abril de 2026 & Entrega 1, el documento de arquitectura del equipo \\ %CHECK docs/proceso-desarrollo-es.md says 2026-04-17, docs/llm/context.md says the due date was 2026-03-01
+    abril de 2026 & Documento de arquitectura de la entrega 1 \\
     21 de octubre & Borrador del diseño técnico y prototipo en Node \\
     22 de octubre & Elegimos las herramientas y creamos el proyecto (PR \#1) \\
     4 y 5 de noviembre & Clientes, roles, bitácora, Equipos, Lotes e Inspecciones \\
@@ -20,6 +20,7 @@ Construimos el sistema por partes, en el orden en que se necesitan los datos. Pr
     12 de noviembre & Reportes, Bitácora, menú móvil, CI y guías de prueba \\
     13 de noviembre & Entrega 3 \\
     15 y 16 de noviembre & Correo real, cambios por la revisión del profesor y documentos \\
+    25 de noviembre & Evidencias de Excel, mediciones y revisión documental (PR \#52) \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -28,7 +29,7 @@ Cada módulo llegó en un pull request propio. Un pull request, o PR, es una pet
 
 \subsection{Quién hizo qué}\label{sec:reparto}
 
-Repartimos el trabajo por módulo completo, de la pantalla a la base de datos. Así nadie dependía de otra persona a la mitad de un módulo. \pend{quién hizo cada módulo, a partir de la tabla Organización del equipo de docs/proceso-desarrollo-es.md, confirmada por el equipo}
+Repartimos el trabajo por módulo completo, de la pantalla a la base de datos. Así nadie dependía de otra persona a la mitad de un módulo. El registro de autoría de los PR en el documento de proceso identifica cuatro grupos de aportaciones: Clientes y administración de usuarios; sesión, roles, equipos, lotes e inspecciones; Certificados; y la primera versión de Reportes. La base técnica, los complementos de Reportes, Bitácora, navegación móvil, CI, pruebas, documentación y correo también tienen autoría registrada. Esta distribución se puede consultar en la tabla Organización del equipo de \tt{docs/proceso-desarrollo-es.md}. \pend{confirmar la distribución personal final con el equipo}
 
 \pend{cómo se organizó el equipo, con las fechas de las reuniones y el medio que usamos para hablar}
 
@@ -53,9 +54,9 @@ feat(certificados): send certificate emails with Resend (RF-06, D-13)
 
 Con esos números se puede ir de cualquier línea de código al requisito que la pide.
 
-Los números de GitHub son estos. El repositorio del equipo tiene 25 pull requests. De ellos, 22 se unieron a \tt{main}, 2 se cerraron sin unir y 1 sigue abierto. También hay 22 issues, que son tareas o preguntas registradas en GitHub. La rama de este reporte tiene 137 commits, del 21 de octubre al 16 de noviembre de 2026. %CHECK counts from gh pr list, gh issue list and git rev-list --count HEAD on 2026-11-16, at commit b90e28c
+Como referencia histórica del corte del 16 de noviembre de 2026, los números de GitHub eran estos. El repositorio del equipo tiene 25 pull requests. De ellos, 22 se unieron a \tt{main}, 2 se cerraron sin unir y 1 sigue abierto. También hay 22 issues, que son tareas o preguntas registradas en GitHub. La rama de este reporte tiene 137 commits, del 21 de octubre al 16 de noviembre de 2026. %CHECK counts from gh pr list, gh issue list and git rev-list --count HEAD on 2026-11-16, at commit b90e28c
 
-GitHub no registra ninguna revisión formal en esos PR. De los 22 PR unidos, 6 los unió una persona distinta de quien los escribió, y 16 los unió su propio autor. \pend{cómo revisaba el equipo los PR, por ejemplo en una llamada o en la vista previa, y si alguien más los probaba antes del merge}
+En ese corte, GitHub no registraba ninguna revisión formal en esos PR. De los 22 PR unidos, 6 los unió una persona distinta de quien los escribió, y 16 los unió su propio autor. \pend{cómo revisaba el equipo los PR, por ejemplo en una llamada o en la vista previa, y si alguien más los probaba antes del merge}
 
 \subsection{Lo que cambió por el profesor}\label{sec:profesor}
 
@@ -69,7 +70,7 @@ El profesor revisó el proyecto varias veces mientras lo construíamos. La \tref
     Nota & Lo que cambiamos \\
     \midrule
     Revisión del 4 de noviembre & Cada cliente tiene un domicilio fiscal y uno o más destinos de entrega. El RFC es único. Los límites de un cliente pueden ser más estrechos que los internacionales, nunca más amplios (D-22, D-23) \\
-    Revisión de requisitos & El certificado usa la última inspección del lote, y se bloquea si está incompleta (D-27) \\ %CHECK date of this review, docs/llm/decisions.md only says D-27 was recorded on 2026-11-10
+    Revisión de requisitos & El certificado usa la última inspección del lote, y se bloquea si está incompleta (D-27) \\ % D-27 se registró el 10 de noviembre; no se conoce la fecha exacta de la revisión.
     Presentación del 11 de noviembre & Gráficas de estadísticas y una sección nueva de calidad de la producción en Reportes \\
     Misma presentación & Documentos de arquitectura, de base de datos y del proceso, ordenados en la carpeta \tt{docs/} \\
     \bottomrule
