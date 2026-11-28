@@ -1,6 +1,6 @@
 # Builds the project report (latex/main.tex) and publishes the PDF as a GitHub release.
 # Runs on the team repo and on the fork, so everyone sees the same PDF under Releases.
-# The cover is the redacted one, because latex/private/ never exists in CI.
+# The cover with names and logo comes from latex/pkg/portada.sty (team agreed for the final delivery).
 # Uses only the built-in GITHUB_TOKEN.
 name: Report release
 
@@ -43,5 +43,5 @@ jobs:
           gh release create "reporte-${short}" reporte-harinas-elizondo.pdf \
             --target "${GITHUB_SHA}" \
             --title "Reporte $(date -u +%Y-%m-%d) (${short})" \
-            --notes "Reporte del proyecto construido desde ${GITHUB_SHA} en la rama ${GITHUB_REF_NAME}. La portada no lleva nombres a propósito." \
+            --notes "Reporte del proyecto construido desde ${GITHUB_SHA} en la rama ${GITHUB_REF_NAME}." \
             --latest
