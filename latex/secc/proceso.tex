@@ -1,9 +1,17 @@
 \FloatBarrier
 \section{Cómo trabajamos}\label{sec:proceso}
 
+\subsection{Cómo nos dividimos el trabajo}\label{sec:reparto}
+
+Nos dividimos el proyecto por partes. Primero, Vallery y Nathalia crearon el repositorio del equipo en GitHub y subieron el primer avance del sistema. A partir de ahí, cada integrante fue tomando sus partes conforme íbamos viendo qué hacía falta. Cada quien se encargaba de su módulo completo, de la pantalla hasta la base de datos, así nadie se quedaba esperando a otra persona a la mitad de su trabajo.
+
+Para organizarnos usamos GitHub. Cada tarea pendiente se escribía como un \textit{issue}, que es una nota en GitHub que dice qué falta hacer. Cada cambio al código llegaba como un \textit{pull request} (PR), que es una petición para unir ese cambio al código principal. Así, viendo la lista de issues abiertos y de PR, todo el equipo sabía qué estaba hecho, qué estaba en curso y qué faltaba.
+
+Todo este trabajo se puede ver directamente en el repositorio, \urlrepo{}. Ahí están los issues, los PR con su descripción y sus comentarios, y la historia completa de los commits, que dice quién cambió qué y cuándo. Al cierre de este reporte el repositorio tiene 30 PR (28 unidos al código principal y 2 cerrados sin unir), 23 issues y 187 commits en la rama principal.
+
 \subsection{Un módulo a la vez}\label{sec:incremental}
 
-Construimos el sistema por partes, en el orden en que se necesitan los datos. Primero la base técnica, que es el proyecto, la base de datos, la sesión y los roles. Después los catálogos de clientes y equipos. Luego los lotes y las inspecciones, después el certificado, que usa todo lo anterior, y al final los reportes, la bitácora, las pruebas y los documentos. La \tref{tab:cronologia} resume las fechas. La fecha límite de la entrega 1 indicada en el contexto del curso es el 1 de marzo; el documento de arquitectura se fecha el 17 de abril en el registro del proceso. No se equiparan ambas fechas.
+Construimos el sistema en el orden en que se necesitan los datos. Primero la base del proyecto, con la base de datos, el inicio de sesión y los tipos de cuenta. Después los clientes y los equipos, luego los lotes y las inspecciones, después el certificado, que usa todo lo anterior, y al final los reportes, la bitácora, las pruebas y los documentos. La \tref{tab:cronologia} resume las fechas.
 
 \begin{table}[H]
   \centering
@@ -13,29 +21,21 @@ Construimos el sistema por partes, en el orden en que se necesitan los datos. Pr
     Fecha & Qué pasó \\
     \midrule
     abril de 2026 & Documento de arquitectura de la entrega 1 \\
-    21 de octubre & Borrador del diseño técnico y prototipo en Node \\
-    22 de octubre & Elegimos las herramientas y creamos el proyecto (PR \#1) \\
-    4 y 5 de noviembre & Clientes, roles, bitácora, Equipos, Lotes e Inspecciones \\
-    11 de noviembre & Certificados con PDF, usuarios y presentación de avances \\
-    12 de noviembre & Reportes, Bitácora, menú móvil, CI y guías de prueba \\
+    21 de octubre & Se crea el repositorio con el primer avance \\
+    22 de octubre & Elegimos las herramientas y armamos el proyecto (PR \#1) \\
+    4 y 5 de noviembre & Clientes, tipos de cuenta, bitácora, equipos, lotes e inspecciones \\
+    11 de noviembre & Certificados en PDF, usuarios y presentación de avances \\
+    12 de noviembre & Reportes, bitácora, menú para teléfono y pruebas automáticas \\
     13 de noviembre & Entrega 3 \\
-    15 y 16 de noviembre & Correo real, cambios por la revisión del profesor y documentos \\
-    25 de noviembre & Evidencias de Excel, mediciones y revisión documental (PR \#52) \\
+    15 y 16 de noviembre & Envío de correo real y cambios por la revisión del profesor \\
+    25 de noviembre & Evidencias de Excel, mediciones y revisión de documentos (PR \#52) \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-Cada módulo llegó en un pull request propio. Un pull request, o PR, es una petición para unir un cambio al código principal. Cada PR tenía su requisito, sus pruebas y su vista previa en Vercel. Así cada módulo se podía revisar y probar solo, antes de unirlo con los demás.
+\subsection{El camino de un cambio}\label{sec:github}
 
-\subsection{Quién hizo qué}\label{sec:reparto}
-
-Repartimos el trabajo por módulo completo, de la pantalla a la base de datos. Así nadie dependía de otra persona a la mitad de un módulo. El registro de autoría de los PR en el documento de proceso identifica cuatro grupos de aportaciones: Clientes y administración de usuarios; sesión, roles, equipos, lotes e inspecciones; Certificados; y la primera versión de Reportes. La base técnica, los complementos de Reportes, Bitácora, navegación móvil, CI, pruebas, documentación y correo también tienen autoría registrada. Esta distribución se puede consultar en la tabla Organización del equipo de \tt{docs/proceso-desarrollo-es.md}. \pend{confirmar la distribución personal final con el equipo}
-
-\pend{cómo se organizó el equipo, con las fechas de las reuniones y el medio que usamos para hablar}
-
-\subsection{El camino de un cambio en GitHub}\label{sec:github}
-
-El código vive en el repositorio del equipo, \urlrepo{}. La \fref{fig:cambio} muestra el camino de un cambio. Cada cambio nace en una rama con un prefijo que dice su tipo, por ejemplo \tt{feat/} para una función nueva o \tt{fix/} para una corrección. Nadie escribe directo en la rama principal, \tt{main}. El cambio llega a \tt{main} solo por un pull request.
+La \fref{fig:cambio} muestra el camino de un cambio. Cada cambio nace en una rama propia, que es una copia del código donde se puede trabajar sin afectar a los demás. Nadie escribe directo en la rama principal, \tt{main}. Cuando el cambio está listo, se abre un PR, y Vercel publica una versión de prueba de la aplicación con ese cambio para que cualquiera la pueda abrir.
 
 \begin{figure}[H]
   \centering
@@ -44,19 +44,17 @@ El código vive en el repositorio del equipo, \urlrepo{}. La \fref{fig:cambio} m
   \backline{fig:cambio}
 \end{figure}
 
-Cada PR pasa por CI. CI, o integración continua, es un programa de GitHub Actions que revisa cada PR solo. Nuestro CI tiene tres trabajos. El primero revisa los tipos, el estilo del código, las pruebas unitarias y la construcción de la aplicación. El segundo corre las pruebas de componentes contra un PostgreSQL de prueba. El tercero abre la aplicación en un navegador con Playwright \parencite{playwright}. Si algo falla, el cambio se corrige en la misma rama.
-
-Los mensajes de commit siguen la convención Conventional Commits \parencite{conventionalcommits} y citan el requisito que cumplen, como en este ejemplo real.
+Además, cada PR pasa por una revisión automática en GitHub. Esa revisión comprueba que el código no tenga errores, corre todas las pruebas y abre la aplicación en un navegador \parencite{playwright}. Si algo falla, el cambio se corrige en la misma rama antes de unirlo. Los mensajes de cada commit dicen qué requisito cumplen, como en este ejemplo real.
 
 \begin{codigo}
 feat(certificados): send certificate emails with Resend (RF-06, D-13)
 \end{codigo}
 
-Con esos números se puede ir de cualquier línea de código al requisito que la pide.
+Gracias a esos números se puede ir de cualquier cambio al requisito que lo pidió.
 
-Como referencia histórica del corte del 16 de noviembre de 2026, los números de GitHub eran estos. El borrador del reporte registró 25 pull requests: 22 unidos a \tt{main}, 2 cerrados sin unir y 1 abierto; 22 issues y 137 commits en la rama de aquel reporte, del 21 de octubre al 16 de noviembre de 2026. Son cifras históricas del borrador, no un recuento independiente ni el estado actual. El PR \#52 reúne las aportaciones documentales del 25 de noviembre. % Source: original report draft at the 2026-11-16 cutoff; counts not independently re-run.
+\subsection{El reporte también vive en GitHub}\label{sec:reporte-ci}
 
-En ese corte, GitHub no registraba ninguna revisión formal en esos PR. De los 22 PR unidos, 6 los unió una persona distinta de quien los escribió, y 16 los unió su propio autor. \pend{cómo revisaba el equipo los PR, por ejemplo en una llamada o en la vista previa, y si alguien más los probaba antes del merge}
+Este reporte está escrito en LaTeX dentro de la carpeta \tt{latex/} del mismo repositorio. Cada vez que alguien cambia el reporte, GitHub lo vuelve a generar solo y publica el PDF en la sección de versiones (\textit{Releases}) del repositorio. Así todo el equipo ve siempre el mismo PDF, sin mandarse archivos por chat.
 
 \subsection{Lo que cambió por el profesor}\label{sec:profesor}
 
@@ -69,8 +67,8 @@ El profesor revisó el proyecto varias veces mientras lo construíamos. La \tref
     \toprule
     Nota & Lo que cambiamos \\
     \midrule
-    Revisión del 4 de noviembre & Cada cliente tiene un domicilio fiscal y uno o más destinos de entrega. El RFC es único. Los límites de un cliente pueden ser más estrechos que los internacionales, nunca más amplios (D-22, D-23) \\
-    Revisión de requisitos & El certificado usa la última inspección del lote, y se bloquea si está incompleta (D-27) \\ % D-27 se registró el 10 de noviembre; no se conoce la fecha exacta de la revisión.
+    Revisión del 4 de noviembre & Cada cliente tiene un domicilio fiscal y uno o más destinos de entrega. El RFC no se puede repetir. Los límites de un cliente pueden ser más estrechos que los internacionales, nunca más amplios (D-22, D-23) \\
+    Revisión de requisitos & El certificado usa la última inspección del lote y no se emite si está incompleta (D-27) \\
     Presentación del 11 de noviembre & Gráficas de estadísticas y una sección nueva de calidad de la producción en Reportes \\
     Misma presentación & Documentos de arquitectura, de base de datos y del proceso, ordenados en la carpeta \tt{docs/} \\
     \bottomrule

@@ -1,5 +1,5 @@
 # Builds the project report (latex/main.tex) and publishes the PDF as a GitHub release.
-# It only runs on the fork Freddy-Nader/harinas-elizondo. The team repo skips the job.
+# Runs on the team repo and on the fork, so everyone sees the same PDF under Releases.
 # The cover is the redacted one, because latex/private/ never exists in CI.
 # Uses only the built-in GITHUB_TOKEN.
 name: Report release
@@ -21,7 +21,6 @@ concurrency:
 jobs:
   release:
     name: Build and release the report PDF
-    if: github.repository == 'Freddy-Nader/harinas-elizondo'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
