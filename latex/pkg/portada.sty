@@ -1,73 +1,46 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{pkg/portada}[2026/11/16 Portada]
+\ProvidesPackage{pkg/portada}[Portada]
 
-% \portada prints the cover. Everything personal (logo, university, faculty, authors
-% with ids, professor) comes from private/portada.tex, which build.sh writes and Git
-% ignores. Without that file (CI, the release, a fresh clone) the cover shows the
-% project data and the redacted author rows below.
-%
-% private/portada.tex may define these macros, all optional:
-%   \portadaLogo        path of the logo image, for example private/logo.png
-%   \portadaUniversidad university line
-%   \portadaFacultad    faculty line
-%   \portadaAutores     tabular rows "Name & --- & Id \\ ..."
-%   \portadaProfesor    professor line
+\RequirePackage{titling}
 
 \newcommand{\portada}{%
-\IfFileExists{private/portada.tex}{\input{private/portada.tex}}{}%
 \begin{titlepage}
     \centering
 
-    % Logo, university and faculty (private)
-    \ifdefined\portadaLogo
-      \includegraphics[width=0.4\textwidth]{\portadaLogo}\par
-      \vspace{1.5cm}
-    \fi
-    \ifdefined\portadaUniversidad {\scshape\Large \portadaUniversidad\par}\fi
-    \ifdefined\portadaFacultad {\large \portadaFacultad\par}\fi
-
-    % Course
-    {\large Desarrollo de Software\par}
-    {\large Proyecto aplicativo integrador, Control de Laboratorio\par}
+    % Logo
+    \includegraphics[width=0.4\textwidth]{pkg/anahuac_logo.png}
     \vspace{1.5cm}
 
-    % Title and subtitle
-    {\LARGE\bfseries Harinas Elizondo\par}
+    % Universidad, facultad y clase
+    {\scshape\Large Universidad Anáhuac México Norte\par}
     \vspace{0.3cm}
+    {\large Facultad de Ingeniería}\par
+    {\large Desarrollo de Software}\par
+    \vspace{1.5cm}
+
+    % Título & subtítulo
+    {\LARGE\bfseries Harinas Elizondo\par}
     {\Large Un sistema web para emitir certificados de calidad de harina de trigo\par}
 
     \vfill
 
-    % Authors with ids
-    {\large Equipo del proyecto\par}
-    \vspace{0.4cm}
+    % Autores (alumnos) con IDs
     {\large\emph{%
-    \ifdefined\portadaAutores
-      \begin{tabular}{ccl}
-        \portadaAutores
-      \end{tabular}%
-    \else
-      \begin{tabular}{ccl}
-        % These rows must stay redacted in the repository, because the repo is public.
-        % Never replace them with real names or ids in a tracked file.
-        % For the final version with the real names, run the local build script:
-        %   ./latex/build.sh --name "Nombre Apellido" --id "00000000" --name ... --id ... --professor "Nombre"
-        % It writes the names to the ignored folder latex/private/ and builds the PDF on
-        % your machine only. The braces around [Nombre] stop LaTeX from reading it as
-        % the optional argument of the \\ before it.
-        {[Nombre]} & --- & [ID] \\
-        {[Nombre]} & --- & [ID] \\
-        {[Nombre]} & --- & [ID] \\
-        {[Gómez Ibarra Luis Fernando]} & --- & [00517630]
-      \end{tabular}%
-    \fi
+    \begin{tabular}{cl}
+        {Nathalia Guerra Salazar} & 00337494 \\
+        {Alan Placeres Rosette} & 00367056 \\
+        {Tania Vallery Rojas Alcántara} & 00465956 \\
+        {Luis Fernando Gómez Ibarra} & 00517630 \\
+        {Alfredo Nader Zavala} & 00521769 \\
+    \end{tabular}
     }}
     \vspace{0.5cm}
 
     \vfill
 
-    % Professor (private) and date
-    \ifdefined\portadaProfesor {\large \portadaProfesor\par}\vspace{0.3cm}\fi
+    % Profesor y fecha
+    {\large Mtro. Nicolás Humberto Haidar Salazar}\par
+    \vspace{0.3cm}
     {\today}
 \end{titlepage}%
 }%

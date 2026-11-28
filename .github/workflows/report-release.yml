@@ -1,6 +1,6 @@
 # Builds the project report (latex/main.tex) and publishes the PDF as a GitHub release.
-# It only runs on the fork Freddy-Nader/harinas-elizondo. The team repo skips the job.
-# The cover is the redacted one, because latex/private/ never exists in CI.
+# Runs on the team repo and on the fork, so everyone sees the same PDF under Releases.
+# The cover with names and logo comes from latex/pkg/portada.sty (team agreed for the final delivery).
 # Uses only the built-in GITHUB_TOKEN.
 name: Report release
 
@@ -21,7 +21,6 @@ concurrency:
 jobs:
   release:
     name: Build and release the report PDF
-    if: github.repository == 'Freddy-Nader/harinas-elizondo'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -44,5 +43,5 @@ jobs:
           gh release create "reporte-${short}" reporte-harinas-elizondo.pdf \
             --target "${GITHUB_SHA}" \
             --title "Reporte $(date -u +%Y-%m-%d) (${short})" \
-            --notes "Reporte del proyecto construido desde ${GITHUB_SHA} en la rama ${GITHUB_REF_NAME}. La portada no lleva nombres a propósito." \
+            --notes "Reporte del proyecto construido desde ${GITHUB_SHA} en la rama ${GITHUB_REF_NAME}." \
             --latest

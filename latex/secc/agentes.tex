@@ -1,29 +1,27 @@
 \FloatBarrier
-\section{Cómo usamos agentes de IA}\label{sec:agentes}
+\section{Cómo trabajamos con inteligencia artificial}\label{sec:agentes}
 
-Un agente de IA es un programa con un modelo de lenguaje que lee archivos, corre comandos y escribe código. Usamos agentes para escribir código, pruebas y documentos. Esta sección explica cómo les dimos reglas, cómo les dimos trabajo y qué revisamos nosotros.
+Usamos asistentes de inteligencia artificial (IA) durante todo el proyecto, para escribir código, pruebas y documentos. La regla del equipo fue siempre la misma. La IA propone y una persona revisa, prueba y decide si el cambio entra. Todo lo que hizo la IA llegó por un PR, igual que el trabajo de cualquier integrante, así que se puede revisar en el repositorio.
 
-\subsection{Las reglas para los agentes}\label{sec:agentsmd}
+\subsection{Las reglas que le dimos a la IA}\label{sec:agentsmd}
 
-Un agente empieza cada sesión sin memoria del proyecto. Por eso el repositorio tiene un archivo \tt{AGENTS.md} en la raíz, que el agente lee primero. Ese archivo da las reglas que no se pueden romper, por ejemplo estas.
+Un asistente de IA empieza cada conversación sin saber nada del proyecto. Por eso el repositorio tiene un archivo llamado \tt{AGENTS.md} que el asistente lee primero. Ese archivo le dice las reglas que no puede romper, por ejemplo estas.
 
 \begin{itemize}
-  \item El código y los commits van en inglés, y todo lo que ve el usuario va en español.
-  \item El repositorio es público, así que nunca se suben nombres de alumnos ni otros datos personales.
-  \item Cada comentario y cada prueba citan su requisito (RF, UC o BR).
-  \item Una pregunta abierta de \tt{decisions.md} no se resuelve en silencio. Se pregunta al equipo.
-  \item Antes de abrir un PR se corren las cuatro revisiones de \tt{pnpm}, que son tipos, estilo, pruebas y construcción.
+  \item El código va en inglés y todo lo que ve el usuario va en español.
+  \item El repositorio es público, así que nunca se suben datos personales.
+  \item Cada prueba y cada cambio dicen qué requisito cumplen.
+  \item Si hay una duda abierta, no la resuelve solo. Le pregunta al equipo.
+  \item Antes de abrir un PR, corre todas las pruebas y revisa que la aplicación se construya bien.
 \end{itemize}
 
-La carpeta \tt{docs/llm/} tiene el resto del contexto, en inglés. Tiene el caso del curso, los requisitos con sus números, la arquitectura, las decisiones, el estado del proyecto y los pasos para correrlo. La regla es que cada PR que avanza el trabajo actualiza también \tt{status.md}. Así el siguiente agente sabe qué falta.
+La carpeta \tt{docs/llm/} tiene el resto del contexto, como los requisitos, las decisiones y el estado del proyecto. Cada PR actualiza también el estado, así el siguiente asistente sabe qué falta.
 
-\subsection{Planes escritos por un modelo y ejecutados por otro}\label{sec:planes}
+\subsection{Un asistente planea y otro ejecuta}\label{sec:planes}
 
-Después de la entrega 3, para la revisión final, usamos un método con planes. La \fref{fig:agentes} lo resume. Un modelo hace el papel de asesor. Revisa el código y escribe un plan para cada mejora en la carpeta \tt{plans/}. Cada plan tiene el porqué, el alcance, los pasos, un comando para verificar cada paso y una lista de motivos para parar y avisar. El plan está escrito para un agente que no sabe nada del proyecto.
+Para la revisión final, después de la entrega 3, usamos un método con planes, que resume la \fref{fig:agentes}. Un asistente hace de asesor. Revisa el código y escribe un plan para cada mejora en la carpeta \tt{plans/}. Cada plan dice por qué se hace, qué se cambia, los pasos, cómo comprobar cada paso y cuándo hay que parar y avisar.
 
-Otro modelo hace el papel de ejecutor. Sigue un plan en su propia copia del repositorio. Esa copia es un \textit{worktree} de Git, es decir, una segunda carpeta con su propia rama. Así varios ejecutores trabajan al mismo tiempo sin pisarse. Al terminar, el ejecutor entrega un reporte.
-
-El asesor no confía en el reporte. Vuelve a correr las verificaciones en la copia del ejecutor y lee todo el cambio. Si algo está mal, devuelve el trabajo, como máximo dos veces. Los cambios aprobados se juntan en una sola rama, que llega al equipo como un solo PR. Una persona del equipo decide si ese PR se une a \tt{main}.
+Otro asistente hace de ejecutor. Sigue el plan en su propia copia del repositorio y al terminar entrega un reporte. El asesor no confía en ese reporte. Vuelve a correr las pruebas y lee todo el cambio, y si algo está mal lo devuelve. Los cambios aprobados llegan al equipo como un PR, y una persona del equipo decide si se une.
 
 \begin{figure}[H]
   \centering
@@ -32,31 +30,31 @@ El asesor no confía en el reporte. Vuelve a correr las verificaciones en la cop
   \backline{fig:agentes}
 \end{figure}
 
-El índice de \tt{plans/} registra doce planes ejecutados (001 a 012), incluido el borrador de este reporte. El documento 013 es una guía para planear la siguiente fase, no un plan ejecutado.
+\subsection{La revisión sí encontró errores}\label{sec:errores}
 
-\subsection{Lo que la revisión encontró}\label{sec:errores}
-
-La revisión sí encontró errores. Estos ejemplos están en \tt{plans/README.md} y en el historial de Git.
-
-\begin{itemize}
-  \item El script nuevo para cambiar contraseñas guardaba cambios aunque la cuenta no tuviera contraseña. La revisión lo devolvió una vez, y ahora no guarda nada en ese caso.
-  \item Las pruebas nuevas de Reportes y Bitácora tenían un texto mal escrito en la guía de pruebas. La revisión lo devolvió una vez.
-  \item Un plan que corregía un texto de la pantalla encontró que otro texto, el de Reportes, también estaba mal, y lo corrigió.
-  \item Un plan cambió un archivo más de los que tenía en su alcance. La revisión lo aceptó y lo anotó.
-  \item El plan de este reporte decía que había 47 pull requests. En el corte del 16 de noviembre se contaron 25. El 47 es el número del último PR, porque en GitHub los issues y los PR comparten la numeración.
-\end{itemize}
-
-La herramienta también falló una vez. Su opción para crear copias aisladas no funciona en este repositorio, así que creamos cada copia a mano con \tt{git worktree}.
+Revisar el trabajo de la IA valió la pena, porque encontró errores reales. Por ejemplo, un script para cambiar contraseñas guardaba cambios aunque la cuenta no tuviera contraseña, y la revisión lo devolvió hasta que quedó bien. En otro caso, el plan de este reporte decía que había 47 PR, cuando en realidad el 47 era el número del último PR, porque en GitHub los issues y los PR comparten la numeración. Estos casos están anotados en \tt{plans/README.md}.
 
 \subsection{Lo que siguió siendo trabajo de personas}\label{sec:humano}
 
-Algunas tareas no se pueden dar a un agente, porque necesitan a una persona real, una credencial privada o una opinión.
+Algunas cosas no se le pueden dar a una IA, porque necesitan a una persona real, una contraseña privada o una opinión propia.
 
 \begin{itemize}
-  \item Las pruebas de aceptación necesitan al menos dos personas de fuera del equipo. Un agente solo puede preparar la sesión.
-  \item Las conclusiones del equipo y la lección de cada integrante son opiniones personales.
-  \item La regla de GitHub que exige CI en \tt{main} solo la puede activar la dueña del repositorio.
-  \item Aplicar la última migración en la base de producción y cambiar la contraseña de demostración necesitan las credenciales de producción.
-  \item El equipo aprobó las decisiones de alcance D-30 a D-33 para la entrega; los protocolos y rangos oficiales requieren confirmación antes de un uso operativo.
-  \item Unir un PR al repositorio del equipo siempre es decisión de una persona.
+  \item Las pruebas de aceptación necesitan personas reales de fuera del equipo.
+  \item Las conclusiones y las lecciones de cada integrante son opiniones personales.
+  \item Unir un PR al repositorio del equipo siempre lo decide una persona.
+  \item Los cambios en la base de datos de producción necesitan credenciales que solo tiene el equipo.
 \end{itemize}
+
+\subsection{Declaración de uso de IA}\label{sec:ia}
+
+Estas son las herramientas de IA que usamos y para qué.
+
+\begin{itemize}
+  \item \textbf{Claude Code}, con modelos Claude Opus y Sonnet de Anthropic, para escribir la mayor parte del código, las pruebas, los documentos del repositorio, los planes de la revisión final y el borrador de este reporte.
+  \item \textbf{ChatGPT} (GPT-6.2) de OpenAI, para revisar evidencias de red, proponer textos para la documentación, contrastar las aportaciones con los documentos existentes y revisar la redacción. Las evidencias reales se tomaron a mano en el navegador y en Excel.
+  \item \textbf{Codex} de OpenAI, para unir los PR \#51 y \#53 después de comprobar que habían pasado todas las pruebas, a petición de una integrante.
+\end{itemize}
+
+En general, usamos mucho la IA en todas las etapas del proyecto. Nos ayudó a entender el caso y lo que teníamos que hacer, a decidir cómo hacerlo, a ver qué faltaba en cada etapa y a trabajar con el código, desde la planeación hasta la ejecución y la resolución de dudas. Abiertamente intentamos usarla lo más que pudimos para hacer un trabajo de buena calidad, pero nunca como una forma de saltarnos nuestra parte. Cada propuesta de la IA la revisamos, la probamos y la entendimos antes de aceptarla. Las lecciones de cada integrante también se redactaron con apoyo de IA a partir de lo que cada persona quería decir.
+
+Quien quiera ver cómo colaboramos y cómo usamos la IA puede revisar el repositorio, \urlrepo{}. Ahí está toda la historia de commits, issues y PR, con muchos detalles del trabajo con la IA y de cómo trabajamos entre nosotros.
