@@ -1,12 +1,12 @@
 % Agent workflow for the plans in plans/. Taken from "How to execute the open plans"
 % in plans/README.md.
-\begin{tikzpicture}[node distance=0.9cm and 0.8cm]
-  \tikzset{paso/.style={bloque, text width=2.6cm, minimum height=1.5cm}}
-  \node[paso] (plan) {\textbf{Asesor}\\\scriptsize revisa el código y escribe un plan en \tt{plans/}};
-  \node[paso, right=of plan] (exec) {\textbf{Ejecutor}\\\scriptsize sigue el plan en su propia copia del repositorio};
-  \node[paso, right=of exec] (rev) {\textbf{Revisión}\\\scriptsize se repiten las pruebas y se lee todo el cambio};
-  \node[paso, below=of rev] (pr) {\textbf{Un pull request}\\\scriptsize junta los planes aprobados};
-  \node[paso, left=of pr, fill=acento!12] (human) {\textbf{Persona del equipo}\\\scriptsize lee el PR y decide el merge};
+\begin{tikzpicture}[node distance=1.0cm and 1.3cm]
+  \tikzset{paso/.style={bloque, text width=3.0cm, minimum height=1.6cm, font=\small}}
+  \node[paso] (plan) {\textbf{Asesor}\\[2pt]\footnotesize revisa el código y escribe un plan en \tt{plans/}};
+  \node[paso, right=of plan] (exec) {\textbf{Ejecutor}\\[2pt]\footnotesize sigue el plan en su propia copia del repositorio};
+  \node[paso, right=of exec] (rev) {\textbf{Revisión}\\[2pt]\footnotesize se repiten las pruebas y se lee todo el cambio};
+  \node[paso, below=of rev] (pr) {\textbf{Un pull request}\\[2pt]\footnotesize junta los planes aprobados};
+  \node[paso, left=of pr, fill=acento!12] (human) {\textbf{Persona del equipo}\\[2pt]\footnotesize lee el PR y decide el merge};
 
   \draw[flecha] (plan) -- (exec);
   \draw[flecha] (exec) -- node[etiq, above] {reporte} (rev);

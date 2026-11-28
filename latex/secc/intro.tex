@@ -7,4 +7,31 @@ Hoy el laboratorio hace este trabajo con hojas de cálculo y un editor de PDF. A
 
 Construimos una aplicación web que hace todo el proceso. Registra clientes, equipos, lotes e inspecciones, emite el certificado en PDF, lo envía por correo y guarda en una bitácora quién hizo cada acción. La aplicación funciona en \urlprod{} y todo su código, su historia y sus documentos están en el repositorio del equipo, \urlrepo{}.
 
-Este reporte no repite los documentos técnicos del repositorio, que están en la carpeta \tt{docs/}. Explica de forma sencilla qué hace el sistema, cómo trabajamos como equipo, cómo usamos la inteligencia artificial, qué decisiones tomamos y cómo comprobamos que todo funciona. Al final están las conclusiones y un anexo con capturas de pantalla.
+\subsection{Cómo entrar al sistema}\label{sec:acceso}
+
+La aplicación y su código se pueden revisar en estas dos direcciones.
+
+\begin{itemize}
+  \item Aplicación publicada, \urlprod{}
+  \item Repositorio del equipo, \urlrepo{}
+\end{itemize}
+
+Para entrar se usan estas cuentas de demostración, una por tipo de usuario. Las contraseñas no van en este documento porque el repositorio es público, así que las compartimos aparte en el comentario de la entrega en Teams.
+
+\begin{table}[H]
+  \centering
+  \caption{Cuentas de demostración}\label{tab:cuentas}
+  \begin{tabularx}{\linewidth}{@{}llX@{}}
+    \toprule
+    Tipo de usuario & Correo & Qué puede hacer \\
+    \midrule
+    Transacción (laboratorio) & \tt{laboratorio@demo.test} & Registrar datos y emitir certificados \\
+    Consulta (gerencia) & \tt{consulta@demo.test} & Ver reportes, histórico y bitácora \\
+    Administrador & \pend{correo del administrador} & Crear y administrar cuentas \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Qué contiene este reporte}\label{sec:contenido}
+
+Este reporte no repite los documentos técnicos del repositorio, que están en la carpeta \tt{docs/}. Explica de forma sencilla qué hace el sistema, cómo trabajamos como equipo, cómo usamos la inteligencia artificial, qué decisiones tomamos y cómo comprobamos que todo funciona. Al final están las conclusiones y un recorrido por las pantallas del sistema.
