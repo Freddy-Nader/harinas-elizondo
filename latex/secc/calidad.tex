@@ -15,7 +15,7 @@ Seguimos la pirámide de pruebas. Abajo hay muchas pruebas pequeñas y rápidas.
     \midrule
     Unitarias & Una regla del negocio sola, sin base de datos & Vitest & 225 de 225 pruebas pasan, en 27 archivos (casos PU-01 a PU-64) \\
     Componentes & Las acciones del servidor contra un PostgreSQL real & Vitest & 33 de 33 pruebas pasan, en 7 archivos (PC-01 a PC-23) \\
-    Integrales & Un flujo que cruza varias pantallas & Playwright & 6 de 6 casos pasan (PI-01 a PI-06) \\ %CHECK PI and PS results come from docs/testing, the e2e suite was not re-run for this report
+    Integrales & Un flujo que cruza varias pantallas & Playwright & 6 de 6 casos pasan (PI-01 a PI-06) \\
     Sistema & La aplicación completa, por rol, también en producción & Playwright y revisión a mano & 16 de 16 casos pasan (PS-01 a PS-16) \\
     Regresión & Toda la suite en cada PR & GitHub Actions & 6 de 7 casos pasan, falta PR-05 \\
     Aceptación & Tareas reales con personas de fuera del equipo & Guion con moderador & 0 de 6, todavía no se hacen \\
@@ -29,14 +29,20 @@ Las pruebas unitarias corren en menos de un segundo, porque prueban funciones pu
 
 \subsection{Pruebas en producción}\label{sec:vivo}
 
-El 16 de noviembre de 2026 probamos la aplicación publicada, con su base de datos real en Neon. Son los casos PS-08 a PS-16, y todos pasaron. Usamos solo las cuentas de demostración, y cada dato de prueba que quedó en producción empieza con la palabra PRUEBA. Las capturas del anexo salen de esa prueba. %CHECK plan 005 took the screenshots during the live check, confirm for login.png and the mobile menu ones
+El 16 de noviembre de 2026 probamos la aplicación publicada, con su base de datos real en Neon. Son los casos PS-08 a PS-16, y todos pasaron. Usamos solo las cuentas de demostración, y cada dato de prueba que quedó en producción empieza con la palabra PRUEBA. El plan 005 registra capturas de esa revisión; el anexo también incorpora evidencia del 25 de noviembre. No se atribuye una fecha individual a cada captura anterior sin registro.
+
+\subsection{Mediciones de respuesta y exportación}\label{sec:mediciones}
+
+El 25 de noviembre de 2026 se registraron tres solicitudes individuales en Safari contra producción, usando la cuenta de laboratorio de demostración y el certificado de prueba CER-2026-000005. La solicitud del documento de Certificados tardó 1.73 s; la observada durante la emisión, 1.56 s (estado posterior Enviado); y la solicitud del PDF, 2.00 s. Las dos primeras mediciones se hicieron con caché desactivada; la última no. No son promedios, tiempos totales de renderizado ni mediciones aisladas de procesamiento o entrega de correo.
+
+El mismo día se exportó un archivo XLSX con tres certificados de prueba y quince columnas, y se verificó su apertura en Excel. Las capturas de Excel y de las solicitudes de red están en \tt{docs/img/} y se enlazan en la especificación técnica.
 
 \subsection{Lo que falta y por qué}\label{sec:falta}
 
 \begin{itemize}
   \item Las pruebas de aceptación (PA-01 a PA-06). Necesitan al menos dos personas de fuera del equipo, y sus resultados nunca se inventan.
   \item La regla que exige CI en \tt{main} (PR-05). Solo la dueña del repositorio la puede activar.
-  \item Los tiempos de respuesta en producción. Ningún PR los midió.
-  \item Las capturas de las pantallas del administrador y de un archivo abierto en Excel y Power BI.
-  \item Los rangos oficiales y las unidades de los diez factores. Los límites cargados son valores de demostración, y siguen como preguntas abiertas (Q-11, Q-13 y Q-14).
+  \item La disponibilidad durante el periodo de pruebas, que requiere acceso al proyecto de Vercel.
+  \item La evidencia del mismo archivo en Power BI Desktop. Las capturas del administrador se proponen en el PR \#51 y las de Excel y rendimiento en el PR \#52.
+  \item Antes de un uso operativo, confirmar los protocolos del laboratorio, los rangos oficiales y la política de destinatarios. Para esta entrega el equipo aprobó D-30 a D-33, sin modificar el sistema.
 \end{itemize}

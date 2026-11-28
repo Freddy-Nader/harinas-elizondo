@@ -1,6 +1,6 @@
 # Status
 
-Last updated 2026-11-17. Delivery 3 was due **2026-11-13 23:59** and was presented in class. Work since then answers the professor's notes from the progress presentation of 2026-11-11. Update this file in every PR that moves something.
+Last updated 2026-11-25. Delivery 3 was due **2026-11-13 23:59** and was presented in class. Work since then answers the professor's notes from the progress presentation of 2026-11-11. Update this file in every PR that moves something.
 
 ## Done
 
@@ -39,13 +39,15 @@ Each item says who can do it. "Agent" means an agent can finish it alone. "Human
 
 ### Course deliverables (human)
 
+- 2026-11-25: Laboratorio Demo exported the test report and opened it in Excel (three test certificates, 15 columns); Excel screenshot and four performance/status screenshots uploaded to `docs/img/` and linked in the technical specification; Power BI Desktop evidence pending. Production network observations: `/certificados` 1.73 s, request observed on issue 1.56 s (subsequent state Enviado), PDF request 2.00 s. Test certificate `CER-2026-000005` remains in production. Vercel availability still requires operator access. Team conclusions proposed and one individual lesson approved; other lessons and team approval remain pending. See issue #49 and PR #51 for parallel work.
+
 - [ ] User acceptance tests with at least two people outside the team (PA-01 to PA-06 in `docs/testing/pruebas-aceptacion-es.md`), then the UAT line in the spec. An agent can prepare the session script and nothing else.
 - [ ] Branch rule that makes CI required on `main` (PR-05). Only the repo owner can add it. After that, PR-05 in `docs/testing/pruebas-regresion-es.md` becomes Pass and the counts in `docs/testing/README.md` change (agent).
 - [x] Administrator panel and Usuarios screenshots captured in Vercel on 2026-11-25 and added to the technical specification. The Usuarios screenshot shows only demo accounts.
-- [ ] Open the same test-data export in Excel and Power BI Desktop and capture both for the technical specification. The export needs a Consulta or Laboratorio account. On 2026-11-25, production denied access to Reportes with the administrator role. The Lotes and panel screenshots with wording from before D-27 can also be retaken.
+- [ ] Capture the same test-data export in Power BI Desktop. The Excel capture is included in PR #52.
 - [ ] Three TODO notes near the end of `docs/especificacion-tecnica-es.md`, which are measured response times, a note on availability from Vercel, and the final read-through by the whole team.
-- [ ] Open questions Q-11 (units), Q-13 (humidity), Q-14 (official numeric ranges) and Q-16 (which clients get the email) in [decisions.md](decisions.md). The team or the professor answers. The seeded limits are demo values until Q-14 has an answer.
-- [ ] Write the project report in `latex/` (draft, 22 pages). Six `\pend` notes hold what only the team can write (team conclusions, one lesson per person, who did each module, how the team met, how PRs were reviewed, which AI tool each person used). The remaining `%CHECK` comments mark facts to confirm, listed with `grep -n "%CHECK" latex/secc/*.tex latex/bib.bib`. The team also decides the final size. An agent may fix `%CHECK` facts it can prove from the repo, and must leave every `\pend` alone unless a person gives the text.
+- [x] Q-11, Q-13, Q-14 and Q-16 resolved for the course delivery (D-30 to D-33 in [decisions.md](decisions.md)), according to team approval reported by a member on 2026-11-25. Existing units, ten factors, demonstration limits and recipient logic retained. Official laboratory protocols, acceptance limits and company policy remain unverified for operational use; no code or production data changed.
+- [ ] Finish the project report in `latex/`. On 2026-11-25 PR #52 refreshed the report sections, performance and Excel evidence, technical scope decisions, documented module authorship and AI usage, and checked the two book editions against public catalogs. Historical counts are attributed to the original draft, not a fresh count. Remaining human items: group approval of conclusions, other individual lessons, final personal module attribution, meeting dates/channels, human PR-review practice and other members' AI declarations. Final length and PDF compilation/visual review remain unverified.
 - [ ] Final PDF with names, built on a team member's machine with `./latex/build.sh` (see the runbook). Names, ids and the logo never enter Git.
 - [ ] Run `pnpm docs:pdf` again and upload `docs/pdf/` to Teams by hand. Do it last, after the items above changed the documents.
 

@@ -283,13 +283,17 @@ La pantalla de Reportes parte del trabajo del PR #33 y lo completa el PR #37. Mu
 - Filtros en la URL por periodo rápido (este mes, este trimestre, este año), rango de fechas sobre `certificates.issued_at` en hora de planta, cliente y estado. Las fechas inválidas se descartan y un rango al revés se invierte.
 - Indicadores de total de certificados, tasa de cumplimiento, desviaciones registradas, cancelados y entregas fallidas.
 - Gráficas de tendencia mensual y Pareto de parámetros fuera de rango, hechas con recharts.
-- Sección Calidad de la producción, agregada el 16 de noviembre de 2026 por la retroalimentación del profesor. Responde qué tan buena es la harina que se produce, se haya certificado o no. Toma la última inspección completa de cada lote producido en el periodo (D-27, BR-INS-03) y la compara con los límites internacionales. Muestra lotes producidos y analizados, porcentaje de lotes con los diez factores dentro de especificación, reinspecciones, una gráfica de control por factor con sus límites y su promedio, el porcentaje dentro de especificación por factor y una tabla con promedio, desviación estándar, mínimo, máximo, valores fuera de rango y Cpk. El filtro de periodo aplica a la fecha de producción del lote, y los de cliente y estado no aplican porque un lote no tiene cliente hasta que se certifica. Las reglas viven en `src/lib/domain/production-quality.ts`.
+- Sección Calidad de la producción, agregada el 16 de noviembre de 2026 por la retroalimentación del profesor. Responde qué tan buena es la harina que se produce, se haya certificado o no. Toma la última inspección de cada lote producido en el periodo y solo la considera si está completa (D-27, BR-INS-03) y la compara con los límites internacionales. Muestra lotes producidos y analizados, porcentaje de lotes con los diez factores dentro de especificación, reinspecciones, una gráfica de control por factor con sus límites y su promedio, el porcentaje dentro de especificación por factor y una tabla con promedio, desviación estándar, mínimo, máximo, valores fuera de rango y Cpk. El filtro de periodo aplica a la fecha de producción del lote, y los de cliente y estado no aplican porque un lote no tiene cliente hasta que se certifica. Las reglas viven en `src/lib/domain/production-quality.ts`.
 - Detalle de desviaciones por parámetro e histórico paginado de 20 en 20 con enlace al certificado. El usuario de consulta no puede abrir `/certificados`, así que su enlace abre el PDF.
 - Exportación a `.xlsx` y CSV con las columnas ID Certificado, Estado, Fecha de Emisión, Clave SAP Cliente, Nombre del Cliente, RFC, ID Lote, Secuencia Inspección, Orden de Compra, No. Factura, Emitido Por, Con Desviación, Parámetros Fuera de Rango, Entregas Fallidas y Motivo de Cancelación.
 
 Los borradores nunca aparecen porque no se emitieron. Los cancelados se ven en el histórico con su insignia, pero no cuentan en indicadores, desviaciones ni gráficas (D-25).
 
-> TODO (equipo): exportar un archivo con datos de prueba desde Reportes usando una cuenta de Consulta o Laboratorio. Abrir el mismo archivo en Excel y Power BI Desktop y guardar ambas capturas en `docs/img/`. En la revisión del 25 de noviembre de 2026, Vercel mostró «Acceso restringido» al abrir Reportes con la cuenta de Administrador.
+Se exportó `reporte-certificados-2026-11-25.xlsx` el 25 de noviembre de 2026 con Laboratorio Demo: tres certificados de prueba (dos enviados y uno cancelado), clientes PRUEBA01 y PRUEBA02 y 15 columnas. Se verificó visualmente su apertura en Excel.
+
+![Reporte exportado abierto en Microsoft Excel](img/reportes-excel.png)
+
+> TODO (equipo): cargar el mismo archivo en Power BI Desktop y agregar su captura. La evidencia de Excel ya está incorporada.
 
 ## Diseño de datos (Data Design)
 
@@ -356,7 +360,7 @@ Los tipos son los de Postgres. "No" en la columna Nulo significa `NOT NULL`.
 | client_limits | client_id, parameter_code | uuid, varchar(10) | PK compuesta, FK | De cero a diez filas por cliente |
 | client_limits | lower_limit, upper_limit | numeric(10,3) | CHECK inferior <= superior | Rango particular, que solo puede estrechar el internacional (D-23) |
 
-Los diez parámetros obligatorios salen de `src/lib/domain/parameters.ts`. Las unidades son una primera propuesta y siguen abiertas (Q-11).
+Los diez parámetros obligatorios salen de `src/lib/domain/parameters.ts`. El equipo aprobó conservar las unidades actuales para la entrega (D-30), sin que ello sustituya la confirmación del protocolo de los equipos antes de uso operativo. Los rangos cargados son demostrativos, no especificaciones oficiales (D-32).
 
 | Código | Máquina | Etiqueta | Unidad |
 | --- | --- | --- | --- |
@@ -990,7 +994,22 @@ La última corrida de CI sobre `main`, del commit f767e75, terminó en verde en 
 | Mantenibilidad | Arquitectura modular | Una carpeta por módulo, reglas puras en `src/lib/domain/` con pruebas, una sola lista de módulos | Suite unitaria y CI (PR #29) |
 | Trazabilidad | Acciones registradas por usuario | `audit_log` con número de empleado y nombre, pantalla de Bitácora, exportación auditada | PS-15 pasó en producción con consulta y con transacción y PC-14 pasa contra Postgres |
 
-> TODO (equipo): tiempos de respuesta medidos en vivo en https://harinas-elizondo.vercel.app con Neon (por ejemplo carga de `/certificados`, emisión y generación del PDF). Ningún PR los midió.
+El 25 de noviembre de 2026 se registraron tres mediciones individuales en producción (Vercel y Neon), con Safari, el inspector Red y la cuenta Laboratorio Demo. Se utilizó el certificado de prueba `CER-2026-000005`, cliente `PRUEBA01`, lote `L-PRUEBA-001`.
+
+| Operación | Tiempo observado | Condiciones |
+| --- | ---: | --- |
+| Solicitud del documento `/certificados` | 1.73 s | Caché desactivada |
+| Solicitud observada al emitir el certificado | 1.56 s | Caché desactivada; estado posterior Enviado |
+| Solicitud del documento PDF | 2.00 s | Caché no desactivada; transferencia de 7.71 KB |
+
+Los valores son duraciones de solicitudes de red, no tiempos totales de renderizado ni promedios. El estado Enviado confirma la emisión en la aplicación, pero la medición no aísla el tiempo de envío de correo ni el procesamiento interno del PDF. No se verificó la entrega a destinatarios externos. El folio de prueba queda registrado en producción.
+
+Evidencias de las solicitudes de red y del estado posterior del certificado:
+
+- [Carga de Certificados (1.73 s)](img/tiempo-carga-certificados.png).
+- [Solicitud observada durante la emisión (1.56 s)](img/tiempo-emision-certificado.png).
+- [Solicitud del PDF (2.00 s)](img/tiempo-generacion-pdf.png).
+- [Certificado de prueba con estado Enviado](img/certificado-prueba-enviado.png).
 
 > TODO (equipo): nota de disponibilidad del deploy durante el periodo de pruebas, tomada de Vercel.
 
@@ -1040,7 +1059,7 @@ Neon por HTTP no ofrece transacciones interactivas, así que el diseño usa dos 
 
 ### Datos iniciales
 
-`pnpm db:seed` es idempotente y crea los diez parámetros, límites internacionales de demostración y dos usuarios de demostración, `laboratorio@demo.test` (transacción) y `consulta@demo.test` (consulta). Los límites de demostración no son oficiales (Q-14). El administrador inicial se crea aparte con `pnpm db:create-admin`.
+`pnpm db:seed` es idempotente y crea los diez parámetros, límites internacionales de demostración y dos usuarios de demostración, `laboratorio@demo.test` (transacción) y `consulta@demo.test` (consulta). Los límites de demostración no son oficiales (D-32). El administrador inicial se crea aparte con `pnpm db:create-admin`.
 
 ## Instalación (Installation)
 
@@ -1171,15 +1190,24 @@ Las decisiones están registradas en `docs/llm/decisions.md`.
 | D-27 | 2026-11-10 | BR-CER-01 usa la última inspección del lote y bloquea si está incompleta |
 | Q-15 | 2026-11-10 | Firma con hash, transportista y cancelación. Resuelta por D-24 a D-27. El issue #8 sigue abierto en GitHub aunque la decisión ya está registrada |
 
+### Decisiones de alcance aprobadas por el equipo (25 de noviembre de 2026)
+
+| Id | Pregunta resuelta | Decisión para la entrega |
+| --- | --- | --- |
+| D-30 | Q-11 | Conservar las diez unidades actuales; verificar protocolo del laboratorio antes del uso operativo. |
+| D-31 | Q-13 | No incorporar humedad como undécimo parámetro en esta versión; no confundirla con absorción de agua. |
+| D-32 | Q-14 | Mantener los rangos como valores demostrativos, no límites oficiales. |
+| D-33 | Q-16 | Mantener destinatarios actuales (contacto con correo y almacén), con redirección a buzón de prueba en producción. |
+
+La ficha técnica oficial, el método real de medición de humedad y la política comercial de la empresa no fueron confirmados. No se requieren cambios de código ni de datos para estas decisiones de alcance.
+
 ### Asuntos abiertos
 
 | Id | Pregunta | Propuesta | Responsable |
 | --- | --- | --- | --- |
-| Q-11 | Unidades de cada parámetro, porque las actuales son una propuesta tomada de los anexos de los equipos (issue #9) | Unidades actuales: P en mm H₂O, L en mm, W en 10⁻⁴ J, P/L sin unidad e I.E. en %. Absorción en %, desarrollo, estabilidad y llegada en minutos, y ablandamiento en UF. Pendiente validar con los anexos oficiales o el profesor. | Equipo |
 | Q-12 | Quién construye cada módulo antes del 2026-11-13 | Un módulo por PR | Equipo |
-| Q-13 | La humedad que mencionó el profesor no es uno de los diez factores de RF-02. Falta saber con qué método o equipo se captura y si es un factor adicional (issue #9) | Esperar la aclaración y no usar la absorción de agua como humedad | Equipo |
-| Q-14 | Qué especificación oficial da los rangos numéricos y las unidades confirmadas de los diez factores (issue #9) | Los valores del seed son solo de demostración | Equipo |
-| Q-16 | Si el certificado se envía solo a ciertos clientes. La pregunta está registrada en `docs/llm/decisions.md` | La regla actual incluye al cliente si tiene correo de contacto y al almacén. En producción, `EMAIL_REDIRECT_TO` redirige el envío a un buzón de prueba. El equipo debe confirmar la regla final. | Equipo |
+
+La [revisión técnica provisional del 25 de noviembre de 2026](llm/decisions.md#revisión-técnica-provisional-25-de-noviembre-de-2026) contiene la tabla de unidades, rangos de demostración y referencias metodológicas. El equipo aprobó las cuatro propuestas para el alcance de esta entrega el 25 de noviembre de 2026, según confirmación comunicada por una integrante. Se registran como D-30 a D-33; no constituyen aprobación oficial de la empresa o del profesor.
 
 ### Decisiones sin confirmar de Reportes (PR #32 y PR #37)
 
@@ -1198,9 +1226,9 @@ Los PR #32 y #37 resuelven Reportes de dos formas y ambos listan decisiones que 
 
 ### Observaciones encontradas en el código
 
-- El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients`. Clientes tampoco usa `requireRole` ni `ActionState` como los demás módulos.
+- El módulo de Clientes escribe la entidad `clients` y las acciones `update_limit` y `remove_limit`, que no están en los tipos `AuditEntity` y `AuditAction` de `src/lib/audit.ts`. La Bitácora las etiqueta y su filtro acepta `client` y `clients`. Las acciones de Clientes sí llaman a `requireRole()` (rol de transacción por omisión), pero usan redirecciones en lugar de `ActionState`.
 - `main` en 2b30a0f fallaba `pnpm lint` en `reportes/export-button.tsx` y `pnpm build` en `/reportes`. El merge del PR #37 lo corrigió y `main` en ff92f19 pasa CI.
 - El correo se envía con Resend desde el 15 de noviembre de 2026 (PR #41). Mientras no haya un dominio verificado, producción manda todo al buzón de prueba de `EMAIL_REDIRECT_TO` (PR #45).
-- La exportación no se ha abierto en Excel ni en Power BI, y la regla que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio.
+- La exportación se abrió en Excel el 25 de noviembre de 2026; la captura está incorporada y queda pendiente la validación en Power BI Desktop. La regla que exige CI en `main` sigue pendiente (PR-05) porque la debe agregar la dueña del repositorio.
 
 > TODO (equipo): revisar este documento completo con todo el equipo antes de exportarlo a PDF (paso 10 del issue #24).
